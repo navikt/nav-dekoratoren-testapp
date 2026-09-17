@@ -1,4 +1,4 @@
-name: Verify integration
+name: Bekreft integrasjon
 
 on:
   workflow_call:
@@ -11,11 +11,11 @@ on:
         type: string
 
 concurrency:
-  group: nav-dekoratoren-testapp-verify-dev
+  group: nav-dekoratoren-testapp-bekreft-dev
   cancel-in-progress: false
 
 jobs:
-  verify:
+  bekreft:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

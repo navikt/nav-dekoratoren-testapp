@@ -1,13 +1,13 @@
-name: Verify direct SSR
+name: Bekreft SSR uten moduler
 on:
   workflow_dispatch:
   workflow_run:
     workflows: ["Deploy dev"]
     types: [completed]
 jobs:
-  verify:
+  bekreft:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-    uses: ./.github/workflows/verify.yml
+    uses: verify.yml
     with:
       path: /ssr-direkte
       spec: tests/ssr-direkte.spec.ts

@@ -1,14 +1,14 @@
-name: Verify direct CSR
+name: Bekreft CSR med moduler
 on:
   workflow_dispatch:
   workflow_run:
     workflows: ["Deploy dev"]
     types: [completed]
 jobs:
-  verify:
+  bekreft:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-    uses: ./.github/workflows/verify.yml
+    uses: verify.yml
     with:
-      path: /csr-direkte
-      spec: tests/csr-direkte.spec.ts
+      path: /csr-moduler
+      spec: tests/csr-moduler.spec.ts
     secrets: inherit

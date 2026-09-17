@@ -6,12 +6,9 @@ metadata:
   labels:
     "team": navno
 spec:
-  image: {{image}}
   port: 3000
   ingresses:
-    {{#each ingresses}}
-    - {{this}}
-    {{/each}}
+    - https://nav-dekoratoren-testapp.ekstern.dev.nav.no
   liveness:
     path: /api/ready
     port: 3000

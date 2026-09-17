@@ -17,6 +17,7 @@ export function CsrMedModulerDekorator() {
       integrationVariant="csr-med-moduler"
       rendering="klient"
       transport="offentlig dev-ingress"
+      teamName={directDecoratorParams.teamName}
       initialStatus="initializing"
       observe={async () => {
         await waitForDecorator();

@@ -7,6 +7,7 @@ type Props = {
   integrationVariant: string;
   rendering: string;
   transport: string;
+  teamName?: string;
   children?: ReactNode;
   initialStatus?: IntegrationStatusValue;
   errorMessage?: string;

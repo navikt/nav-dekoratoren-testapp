@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { buildDirectCsrEnvironmentUrl, csrUtenModulerClientUrl } from "../lib/csr-uten-moduler";
+import { directDecoratorParams } from "../lib/decorator-params";
 import { IntegrationPage } from "./IntegrationPage";
 
 export function CsrUtenModulerDekorator() {
@@ -25,6 +26,7 @@ export function CsrUtenModulerDekorator() {
         integrationVariant="csr-uten-moduler"
         rendering="klient/HTML-shell"
         transport="offentlig dev-ingress"
+        teamName={directDecoratorParams.teamName}
         initialStatus="initializing"
         observe={async () => waitForDecorator()}
       >

@@ -8,6 +8,7 @@ type Props = {
   integrationVariant: string;
   rendering: string;
   transport: string;
+  teamName?: string;
   initialStatus?: IntegrationStatusValue;
   errorMessage?: string;
   observe?: () => Promise<void>;
@@ -23,6 +24,7 @@ export function IntegrationStatus({
   integrationVariant,
   rendering,
   transport,
+  teamName,
   initialStatus = "success",
   errorMessage,
   observe,
@@ -58,6 +60,12 @@ export function IntegrationStatus({
           <dt>Transport</dt>
           <dd>{transport}</dd>
         </div>
+        {teamName ? (
+          <div>
+            <dt>teamName</dt>
+            <dd data-testid="integration-team-name">{teamName}</dd>
+          </div>
+        ) : null}
         <div>
           <dt>Status</dt>
           <dd data-testid="integration-state">{labels[status]}</dd>

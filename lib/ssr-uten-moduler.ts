@@ -1,7 +1,7 @@
 import { directDecoratorParams } from "./decorator-params";
-import { directSsrUrl } from "./decorator-config";
+import { ssrUtenModulerUrl } from "./decorator-config";
 
-export { directSsrUrl };
+export { ssrUtenModulerUrl };
 
 export type DirectSsrFragments = {
   DECORATOR_HEAD_ASSETS: string;
@@ -26,7 +26,7 @@ function isRawSsrResponse(value: unknown): value is RawSsrResponse {
 }
 
 export async function fetchDirectSsrFragments(): Promise<DirectSsrFragments> {
-  const url = new URL(directSsrUrl);
+  const url = new URL(ssrUtenModulerUrl);
   Object.entries(directDecoratorParams).forEach(([key, value]) => url.searchParams.set(key, value));
   const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) throw new Error(`DIRECT_SSR_HTTP_${response.status}`);

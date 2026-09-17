@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { buildDirectCsrEnvironmentUrl } from "./direct-csr";
+import { buildDirectCsrEnvironmentUrl } from "./csr-uten-moduler";
 
-describe("direct CSR URL", () => {
+describe("CSR uten moduler URL", () => {
   it("includes the technical team name and encoded parameters", () => {
     const url = new URL(buildDirectCsrEnvironmentUrl());
     expect(url.searchParams.get("teamName")).toBe("navno.navno");

@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect } from "react";
-import { buildDirectCsrEnvironmentUrl, directCsrClientUrl } from "../lib/direct-csr";
+import { buildDirectCsrEnvironmentUrl, csrUtenModulerClientUrl } from "../lib/csr-uten-moduler";
 import { IntegrationPage } from "./IntegrationPage";
 
 export function CsrUtenModulerDekorator() {
   useEffect(() => {
     const script = document.createElement("script");
-    script.src = directCsrClientUrl();
+    script.src = csrUtenModulerClientUrl();
     script.async = true;
     script.onerror = () => window.dispatchEvent(new Event("decorator-script-error"));
     document.body.appendChild(script);

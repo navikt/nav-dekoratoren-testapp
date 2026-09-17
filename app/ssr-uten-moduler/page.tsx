@@ -1,5 +1,5 @@
 import { IntegrationPage } from "../../components/IntegrationPage";
-import { fetchDirectSsrFragments } from "../../lib/direct-ssr";
+import { fetchDirectSsrFragments } from "../../lib/ssr-uten-moduler";
 import { logTechnicalEvent } from "../../lib/technical-logger";
 
 function Fragment({ value }: { value: string }) {

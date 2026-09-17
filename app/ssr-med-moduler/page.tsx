@@ -19,6 +19,7 @@ export default async function SsrModulesPage() {
           integrationVariant="ssr-med-moduler"
           rendering="server"
           transport="service discovery"
+          teamName={decoratorParams.teamName}
         >
           <p data-testid="app-content">Dekoratøren ble rendret i første HTML-respons.</p>
         </IntegrationPage>
@@ -35,6 +36,7 @@ export default async function SsrModulesPage() {
         integrationVariant="ssr-med-moduler"
         rendering="server"
         transport="service discovery"
+        teamName={decoratorParams.teamName}
         initialStatus="error"
         errorMessage="Dekoratøren kunne ikke lastes"
       />

@@ -1,7 +1,8 @@
 # nav-dekoratoren-testapp
 
 Dette er en vedlikeholdbar referanse- og integrasjonsapp for Nav Dekoratøren. Den er ikke en
-produksjonsmal. Første versjon støtter kun Nais dev.
+produksjonsmal. Appen skal stå oppe kontinuerlig i Nais dev og brukes til å verifisere at alle
+fire integrasjonsmåtene mot Dekoratøren fungerer som forventet.
 
 ## Integrasjoner
 
@@ -11,6 +12,9 @@ produksjonsmal. Første versjon støtter kun Nais dev.
 | `/ssr-uten-moduler` | Server-side rendering med direkte kall til `/ssr` |
 | `/csr-med-moduler` | Client-side rendering med `injectDecoratorClientSide` |
 | `/csr-uten-moduler` | Client-side rendering med CSS, `/env` og `client.js` uten modulpakken |
+
+Forsiden (`/`) viser en samlet statusoversikt for alle fire integrasjonene, med live helsesjekk
+mot Dekoratøren ved hvert sidelastet. Bruk denne til rask manuell verifikasjon.
 
 SSR-rutene bruker service discovery til `nav-dekoratoren.personbruker`. CSR-rutene kjører i
 nettleseren og bruker derfor den offentlige dev-ingressen

@@ -26,6 +26,10 @@ spec:
       memory: 256Mi
   accessPolicy:
     outbound:
+      # NB: nav-dekoratoren kjører i namespace/team "personbruker" i dag.
+      # Når nav-dekoratoren migreres til "navno", må namespace og
+      # application-navn her oppdateres tilsvarende, ellers vil
+      # service discovery feile selv om Dekoratøren fungerer som normalt.
       rules:
         - application: nav-dekoratoren
           namespace: personbruker

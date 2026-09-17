@@ -1,22 +1,23 @@
 import Link from "next/link";
+import { sjekkAlleIntegrasjoner } from "../lib/statussjekk";
 
-const integrations = [
-  ["ssr-med-moduler", "SSR med moduler"],
-  ["ssr-uten-moduler", "SSR uten moduler"],
-  ["csr-med-moduler", "CSR med moduler"],
-  ["csr-uten-moduler", "CSR uten moduler"],
-];
+export const dynamic = "force-dynamic";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const integrasjoner = await sjekkAlleIntegrasjoner();
+
   return (
     <main>
       <h1>Nav Dekoratøren testapp</h1>
       <p>Referanseimplementasjon for de fire støttede integrasjonsmåtene.</p>
       <nav aria-label="Integrasjoner">
         <ul>
-          {integrations.map(([path, label]) => (
+          {integrasjoner.map(({ path, label, status, detalj }) => (
             <li key={path}>
-              <Link href={`/${path}`}>{label}</Link>
+              <Link href={`/${path}`}>{label}</Link>{" "}
+              <span data-testid={`helse-${path}`} data-status={status}>
+                {status === "ok" ? "✅ OK" : `❌ Feil${detalj ? `: ${detalj}` : ""}`}
+              </span>
             </li>
           ))}
         </ul>

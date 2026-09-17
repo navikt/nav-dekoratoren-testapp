@@ -1,7 +1,7 @@
 import Script from "next/script";
 import { fetchDecoratorReact } from "@navikt/nav-dekoratoren-moduler/ssr";
 import { IntegrationPage } from "../../components/IntegrationPage";
-import { decoratorParams } from "../../lib/decorator-params";
+import { decoratorParams, teamName } from "../../lib/decorator-params";
 import { logTechnicalEvent } from "../../lib/technical-logger";
 
 export default async function SsrModulesPage() {
@@ -19,7 +19,7 @@ export default async function SsrModulesPage() {
           integrationVariant="ssr-med-moduler"
           rendering="server"
           transport="service discovery"
-          teamName={decoratorParams.teamName}
+          teamName={teamName}
         >
           <p data-testid="app-content">Dekoratøren ble rendret i første HTML-respons.</p>
         </IntegrationPage>
@@ -36,7 +36,7 @@ export default async function SsrModulesPage() {
         integrationVariant="ssr-med-moduler"
         rendering="server"
         transport="service discovery"
-        teamName={decoratorParams.teamName}
+        teamName={teamName}
         initialStatus="error"
         errorMessage="Dekoratøren kunne ikke lastes"
       />

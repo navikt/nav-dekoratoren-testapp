@@ -1,5 +1,5 @@
 import { IntegrationPage } from "../../components/IntegrationPage";
-import { directDecoratorParams } from "../../lib/decorator-params";
+import { teamName } from "../../lib/decorator-params";
 import { fetchDirectSsrFragments } from "../../lib/ssr-uten-moduler";
 import { logTechnicalEvent } from "../../lib/technical-logger";
 
@@ -22,7 +22,7 @@ export default async function DirectSsrPage() {
           integrationVariant="ssr-uten-moduler"
           rendering="server"
           transport="service discovery"
-          teamName={directDecoratorParams.teamName}
+          teamName={teamName}
         >
           <p data-testid="app-content">Dekoratøren ble rendret i første HTML-respons.</p>
         </IntegrationPage>
@@ -39,7 +39,7 @@ export default async function DirectSsrPage() {
         integrationVariant="ssr-uten-moduler"
         rendering="server"
         transport="service discovery"
-        teamName={directDecoratorParams.teamName}
+        teamName={teamName}
         initialStatus="error"
         errorMessage="Dekoratøren kunne ikke lastes"
       />

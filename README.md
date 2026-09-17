@@ -15,7 +15,7 @@ produksjonsmal. Første versjon støtter kun Nais dev.
 SSR-rutene bruker service discovery til `nav-dekoratoren.personbruker`. CSR-rutene kjører i
 nettleseren og bruker derfor den offentlige dev-ingressen
 `https://dekoratoren.ekstern.dev.nav.no`. Direkte kall og CSR med moduler sender
-`teamName=navno.navno`.
+`teamName=personbruker.personbruker`.
 
 Appen har ingen egne autentiserte endepunkter, identitetsoppslag, database, persistent lagring,
 cookies eller analytics. Den viser og logger bare statisk teknisk integrasjonsstatus. Ingen

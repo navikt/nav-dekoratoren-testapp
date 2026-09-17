@@ -6,5 +6,5 @@ export const decoratorParams = {
 
 export const directDecoratorParams = {
   ...decoratorParams,
-  teamName: "personbruker.personbruker",
+  teamName: "navno.navno",
 };

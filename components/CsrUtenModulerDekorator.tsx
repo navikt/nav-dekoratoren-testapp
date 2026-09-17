@@ -2,9 +2,9 @@
 
 import { useEffect } from "react";
 import { buildDirectCsrEnvironmentUrl, directCsrClientUrl } from "../lib/direct-csr";
-import { IntegrationStatus } from "./IntegrationStatus";
+import { IntegrationPage } from "./IntegrationPage";
 
-export function DirectCsrDecorator() {
+export function CsrUtenModulerDekorator() {
   useEffect(() => {
     const script = document.createElement("script");
     script.src = directCsrClientUrl();
@@ -19,14 +19,17 @@ export function DirectCsrDecorator() {
       <link rel="stylesheet" href="https://dekoratoren.ekstern.dev.nav.no/css" />
       <div id="decorator-env" data-src={buildDirectCsrEnvironmentUrl()} />
       <div id="decorator-header" />
-      <IntegrationStatus
+      <IntegrationPage
+        title="CSR uten moduler"
+        description="Dekoratøren er satt inn manuelt med CSS, env og client.js."
         integrationVariant="csr-direkte"
         rendering="klient/HTML-shell"
         transport="offentlig dev-ingress"
         initialStatus="initializing"
         observe={async () => waitForDecorator()}
-      />
-      <div data-testid="app-content">CSR uten moduler er initialisert.</div>
+      >
+        <p data-testid="app-content">CSR uten moduler er initialisert.</p>
+      </IntegrationPage>
       <div id="decorator-footer" />
     </>
   );

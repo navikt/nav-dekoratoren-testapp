@@ -2,27 +2,28 @@
 
 import { injectDecoratorClientSide } from "@navikt/nav-dekoratoren-moduler";
 import { useEffect } from "react";
+import { IntegrationPage } from "./IntegrationPage";
 import { directDecoratorParams } from "../lib/decorator-params";
-import { IntegrationStatus } from "./IntegrationStatus";
 
-export function CsrWithModulesDecorator() {
+export function CsrMedModulerDekorator() {
   useEffect(() => {
     injectDecoratorClientSide({ env: "dev", params: directDecoratorParams });
   }, []);
 
   return (
-    <>
-      <IntegrationStatus
-        integrationVariant="csr-moduler"
-        rendering="klient"
-        transport="offentlig dev-ingress"
-        initialStatus="initializing"
-        observe={async () => {
-          await waitForDecorator();
-        }}
-      />
-      <div data-testid="app-content">CSR med moduler er initialisert.</div>
-    </>
+    <IntegrationPage
+      title="CSR med moduler"
+      description="Dekoratøren er initialisert i nettleseren med modulpakken."
+      integrationVariant="csr-moduler"
+      rendering="klient"
+      transport="offentlig dev-ingress"
+      initialStatus="initializing"
+      observe={async () => {
+        await waitForDecorator();
+      }}
+    >
+      <p data-testid="app-content">CSR med moduler er initialisert.</p>
+    </IntegrationPage>
   );
 }
 

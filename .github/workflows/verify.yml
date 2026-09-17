@@ -11,7 +11,7 @@ on:
         type: string
 
 concurrency:
-  group: nav-dekoratoren-testapp-bekreft-dev
+  group: nav-dekoratoren-testapp-bekreft-dev-${{ inputs.path }}
   cancel-in-progress: false
 
 jobs:

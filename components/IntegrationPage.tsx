@@ -17,7 +17,7 @@ export function IntegrationPage(props: Props) {
   return (
     <main>
       <p>
-        <a href="/">Til forsiden</a>
+        <a href="/">Tilbake til oversikten</a>
       </p>
       <h1>{props.title}</h1>
       <p>{props.description}</p>

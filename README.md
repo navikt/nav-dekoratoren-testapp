@@ -36,9 +36,10 @@ Lokal Dekoratør-integrasjon er ikke en del av v1. `pnpm typecheck`, `pnpm test`
 
 ## CI og deploy
 
-CI trenger GitHub-secretet `READER_TOKEN` for GitHub Packages. Dev-deploy bruker teamets
-etablerte Nais deploy-action og eksponerer én offentlig ingress. Sett repository-variabelen
-`TEST_APP_URL` til den deployede dev-ingressen før målrettet Playwright-verifikasjon.
+CI trenger GitHub-secretet `READER_TOKEN` for GitHub Packages. Dev-deploy bygger og pusher
+Docker-image med `nais/docker-build-push@v0` og deployer med `nais apply` mot Nais dev-gcp,
+og eksponerer én offentlig ingress. Sett repository-variabelen `TEST_APP_URL` til den
+deployede dev-ingressen før målrettet Playwright-verifikasjon.
 
 Verifikasjonsworkflowene (`verify-*.yml`) kjører én spesifikasjon hver etter vellykket deploy
 eller manuelt. Rollback er en Nais-redeploy til sist fungerende image; appen har ingen

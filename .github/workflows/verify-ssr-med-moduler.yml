@@ -9,6 +9,6 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     uses: verify.yml
     with:
-      path: /ssr-moduler
-      spec: tests/ssr-moduler.spec.ts
+      path: /ssr-med-moduler
+      spec: tests/ssr-med-moduler.spec.ts
     secrets: inherit

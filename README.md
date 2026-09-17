@@ -7,10 +7,10 @@ produksjonsmal. Første versjon støtter kun Nais dev.
 
 | Rute | Hva den demonstrerer |
 | --- | --- |
-| `/ssr-moduler` | Server-side rendering med `fetchDecoratorReact` fra modulpakken |
-| `/ssr-direkte` | Server-side rendering med direkte kall til `/ssr` |
-| `/csr-moduler` | Client-side rendering med `injectDecoratorClientSide` |
-| `/csr-direkte` | Client-side rendering med CSS, `/env` og `client.js` uten modulpakken |
+| `/ssr-med-moduler` | Server-side rendering med `fetchDecoratorReact` fra modulpakken |
+| `/ssr-uten-moduler` | Server-side rendering med direkte kall til `/ssr` |
+| `/csr-med-moduler` | Client-side rendering med `injectDecoratorClientSide` |
+| `/csr-uten-moduler` | Client-side rendering med CSS, `/env` og `client.js` uten modulpakken |
 
 SSR-rutene bruker service discovery til `nav-dekoratoren.personbruker`. CSR-rutene kjører i
 nettleseren og bruker derfor den offentlige dev-ingressen

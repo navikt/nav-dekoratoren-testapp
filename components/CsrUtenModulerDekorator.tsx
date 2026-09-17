@@ -22,7 +22,7 @@ export function CsrUtenModulerDekorator() {
       <IntegrationPage
         title="CSR uten moduler"
         description="Dekoratøren er satt inn manuelt med CSS, env og client.js."
-        integrationVariant="csr-direkte"
+        integrationVariant="csr-uten-moduler"
         rendering="klient/HTML-shell"
         transport="offentlig dev-ingress"
         initialStatus="initializing"

@@ -14,7 +14,7 @@ export function CsrMedModulerDekorator() {
     <IntegrationPage
       title="CSR med moduler"
       description="Dekoratøren er initialisert i nettleseren med modulpakken."
-      integrationVariant="csr-moduler"
+      integrationVariant="csr-med-moduler"
       rendering="klient"
       transport="offentlig dev-ingress"
       initialStatus="initializing"

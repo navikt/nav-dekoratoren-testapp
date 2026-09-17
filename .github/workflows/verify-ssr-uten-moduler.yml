@@ -9,6 +9,6 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     uses: verify.yml
     with:
-      path: /ssr-direkte
-      spec: tests/ssr-direkte.spec.ts
+      path: /ssr-uten-moduler
+      spec: tests/ssr-uten-moduler.spec.ts
     secrets: inherit

@@ -7,10 +7,10 @@ function Fragment({ value }: { value: string }) {
 }
 
 export default async function DirectSsrPage() {
-  logTechnicalEvent("decorator_integration_started", "ssr-direkte", "service-discovery");
+  logTechnicalEvent("decorator_integration_started", "ssr-uten-moduler", "service-discovery");
   try {
     const fragments = await fetchDirectSsrFragments();
-    logTechnicalEvent("decorator_ssr_rendered", "ssr-direkte", "service-discovery");
+    logTechnicalEvent("decorator_ssr_rendered", "ssr-uten-moduler", "service-discovery");
     return (
       <>
         <Fragment value={fragments.DECORATOR_HEAD_ASSETS} />
@@ -18,7 +18,7 @@ export default async function DirectSsrPage() {
         <IntegrationPage
           title="SSR uten moduler"
           description="Dekoratøren er hentet direkte fra SSR-endepunktet."
-          integrationVariant="ssr-direkte"
+          integrationVariant="ssr-uten-moduler"
           rendering="server"
           transport="service discovery"
         >
@@ -29,12 +29,12 @@ export default async function DirectSsrPage() {
       </>
     );
   } catch {
-    logTechnicalEvent("decorator_integration_failed", "ssr-direkte", "service-discovery", "SSR_DIRECT_FETCH");
+    logTechnicalEvent("decorator_integration_failed", "ssr-uten-moduler", "service-discovery", "SSR_DIRECT_FETCH");
     return (
       <IntegrationPage
         title="SSR uten moduler"
         description="Dekoratøren kunne ikke hentes direkte."
-        integrationVariant="ssr-direkte"
+        integrationVariant="ssr-uten-moduler"
         rendering="server"
         transport="service discovery"
         initialStatus="error"

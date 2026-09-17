@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 const integrations = [
-  ["ssr-moduler", "SSR med moduler"],
-  ["ssr-direkte", "SSR uten moduler"],
-  ["csr-moduler", "CSR med moduler"],
-  ["csr-direkte", "CSR uten moduler"],
+  ["ssr-med-moduler", "SSR med moduler"],
+  ["ssr-uten-moduler", "SSR uten moduler"],
+  ["csr-med-moduler", "CSR med moduler"],
+  ["csr-uten-moduler", "CSR uten moduler"],
 ];
 
 export default function HomePage() {

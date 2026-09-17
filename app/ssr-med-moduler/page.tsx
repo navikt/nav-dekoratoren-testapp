@@ -5,10 +5,10 @@ import { decoratorParams } from "../../lib/decorator-params";
 import { logTechnicalEvent } from "../../lib/technical-logger";
 
 export default async function SsrModulesPage() {
-  logTechnicalEvent("decorator_integration_started", "ssr-moduler", "service-discovery");
+  logTechnicalEvent("decorator_integration_started", "ssr-med-moduler", "service-discovery");
   try {
     const Decorator = await fetchDecoratorReact({ env: "dev", params: decoratorParams });
-    logTechnicalEvent("decorator_ssr_rendered", "ssr-moduler", "service-discovery");
+    logTechnicalEvent("decorator_ssr_rendered", "ssr-med-moduler", "service-discovery");
     return (
       <>
         <Decorator.HeadAssets />
@@ -16,7 +16,7 @@ export default async function SsrModulesPage() {
         <IntegrationPage
           title="SSR med moduler"
           description="Dekoratøren er hentet server-side med modulpakken."
-          integrationVariant="ssr-moduler"
+          integrationVariant="ssr-med-moduler"
           rendering="server"
           transport="service discovery"
         >
@@ -27,12 +27,12 @@ export default async function SsrModulesPage() {
       </>
     );
   } catch {
-    logTechnicalEvent("decorator_integration_failed", "ssr-moduler", "service-discovery", "SSR_MODULES_FETCH");
+    logTechnicalEvent("decorator_integration_failed", "ssr-med-moduler", "service-discovery", "SSR_MODULES_FETCH");
     return (
       <IntegrationPage
         title="SSR med moduler"
         description="Dekoratøren kunne ikke hentes server-side."
-        integrationVariant="ssr-moduler"
+        integrationVariant="ssr-med-moduler"
         rendering="server"
         transport="service discovery"
         initialStatus="error"

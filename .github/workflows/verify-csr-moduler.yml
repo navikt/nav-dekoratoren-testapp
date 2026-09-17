@@ -1,0 +1,14 @@
+name: Verify CSR modules
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Deploy dev"]
+    types: [completed]
+jobs:
+  verify:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    uses: ./.github/workflows/verify.yml
+    with:
+      path: /csr-moduler
+      spec: tests/csr-moduler.spec.ts
+    secrets: inherit

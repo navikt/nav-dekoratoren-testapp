@@ -1,0 +1,14 @@
+name: Verify SSR modules
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Deploy dev"]
+    types: [completed]
+jobs:
+  verify:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    uses: ./.github/workflows/verify.yml
+    with:
+      path: /ssr-moduler
+      spec: tests/ssr-moduler.spec.ts
+    secrets: inherit

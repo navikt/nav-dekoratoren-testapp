@@ -1,0 +1,43 @@
+import Script from "next/script";
+import { fetchDecoratorReact } from "@navikt/nav-dekoratoren-moduler/ssr";
+import { IntegrationPage } from "../../components/IntegrationPage";
+import { decoratorParams } from "../../lib/decorator-params";
+import { logTechnicalEvent } from "../../lib/technical-logger";
+
+export default async function SsrModulesPage() {
+  logTechnicalEvent("decorator_integration_started", "ssr-moduler", "service-discovery");
+  try {
+    const Decorator = await fetchDecoratorReact({ env: "dev", params: decoratorParams });
+    logTechnicalEvent("decorator_ssr_rendered", "ssr-moduler", "service-discovery");
+    return (
+      <>
+        <Decorator.HeadAssets />
+        <Decorator.Header />
+        <IntegrationPage
+          title="SSR med moduler"
+          description="Dekoratøren er hentet server-side med modulpakken."
+          integrationVariant="ssr-moduler"
+          rendering="server"
+          transport="service discovery"
+        >
+          <p data-testid="app-content">Dekoratøren ble rendret i første HTML-respons.</p>
+        </IntegrationPage>
+        <Decorator.Footer />
+        <Decorator.Scripts loader={Script} />
+      </>
+    );
+  } catch {
+    logTechnicalEvent("decorator_integration_failed", "ssr-moduler", "service-discovery", "SSR_MODULES_FETCH");
+    return (
+      <IntegrationPage
+        title="SSR med moduler"
+        description="Dekoratøren kunne ikke hentes server-side."
+        integrationVariant="ssr-moduler"
+        rendering="server"
+        transport="service discovery"
+        initialStatus="error"
+        errorMessage="Dekoratøren kunne ikke lastes"
+      />
+    );
+  }
+}

@@ -46,7 +46,12 @@ export function IntegrationStatus({
   }, [observe]);
 
   return (
-    <section className="status" data-status={status} data-testid="integration-status" aria-live="polite">
+    <section
+      className="status"
+      data-status={status}
+      data-testid="integration-status"
+      aria-live="polite"
+    >
       <dl>
         <div>
           <dt>Integrasjon</dt>

@@ -1,5 +1,8 @@
 import { decoratorParams } from "./decorator-params";
-import { buildPublicDecoratorUrl, directDecoratorOrigin } from "./decorator-config";
+import {
+  buildPublicDecoratorUrl,
+  directDecoratorOrigin,
+} from "./decorator-config";
 
 export function buildDirectCsrEnvironmentUrl() {
   return buildPublicDecoratorUrl("/env", decoratorParams);

@@ -15,7 +15,9 @@ export default async function HomePage() {
         <IntegrasjonsOversikt ssrHelse={ssrHelse} />
       </nav>
       <p>
-        <Link href="/parametre">Parametertester (breadcrumbs, språkvelger og hjelpefunksjoner)</Link>
+        <Link href="/parametre">
+          Parametertester (breadcrumbs, språkvelger og hjelpefunksjoner)
+        </Link>
       </p>
     </main>
   );

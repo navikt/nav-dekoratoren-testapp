@@ -9,7 +9,10 @@ import {
 } from "@navikt/nav-dekoratoren-moduler";
 import { useEffect, useRef, useState } from "react";
 import { decoratorParams } from "../lib/decorator-params";
-import { breadcrumbTestCases, sprakTestCases } from "../lib/parameter-testcases";
+import {
+  breadcrumbTestCases,
+  sprakTestCases,
+} from "../lib/parameter-testcases";
 import type { ParameterTestResultat } from "../lib/parameter-sjekk-ssr";
 
 function evaluer(
@@ -33,23 +36,37 @@ function evaluer(
 
 export function ParametreCsr() {
   const [klar, setKlar] = useState(false);
-  const [breadcrumbResultater, setBreadcrumbResultater] = useState<ParameterTestResultat[] | null>(null);
-  const [sprakResultater, setSprakResultater] = useState<ParameterTestResultat[] | null>(null);
-  const [roundtripResultat, setRoundtripResultat] = useState<ParameterTestResultat | null>(null);
+  const [breadcrumbResultater, setBreadcrumbResultater] = useState<
+    ParameterTestResultat[] | null
+  >(null);
+  const [sprakResultater, setSprakResultater] = useState<
+    ParameterTestResultat[] | null
+  >(null);
+  const [roundtripResultat, setRoundtripResultat] =
+    useState<ParameterTestResultat | null>(null);
   const startet = useRef(false);
 
   useEffect(() => {
     if (startet.current) return;
     startet.current = true;
 
-    void injectDecoratorClientSide({ env: "dev", params: decoratorParams }).then(async () => {
+    void injectDecoratorClientSide({
+      env: "dev",
+      params: decoratorParams,
+    }).then(async () => {
       setKlar(true);
 
       const breadcrumbResultat = await Promise.all(
         breadcrumbTestCases.map(async (testCase) => {
           try {
             await setBreadcrumbs(testCase.breadcrumbs);
-            return evaluer(testCase.id, testCase.label, testCase.beskrivelse, testCase.forventetGyldig, true);
+            return evaluer(
+              testCase.id,
+              testCase.label,
+              testCase.beskrivelse,
+              testCase.forventetGyldig,
+              true,
+            );
           } catch (error) {
             return evaluer(
               testCase.id,
@@ -68,7 +85,13 @@ export function ParametreCsr() {
         sprakTestCases.map(async (testCase) => {
           try {
             await setAvailableLanguages(testCase.availableLanguages);
-            return evaluer(testCase.id, testCase.label, testCase.beskrivelse, testCase.forventetGyldig, true);
+            return evaluer(
+              testCase.id,
+              testCase.label,
+              testCase.beskrivelse,
+              testCase.forventetGyldig,
+              true,
+            );
           } catch (error) {
             return evaluer(
               testCase.id,
@@ -116,32 +139,51 @@ export function ParametreCsr() {
     <section aria-label="CSR-parametertester">
       <h2>CSR (klient)</h2>
       <p>
-        Samme testtilfeller som i SSR-seksjonen over, men kjørt via de klientside-funksjonene
-        appen selv ville brukt etter at Dekoratøren allerede er lastet i nettleseren
-        (<code>setBreadcrumbs</code>, <code>setAvailableLanguages</code>). I tillegg testes en
-        roundtrip med <code>setParams</code>/<code>getParams</code>.
+        Samme testtilfeller som i SSR-seksjonen over, men kjørt via de
+        klientside-funksjonene appen selv ville brukt etter at Dekoratøren
+        allerede er lastet i nettleseren (<code>setBreadcrumbs</code>,{" "}
+        <code>setAvailableLanguages</code>). I tillegg testes en roundtrip med{" "}
+        <code>setParams</code>/<code>getParams</code>.
       </p>
       {!klar ? (
         <p>⏳ Initialiserer Dekoratøren …</p>
       ) : (
         <>
-          <Resultatliste tittel="Breadcrumbs" resultater={breadcrumbResultater} />
+          <Resultatliste
+            tittel="Breadcrumbs"
+            resultater={breadcrumbResultater}
+          />
           <Resultatliste tittel="Språkvelger" resultater={sprakResultater} />
-          {roundtripResultat ? <Resultatliste tittel="setParams/getParams" resultater={[roundtripResultat]} /> : null}
+          {roundtripResultat ? (
+            <Resultatliste
+              tittel="setParams/getParams"
+              resultater={[roundtripResultat]}
+            />
+          ) : null}
         </>
       )}
     </section>
   );
 }
 
-function Resultatliste({ tittel, resultater }: { tittel: string; resultater: ParameterTestResultat[] | null }) {
+function Resultatliste({
+  tittel,
+  resultater,
+}: {
+  tittel: string;
+  resultater: ParameterTestResultat[] | null;
+}) {
   if (!resultater) return <p>⏳ Kjører {tittel.toLowerCase()} …</p>;
   return (
     <div>
       <h3>{tittel}</h3>
       <ul>
         {resultater.map((r) => (
-          <li key={r.id} data-testid={`csr-test-${r.id}`} data-som-forventet={r.somForventet}>
+          <li
+            key={r.id}
+            data-testid={`csr-test-${r.id}`}
+            data-som-forventet={r.somForventet}
+          >
             <p>
               {r.somForventet ? "✅" : "❌"} <strong>{r.label}</strong>
               {r.detalj ? ` – ${r.detalj}` : ""}

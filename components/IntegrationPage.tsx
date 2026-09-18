@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
-import { IntegrationStatus, type IntegrationStatusValue } from "./IntegrationStatus";
+import {
+  IntegrationStatus,
+  type IntegrationStatusValue,
+} from "./IntegrationStatus";
 
 type Props = {
   title: string;

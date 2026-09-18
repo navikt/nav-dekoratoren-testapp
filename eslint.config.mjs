@@ -17,5 +17,10 @@ export default defineConfig([
       "no-unused-vars": "off",
     },
   },
-  globalIgnores([".next/**", "node_modules/**", "playwright-report/**", "test-results/**"]),
+  globalIgnores([
+    ".next/**",
+    "node_modules/**",
+    "playwright-report/**",
+    "test-results/**",
+  ]),
 ]);

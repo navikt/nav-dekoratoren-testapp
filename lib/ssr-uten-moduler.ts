@@ -28,11 +28,14 @@ function isRawSsrResponse(value: unknown): value is RawSsrResponse {
 export async function fetchDirectSsrFragments(): Promise<DirectSsrFragments> {
   const url = new URL(ssrUtenModulerUrl);
   const params = { ...decoratorParams, teamName };
-  Object.entries(params).forEach(([key, value]) => url.searchParams.set(key, value));
+  Object.entries(params).forEach(([key, value]) =>
+    url.searchParams.set(key, value),
+  );
   const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) throw new Error(`DIRECT_SSR_HTTP_${response.status}`);
   const payload: unknown = await response.json();
-  if (!isRawSsrResponse(payload)) throw new Error("DIRECT_SSR_INVALID_RESPONSE");
+  if (!isRawSsrResponse(payload))
+    throw new Error("DIRECT_SSR_INVALID_RESPONSE");
   return {
     DECORATOR_HEAD_ASSETS: payload.headAssets,
     DECORATOR_HEADER: payload.header,

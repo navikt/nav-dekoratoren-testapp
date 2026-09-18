@@ -8,10 +8,18 @@ function Fragment({ value }: { value: string }) {
 }
 
 export default async function DirectSsrPage() {
-  logTechnicalEvent("decorator_integration_started", "ssr-uten-moduler", "service-discovery");
+  logTechnicalEvent(
+    "decorator_integration_started",
+    "ssr-uten-moduler",
+    "service-discovery",
+  );
   try {
     const fragments = await fetchDirectSsrFragments();
-    logTechnicalEvent("decorator_ssr_rendered", "ssr-uten-moduler", "service-discovery");
+    logTechnicalEvent(
+      "decorator_ssr_rendered",
+      "ssr-uten-moduler",
+      "service-discovery",
+    );
     return (
       <>
         <Fragment value={fragments.DECORATOR_HEAD_ASSETS} />
@@ -24,14 +32,21 @@ export default async function DirectSsrPage() {
           transport="service discovery"
           teamName={teamName}
         >
-          <p data-testid="app-content">Dekoratøren ble rendret i første HTML-respons.</p>
+          <p data-testid="app-content">
+            Dekoratøren ble rendret i første HTML-respons.
+          </p>
         </IntegrationPage>
         <Fragment value={fragments.DECORATOR_FOOTER} />
         <Fragment value={fragments.DECORATOR_SCRIPTS} />
       </>
     );
   } catch {
-    logTechnicalEvent("decorator_integration_failed", "ssr-uten-moduler", "service-discovery", "SSR_DIRECT_FETCH");
+    logTechnicalEvent(
+      "decorator_integration_failed",
+      "ssr-uten-moduler",
+      "service-discovery",
+      "SSR_DIRECT_FETCH",
+    );
     return (
       <IntegrationPage
         title="SSR uten moduler"

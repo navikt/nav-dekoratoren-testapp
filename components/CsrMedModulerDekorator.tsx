@@ -31,7 +31,8 @@ export function CsrMedModulerDekorator() {
 async function waitForDecorator() {
   const deadline = Date.now() + 10_000;
   while (Date.now() < deadline) {
-    if (document.querySelector("header") && document.querySelector("footer")) return;
+    if (document.querySelector("header") && document.querySelector("footer"))
+      return;
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
   throw new Error("CSR_MODULES_TIMEOUT");

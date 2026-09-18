@@ -26,7 +26,11 @@ async function sjekkSsrMedModuler(): Promise<IntegrasjonsHelse> {
     await fetchDecoratorReact({ env: "dev", params: decoratorParams });
     return ok(path, label);
   } catch {
-    return feil(path, label, "Kunne ikke hente dekoratøren via service discovery");
+    return feil(
+      path,
+      label,
+      "Kunne ikke hente dekoratøren via service discovery",
+    );
   }
 }
 

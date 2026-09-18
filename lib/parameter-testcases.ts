@@ -39,7 +39,8 @@ export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "tom-liste",
     label: "Tom liste",
-    beskrivelse: "Ingen breadcrumbs satt i det hele tatt. Skal håndteres som «ingen brødsmulesti», ikke som en feil.",
+    beskrivelse:
+      "Ingen breadcrumbs satt i det hele tatt. Skal håndteres som «ingen brødsmulesti», ikke som en feil.",
     forventetGyldig: true,
     breadcrumbs: [],
   },
@@ -84,7 +85,8 @@ export const sprakTestCases: SprakTestCase[] = [
   {
     id: "tom-liste",
     label: "Tom liste",
-    beskrivelse: "Ingen språkalternativer satt. Skal håndteres som «kun ett språk tilgjengelig», ikke som en feil.",
+    beskrivelse:
+      "Ingen språkalternativer satt. Skal håndteres som «kun ett språk tilgjengelig», ikke som en feil.",
     forventetGyldig: true,
     availableLanguages: [],
   },

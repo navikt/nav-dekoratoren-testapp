@@ -44,7 +44,9 @@ export function IntegrasjonsOversikt({ ssrHelse }: Props) {
             </span>
           ) : (
             <span data-testid={`helse-${path}`} data-status={status}>
-              {status === "ok" ? "✅ OK" : `❌ Feil${detalj ? `: ${detalj}` : ""}`}
+              {status === "ok"
+                ? "✅ OK"
+                : `❌ Feil${detalj ? `: ${detalj}` : ""}`}
             </span>
           )}
         </li>

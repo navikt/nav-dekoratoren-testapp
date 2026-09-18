@@ -6,13 +6,13 @@ fire integrasjonsmåtene mot Dekoratøren fungerer som forventet.
 
 ## Integrasjoner
 
-| Rute | Hva den demonstrerer |
-| --- | --- |
-| `/ssr-med-moduler` | Server-side rendering med `fetchDecoratorReact` fra modulpakken |
-| `/ssr-uten-moduler` | Server-side rendering med direkte kall til `/ssr` |
-| `/csr-med-moduler` | Client-side rendering med `injectDecoratorClientSide` |
-| `/csr-uten-moduler` | Client-side rendering med CSS, `/env` og `client.js` uten modulpakken |
-| `/parametre` | Tester breadcrumbs, språkvelger og andre hjelpefunksjoner mot Dekoratøren, se eget avsnitt under |
+| Rute                | Hva den demonstrerer                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| `/ssr-med-moduler`  | Server-side rendering med `fetchDecoratorReact` fra modulpakken                                  |
+| `/ssr-uten-moduler` | Server-side rendering med direkte kall til `/ssr`                                                |
+| `/csr-med-moduler`  | Client-side rendering med `injectDecoratorClientSide`                                            |
+| `/csr-uten-moduler` | Client-side rendering med CSS, `/env` og `client.js` uten modulpakken                            |
+| `/parametre`        | Tester breadcrumbs, språkvelger og andre hjelpefunksjoner mot Dekoratøren, se eget avsnitt under |
 
 Forsiden (`/`) viser en samlet statusoversikt for alle fire integrasjonene, med live helsesjekk
 mot Dekoratøren ved hvert sidelastet. Bruk denne til rask manuell verifikasjon.

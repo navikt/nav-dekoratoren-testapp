@@ -1,4 +1,8 @@
-import { buildCspHeader, fetchDecoratorReact, getDecoratorVersionId } from "@navikt/nav-dekoratoren-moduler/ssr";
+import {
+  buildCspHeader,
+  fetchDecoratorReact,
+  getDecoratorVersionId,
+} from "@navikt/nav-dekoratoren-moduler/ssr";
 import { decoratorParams } from "./decorator-params";
 import { breadcrumbTestCases, sprakTestCases } from "./parameter-testcases";
 
@@ -31,13 +35,21 @@ function evaluer(
   };
 }
 
-async function kjorBreadcrumbTest(testCase: (typeof breadcrumbTestCases)[number]): Promise<ParameterTestResultat> {
+async function kjorBreadcrumbTest(
+  testCase: (typeof breadcrumbTestCases)[number],
+): Promise<ParameterTestResultat> {
   try {
     await fetchDecoratorReact({
       env: "dev",
       params: { ...decoratorParams, breadcrumbs: testCase.breadcrumbs },
     });
-    return evaluer(testCase.id, testCase.label, testCase.beskrivelse, testCase.forventetGyldig, true);
+    return evaluer(
+      testCase.id,
+      testCase.label,
+      testCase.beskrivelse,
+      testCase.forventetGyldig,
+      true,
+    );
   } catch (error) {
     return evaluer(
       testCase.id,
@@ -50,13 +62,24 @@ async function kjorBreadcrumbTest(testCase: (typeof breadcrumbTestCases)[number]
   }
 }
 
-async function kjorSprakTest(testCase: (typeof sprakTestCases)[number]): Promise<ParameterTestResultat> {
+async function kjorSprakTest(
+  testCase: (typeof sprakTestCases)[number],
+): Promise<ParameterTestResultat> {
   try {
     await fetchDecoratorReact({
       env: "dev",
-      params: { ...decoratorParams, availableLanguages: testCase.availableLanguages },
+      params: {
+        ...decoratorParams,
+        availableLanguages: testCase.availableLanguages,
+      },
     });
-    return evaluer(testCase.id, testCase.label, testCase.beskrivelse, testCase.forventetGyldig, true);
+    return evaluer(
+      testCase.id,
+      testCase.label,
+      testCase.beskrivelse,
+      testCase.forventetGyldig,
+      true,
+    );
   } catch (error) {
     return evaluer(
       testCase.id,
@@ -69,7 +92,9 @@ async function kjorSprakTest(testCase: (typeof sprakTestCases)[number]): Promise
   }
 }
 
-export async function kjorSsrBreadcrumbTester(): Promise<ParameterTestResultat[]> {
+export async function kjorSsrBreadcrumbTester(): Promise<
+  ParameterTestResultat[]
+> {
   return Promise.all(breadcrumbTestCases.map(kjorBreadcrumbTest));
 }
 
@@ -86,12 +111,18 @@ export type CspTestResultat = {
 export async function kjorCspTest(): Promise<CspTestResultat> {
   try {
     const header = await buildCspHeader(
-      { "default-src": ["'self'"], "connect-src": ["nav-dekoratoren-testapp.dev.nav.no"] },
+      {
+        "default-src": ["'self'"],
+        "connect-src": ["nav-dekoratoren-testapp.dev.nav.no"],
+      },
       { env: "dev" },
     );
     return { status: "ok", header };
   } catch (error) {
-    return { status: "feil", detalj: error instanceof Error ? error.message : "Ukjent feil" };
+    return {
+      status: "feil",
+      detalj: error instanceof Error ? error.message : "Ukjent feil",
+    };
   }
 }
 
@@ -106,6 +137,9 @@ export async function hentDekoratorVersjon(): Promise<VersjonTestResultat> {
     const versionId = await getDecoratorVersionId({ env: "dev" });
     return { status: "ok", versionId };
   } catch (error) {
-    return { status: "feil", detalj: error instanceof Error ? error.message : "Ukjent feil" };
+    return {
+      status: "feil",
+      detalj: error instanceof Error ? error.message : "Ukjent feil",
+    };
   }
 }

@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { buildDirectCsrEnvironmentUrl, csrUtenModulerClientUrl } from "../lib/csr-uten-moduler";
+import {
+  buildDirectCsrEnvironmentUrl,
+  csrUtenModulerClientUrl,
+} from "../lib/csr-uten-moduler";
 import { IntegrationPage } from "./IntegrationPage";
 
 export function CsrUtenModulerDekorator() {
@@ -9,14 +12,18 @@ export function CsrUtenModulerDekorator() {
     const script = document.createElement("script");
     script.src = csrUtenModulerClientUrl();
     script.async = true;
-    script.onerror = () => window.dispatchEvent(new Event("decorator-script-error"));
+    script.onerror = () =>
+      window.dispatchEvent(new Event("decorator-script-error"));
     document.body.appendChild(script);
     return () => script.remove();
   }, []);
 
   return (
     <>
-      <link rel="stylesheet" href="https://dekoratoren.ekstern.dev.nav.no/css" />
+      <link
+        rel="stylesheet"
+        href="https://dekoratoren.ekstern.dev.nav.no/css"
+      />
       <div id="decorator-env" data-src={buildDirectCsrEnvironmentUrl()} />
       <div id="decorator-header" />
       <IntegrationPage

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { IntegrasjonsOversikt } from "../components/IntegrasjonsOversikt";
 import { sjekkSsrIntegrasjoner } from "../lib/statussjekk";
 
@@ -13,6 +14,9 @@ export default async function HomePage() {
       <nav aria-label="Integrasjoner">
         <IntegrasjonsOversikt ssrHelse={ssrHelse} />
       </nav>
+      <p>
+        <Link href="/parametre">Parametertester (breadcrumbs, språkvelger og hjelpefunksjoner)</Link>
+      </p>
     </main>
   );
 }

@@ -3,6 +3,7 @@
 import {
   getParams,
   injectDecoratorClientSide,
+  setParams,
 } from "@navikt/nav-dekoratoren-moduler";
 import { decoratorParams, teamName } from "../lib/decorator-params";
 import { IntegrationPage } from "./IntegrationPage";
@@ -23,16 +24,25 @@ export function CsrSimpleDekorator() {
           params: { ...decoratorParams, simple: true },
         });
         await ventPaDekoratoren();
-
-        const params = await getParams();
-        if (params.simple !== true) {
-          throw new Error("CSR_SIMPLE_PARAMETER_NOT_SET");
-        }
+        await setParams({ simple: true });
+        await ventPaSimpleParameter();
       }}
     >
       <p data-testid="simple-parameter">simple: true</p>
     </IntegrationPage>
   );
+}
+
+async function ventPaSimpleParameter() {
+  const deadline = Date.now() + 10_000;
+  while (Date.now() < deadline) {
+    const params = await getParams();
+    if (params?.simple === true) {
+      return;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  throw new Error("CSR_SIMPLE_PARAMETER_NOT_SET");
 }
 
 async function ventPaDekoratoren() {

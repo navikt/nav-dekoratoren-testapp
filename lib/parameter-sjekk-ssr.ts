@@ -1,4 +1,7 @@
-import { fetchDecoratorReact } from "@navikt/nav-dekoratoren-moduler/ssr";
+import {
+  buildCspHeader,
+  fetchDecoratorReact,
+} from "@navikt/nav-dekoratoren-moduler/ssr";
 import { decoratorParams } from "./decorator-params";
 import {
   availableLanguagesTestCases,
@@ -56,37 +59,79 @@ export async function kjorSsrBreadcrumbTester(): Promise<TestRad[]> {
 
 export async function kjorSsrAvailableLanguagesTester(): Promise<TestRad[]> {
   return Promise.all(
-    availableLanguagesTestCases.map(
-      async (testCase): Promise<TestRad> => {
-        const verdi = sprakVerdi(testCase);
-        try {
-          await fetchDecoratorReact({
-            env: "dev",
-            params: {
-              ...decoratorParams,
-              availableLanguages: testCase.availableLanguages,
-            },
-          });
-          return {
-            id: `ssr-available-languages-${testCase.id}`,
-            parameter: "availableLanguages",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi,
-            somForventet: true,
-          };
-        } catch (error) {
-          return {
-            id: `ssr-available-languages-${testCase.id}`,
-            parameter: "availableLanguages",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi,
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          };
-        }
-      },
-    ),
+    availableLanguagesTestCases.map(async (testCase): Promise<TestRad> => {
+      const verdi = sprakVerdi(testCase);
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: {
+            ...decoratorParams,
+            availableLanguages: testCase.availableLanguages,
+          },
+        });
+        return {
+          id: `ssr-available-languages-${testCase.id}`,
+          parameter: "availableLanguages",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi,
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-available-languages-${testCase.id}`,
+          parameter: "availableLanguages",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi,
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
   );
+}
+
+export async function kjorSsrCspTester(): Promise<TestRad[]> {
+  const appDirectives = {
+    "default-src": ["'self'"],
+    "connect-src": ["nav-dekoratoren-testapp.dev.nav.no"],
+  };
+
+  try {
+    const cspHeader = await buildCspHeader(appDirectives, { env: "dev" });
+    const inneholderAppensDirektiver =
+      cspHeader.includes("default-src 'self'") &&
+      cspHeader.includes("connect-src nav-dekoratoren-testapp.dev.nav.no");
+
+    return [
+      {
+        id: "ssr-build-csp-header-app-direktiver",
+        parameter: "buildCspHeader",
+        testcase: "Appens CSP-direktiver",
+        beskrivelse:
+          "Dekoratørens CSP kan slås sammen med appens default-src og connect-src uten at appens direktiver forsvinner.",
+        verdi:
+          "default-src: 'self' | connect-src: nav-dekoratoren-testapp.dev.nav.no",
+        somForventet: inneholderAppensDirektiver,
+        feilmelding: inneholderAppensDirektiver
+          ? undefined
+          : `CSP-headeren mangler ett eller flere app-direktiver: ${cspHeader}`,
+      },
+    ];
+  } catch (error) {
+    return [
+      {
+        id: "ssr-build-csp-header-app-direktiver",
+        parameter: "buildCspHeader",
+        testcase: "Appens CSP-direktiver",
+        beskrivelse:
+          "Dekoratørens CSP kan slås sammen med appens default-src og connect-src uten at appens direktiver forsvinner.",
+        verdi:
+          "default-src: 'self' | connect-src: nav-dekoratoren-testapp.dev.nav.no",
+        somForventet: false,
+        feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+      },
+    ];
+  }
 }

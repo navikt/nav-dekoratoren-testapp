@@ -6,6 +6,12 @@ export type BreadcrumbTestCase = {
   breadcrumbs: NonNullable<DecoratorParams["breadcrumbs"]>;
 };
 
+export type AvailableLanguagesTestCase = {
+  id: string;
+  navn: string;
+  availableLanguages: NonNullable<DecoratorParams["availableLanguages"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -41,6 +47,33 @@ export const breadcrumbTestCases: BreadcrumbTestCase[] = [
       {
         title: "Søknader og skjemaer – «oversikt» & hjelp",
         url: "https://www.nav.no/person",
+      },
+    ],
+  },
+];
+
+export const availableLanguagesTestCases: AvailableLanguagesTestCase[] = [
+  {
+    id: "vanlige-spraklenker",
+    navn: "Vanlige nav.no-lenker",
+    availableLanguages: [
+      { locale: "nb", url: "https://www.nav.no/person/dittnav" },
+      { locale: "en", url: "https://www.nav.no/en/home" },
+    ],
+  },
+  {
+    id: "tom-liste",
+    navn: "Tom liste",
+    availableLanguages: [],
+  },
+  {
+    id: "in-app-navigasjon",
+    navn: "In-app-navigasjon",
+    availableLanguages: [
+      {
+        locale: "en",
+        url: "https://www.nav.no/en/home",
+        handleInApp: true,
       },
     ],
   },

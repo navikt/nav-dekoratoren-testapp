@@ -2,11 +2,15 @@
 
 import {
   injectDecoratorClientSide,
+  setAvailableLanguages,
   setBreadcrumbs,
 } from "@navikt/nav-dekoratoren-moduler";
 import { useEffect, useRef, useState } from "react";
 import { decoratorParams } from "../lib/decorator-params";
-import { breadcrumbTestCases } from "../lib/parameter-testcases";
+import {
+  availableLanguagesTestCases,
+  breadcrumbTestCases,
+} from "../lib/parameter-testcases";
 import type { TestRad } from "../lib/test-rad";
 import { TestTabell } from "./TestTabell";
 
@@ -15,6 +19,15 @@ function breadcrumbVerdi(
 ): string {
   if (testCase.breadcrumbs.length === 0) return "(tom liste)";
   return testCase.breadcrumbs.map((b) => `"${b.title}" → ${b.url}`).join(" | ");
+}
+
+function sprakVerdi(
+  testCase: (typeof availableLanguagesTestCases)[number],
+): string {
+  if (testCase.availableLanguages.length === 0) return "(tom liste)";
+  return testCase.availableLanguages
+    .map((sprak) => `${sprak.locale} → ${sprak.url}`)
+    .join(" | ");
 }
 
 export function ParametreCsr() {
@@ -47,7 +60,7 @@ export function ParametreCsr() {
         return;
       }
 
-      const resultater = await Promise.all(
+      const breadcrumbResultater = await Promise.all(
         breadcrumbTestCases.map(async (testCase): Promise<TestRad> => {
           const verdi = breadcrumbVerdi(testCase);
           try {
@@ -72,9 +85,37 @@ export function ParametreCsr() {
           }
         }),
       );
-      setRader(resultater);
+      const sprakResultater = await Promise.all(
+        availableLanguagesTestCases.map(
+          async (testCase): Promise<TestRad> => {
+            const verdi = sprakVerdi(testCase);
+            try {
+              await setAvailableLanguages(testCase.availableLanguages);
+              return {
+                id: `csr-available-languages-${testCase.id}`,
+                parameter: "availableLanguages",
+                testcase: testCase.navn,
+                verdi,
+                somForventet: true,
+              };
+            } catch (error) {
+              return {
+                id: `csr-available-languages-${testCase.id}`,
+                parameter: "availableLanguages",
+                testcase: testCase.navn,
+                verdi,
+                somForventet: false,
+                feilmelding:
+                  error instanceof Error ? error.message : "Ukjent feil",
+              };
+            }
+          },
+        ),
+      );
+      setRader([...breadcrumbResultater, ...sprakResultater]);
 
       await setBreadcrumbs([{ title: "Parametertester", url: "/parametre" }]);
+      await setAvailableLanguages([]);
     })();
   }, []);
 

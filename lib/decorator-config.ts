@@ -4,7 +4,12 @@ export const decoratorEnvironment: DecoratorEnvironment =
   process.env.DECORATOR_ENV === "dev" ? "dev" : "dev";
 
 export const directDecoratorOrigin = "https://dekoratoren.ekstern.dev.nav.no";
-export const ssrUtenModulerUrl = "http://nav-dekoratoren.personbruker/ssr";
+
+const kjorerINais = process.env.NAIS_CLUSTER_NAME === "dev-gcp";
+
+export const ssrUtenModulerUrl = kjorerINais
+  ? "http://nav-dekoratoren.personbruker/ssr"
+  : `${directDecoratorOrigin}/ssr`;
 
 export function buildPublicDecoratorUrl(
   path: string,

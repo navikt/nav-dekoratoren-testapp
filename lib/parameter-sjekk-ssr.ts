@@ -35,6 +35,7 @@ export async function kjorSsrBreadcrumbTester(): Promise<TestRad[]> {
           id: `ssr-breadcrumbs-${testCase.id}`,
           parameter: "breadcrumbs",
           testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
           verdi,
           somForventet: true,
         };
@@ -43,6 +44,7 @@ export async function kjorSsrBreadcrumbTester(): Promise<TestRad[]> {
           id: `ssr-breadcrumbs-${testCase.id}`,
           parameter: "breadcrumbs",
           testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
           verdi,
           somForventet: false,
           feilmelding: error instanceof Error ? error.message : "Ukjent feil",
@@ -55,11 +57,7 @@ export async function kjorSsrBreadcrumbTester(): Promise<TestRad[]> {
 export async function kjorSsrAvailableLanguagesTester(): Promise<TestRad[]> {
   return Promise.all(
     availableLanguagesTestCases.map(
-      async (testCase: {
-        availableLanguages: any;
-        id: any;
-        navn: any;
-      }): Promise<TestRad> => {
+      async (testCase): Promise<TestRad> => {
         const verdi = sprakVerdi(testCase);
         try {
           await fetchDecoratorReact({
@@ -73,6 +71,7 @@ export async function kjorSsrAvailableLanguagesTester(): Promise<TestRad[]> {
             id: `ssr-available-languages-${testCase.id}`,
             parameter: "availableLanguages",
             testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
             verdi,
             somForventet: true,
           };
@@ -81,6 +80,7 @@ export async function kjorSsrAvailableLanguagesTester(): Promise<TestRad[]> {
             id: `ssr-available-languages-${testCase.id}`,
             parameter: "availableLanguages",
             testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
             verdi,
             somForventet: false,
             feilmelding: error instanceof Error ? error.message : "Ukjent feil",

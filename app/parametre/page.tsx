@@ -1,5 +1,5 @@
 import { ParametreCsr } from "../../components/ParametreCsr";
-import { TestTabell } from "../../components/TestTabell";
+import { ParameterBolker } from "../../components/ParameterBolker";
 import {
   kjorSsrAvailableLanguagesTester,
   kjorSsrBreadcrumbTester,
@@ -26,7 +26,7 @@ export default async function ParametrePage() {
       </ul>
 
       <h2>SSR</h2>
-      <TestTabell rader={[...breadcrumbRader, ...availableLanguagesRader]} />
+      <ParameterBolker rader={[...breadcrumbRader, ...availableLanguagesRader]} />
 
       <h2>CSR</h2>
       <ParametreCsr />

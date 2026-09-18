@@ -18,6 +18,7 @@ export function TestTabell({ rader }: { rader: TestRad[] }) {
           <TableHeaderCell>Testcase</TableHeaderCell>
           <TableHeaderCell>Verdi</TableHeaderCell>
           <TableHeaderCell>Feilmelding</TableHeaderCell>
+          <TableHeaderCell>Hva testes?</TableHeaderCell>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -36,8 +37,12 @@ export function TestTabell({ rader }: { rader: TestRad[] }) {
                 <code style={{ overflowWrap: "anywhere" }}>{r.verdi}</code>
               </details>
             </TableDataCell>
+            <TableDataCell>{r.feilmelding ?? "–"}</TableDataCell>
             <TableDataCell>
-              {r.feilmelding ?? "–"}
+              <details>
+                <summary>Vis beskrivelse</summary>
+                {r.beskrivelse}
+              </details>
             </TableDataCell>
           </TableRow>
         ))}

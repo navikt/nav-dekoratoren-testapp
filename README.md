@@ -12,7 +12,7 @@ fire integrasjonsmåtene mot Dekoratøren fungerer som forventet.
 | `/ssr-uten-moduler` | Server-side rendering med direkte kall til `/ssr`                                                |
 | `/csr-med-moduler`  | Client-side rendering med `injectDecoratorClientSide`                                            |
 | `/csr-uten-moduler` | Client-side rendering med CSS, `/env` og `client.js` uten modulpakken                            |
-| `/parametre`        | Tester breadcrumbs, språkvelger og andre hjelpefunksjoner mot Dekoratøren, se eget avsnitt under |
+| `/parametre`        | Levende SSR- og CSR-tester av `breadcrumbs` og `availableLanguages`                              |
 
 Forsiden (`/`) viser en samlet statusoversikt for alle fire integrasjonene, med live helsesjekk
 mot Dekoratøren ved hvert sidelastet. Bruk denne til rask manuell verifikasjon.
@@ -24,20 +24,18 @@ nettleseren og bruker derfor den offentlige dev-ingressen
 
 ### Parametertester (`/parametre`)
 
-Tester `setBreadcrumbs`, `setAvailableLanguages` (både SSR-params og CSR-funksjonene),
-`setParams`/`getParams`, `buildCspHeader` og `getDecoratorVersionId`, med både gyldige og bevisst
-kantete/ugyldige verdier (tom liste, relativ url, url utenfor nav.no, spesialtegn og svært lange
-titler i breadcrumbs). Bakgrunnen er en tidligere regresjon der Dekoratørens validering av
-breadcrumb-path krasjet rendringen for enkelte team – disse testene skal fange opp lignende feil
-tidlig. Hver test viser om utfallet var som forventet, ikke bare om kallet «gikk bra», slik at en
-ugyldig verdi som stille godtas også flagges som avvik.
+Siden kjører faktiske kall til Dekoratøren ved hver sidelast: `fetchDecoratorReact` for SSR og
+`setBreadcrumbs`/`setAvailableLanguages` etter `injectDecoratorClientSide` for CSR. Den tester
+bare verdier som skal fungere. ✅ betyr at parameteren ble godtatt; ❌ betyr et avvik, med
+feilmeldingen fra Dekoratøren i detaljtabellen.
 
-`addDecoratorUpdateListener` demonstreres separat i `instrumentation.ts`, som registrerer en
-lytter ved serveroppstart (riktig levetid for denne funksjonen) og logger versjons-id-endringer
-teknisk.
+Hver parameter vises som en utvidbar Aksel-bolk. Bolkens status er grønn når alle underliggende
+testcaser er grønne, og rød når minst én testcase feiler. Detaljtabellen viser testcase, komplett
+verdi, feilmelding og en kort forklaring av hva som testes.
 
-Ikke tatt i bruk ennå: `openChatbot`, `getAnalyticsInstance`/analytics-hendelser og
-samtykke/cookie-håndtering (`awaitDecoratorData`, `navLocalStorage` m.fl.) – vurderes senere.
+`breadcrumbs` dekker vanlige nav.no-lenker, tom liste, `handleInApp` og vanlige spesialtegn i en
+tittel. `availableLanguages` dekker alle støttede locales (`nb`, `nn`, `en`, `se`, `pl`, `uk` og
+`ru`), tom liste og `handleInApp`.
 
 Appen har ingen egne autentiserte endepunkter, identitetsoppslag, database, persistent lagring,
 cookies eller analytics. Den viser og logger bare statisk teknisk integrasjonsstatus. Ingen
@@ -53,8 +51,9 @@ pnpm install
 pnpm dev
 ```
 
-Lokal Dekoratør-integrasjon er ikke en del av v1. `pnpm typecheck`, `pnpm test` og
-`pnpm test:e2e` er tilgjengelige for validering.
+Lokalt brukes den offentlige dev-ingressen for Dekoratøren. I Nais dev-gcp brukes intern service
+discovery for direkte SSR-kall. `pnpm typecheck`, `pnpm test` og `pnpm test:e2e` er tilgjengelige
+for validering.
 
 ## CI og deploy
 

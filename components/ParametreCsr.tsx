@@ -12,7 +12,7 @@ import {
   breadcrumbTestCases,
 } from "../lib/parameter-testcases";
 import type { TestRad } from "../lib/test-rad";
-import { TestTabell } from "./TestTabell";
+import { ParameterBolker } from "./ParameterBolker";
 
 function breadcrumbVerdi(
   testCase: (typeof breadcrumbTestCases)[number],
@@ -50,6 +50,8 @@ export function ParametreCsr() {
             id: "csr-initialisering",
             parameter: "Dekoratøren",
             testcase: "Initialisering",
+            beskrivelse:
+              "Dekoratøren kan lastes i nettleseren før de øvrige CSR-testene kjøres.",
             verdi: "–",
             somForventet: false,
             feilmelding: `Kunne ikke laste Dekoratøren: ${
@@ -69,6 +71,7 @@ export function ParametreCsr() {
               id: `csr-breadcrumbs-${testCase.id}`,
               parameter: "breadcrumbs",
               testcase: testCase.navn,
+              beskrivelse: testCase.beskrivelse,
               verdi,
               somForventet: true,
             };
@@ -77,6 +80,7 @@ export function ParametreCsr() {
               id: `csr-breadcrumbs-${testCase.id}`,
               parameter: "breadcrumbs",
               testcase: testCase.navn,
+              beskrivelse: testCase.beskrivelse,
               verdi,
               somForventet: false,
               feilmelding:
@@ -86,31 +90,31 @@ export function ParametreCsr() {
         }),
       );
       const sprakResultater = await Promise.all(
-        availableLanguagesTestCases.map(
-          async (testCase): Promise<TestRad> => {
-            const verdi = sprakVerdi(testCase);
-            try {
-              await setAvailableLanguages(testCase.availableLanguages);
-              return {
-                id: `csr-available-languages-${testCase.id}`,
-                parameter: "availableLanguages",
-                testcase: testCase.navn,
-                verdi,
-                somForventet: true,
-              };
-            } catch (error) {
-              return {
-                id: `csr-available-languages-${testCase.id}`,
-                parameter: "availableLanguages",
-                testcase: testCase.navn,
-                verdi,
-                somForventet: false,
-                feilmelding:
-                  error instanceof Error ? error.message : "Ukjent feil",
-              };
-            }
-          },
-        ),
+        availableLanguagesTestCases.map(async (testCase): Promise<TestRad> => {
+          const verdi = sprakVerdi(testCase);
+          try {
+            await setAvailableLanguages(testCase.availableLanguages);
+            return {
+              id: `csr-available-languages-${testCase.id}`,
+              parameter: "availableLanguages",
+              testcase: testCase.navn,
+              beskrivelse: testCase.beskrivelse,
+              verdi,
+              somForventet: true,
+            };
+          } catch (error) {
+            return {
+              id: `csr-available-languages-${testCase.id}`,
+              parameter: "availableLanguages",
+              testcase: testCase.navn,
+              beskrivelse: testCase.beskrivelse,
+              verdi,
+              somForventet: false,
+              feilmelding:
+                error instanceof Error ? error.message : "Ukjent feil",
+            };
+          }
+        }),
       );
       setRader([...breadcrumbResultater, ...sprakResultater]);
 
@@ -120,5 +124,5 @@ export function ParametreCsr() {
   }, []);
 
   if (!rader) return <p>⏳ Kjører CSR-tester …</p>;
-  return <TestTabell rader={rader} />;
+  return <ParameterBolker rader={rader} />;
 }

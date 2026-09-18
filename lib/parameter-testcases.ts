@@ -3,12 +3,14 @@ import type { DecoratorParams } from "@navikt/nav-dekoratoren-moduler/ssr";
 export type BreadcrumbTestCase = {
   id: string;
   navn: string;
+  beskrivelse: string;
   breadcrumbs: NonNullable<DecoratorParams["breadcrumbs"]>;
 };
 
 export type AvailableLanguagesTestCase = {
   id: string;
   navn: string;
+  beskrivelse: string;
   availableLanguages: NonNullable<DecoratorParams["availableLanguages"]>;
 };
 
@@ -16,6 +18,8 @@ export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
     navn: "Vanlige nav.no-lenker",
+    beskrivelse:
+      "Dekoratøren godtar en vanlig brødsmulesti med fullstendige nav.no-lenker.",
     breadcrumbs: [
       { title: "nav.no", url: "https://www.nav.no" },
       {
@@ -27,11 +31,15 @@ export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "tom-liste",
     navn: "Tom liste",
+    beskrivelse:
+      "Breadcrumbs kan nullstilles ved å sende en tom liste uten at Dekoratøren feiler.",
     breadcrumbs: [],
   },
   {
     id: "in-app-navigasjon",
     navn: "In-app-navigasjon",
+    beskrivelse:
+      "En gyldig nav.no-lenke med handleInApp=true kan settes slik at appen selv kan håndtere navigasjonen.",
     breadcrumbs: [
       {
         title: "Kontakt NAV",
@@ -43,6 +51,8 @@ export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "spesialtegn",
     navn: "Spesialtegn i tittel",
+    beskrivelse:
+      "Vanlige spesialtegn, som æ, ø og å i en breadcrumb-tittel håndteres og vises korrekt.",
     breadcrumbs: [
       {
         title: "Søknader og skjemaer – «oversikt» & hjelp",
@@ -54,21 +64,66 @@ export const breadcrumbTestCases: BreadcrumbTestCase[] = [
 
 export const availableLanguagesTestCases: AvailableLanguagesTestCase[] = [
   {
-    id: "vanlige-spraklenker",
-    navn: "Vanlige nav.no-lenker",
-    availableLanguages: [
-      { locale: "nb", url: "https://www.nav.no/person/dittnav" },
-      { locale: "en", url: "https://www.nav.no/en/home" },
-    ],
+    id: "bokmal",
+    navn: "Bokmål",
+    beskrivelse:
+      "Dekoratøren godtar bokmål som et tilgjengelig språkvalg med en fullstendig nav.no-lenke.",
+    availableLanguages: [{ locale: "nb", url: "https://www.nav.no" }],
+  },
+  {
+    id: "nynorsk",
+    navn: "Nynorsk",
+    beskrivelse:
+      "Dekoratøren godtar nynorsk som et tilgjengelig språkvalg med en fullstendig nav.no-lenke.",
+    availableLanguages: [{ locale: "nn", url: "https://www.nav.no/nn/home" }],
+  },
+  {
+    id: "engelsk",
+    navn: "Engelsk",
+    beskrivelse:
+      "Dekoratøren godtar engelsk som et tilgjengelig språkvalg med en fullstendig nav.no-lenke.",
+    availableLanguages: [{ locale: "en", url: "https://www.nav.no/en/home" }],
+  },
+  {
+    id: "samisk",
+    navn: "Samisk",
+    beskrivelse:
+      "Dekoratøren godtar samisk som et tilgjengelig språkvalg med en fullstendig nav.no-lenke.",
+    availableLanguages: [{ locale: "se", url: "https://www.nav.no/se/home" }],
+  },
+  {
+    id: "polsk",
+    navn: "Polsk",
+    beskrivelse:
+      "Dekoratøren godtar polsk som et tilgjengelig språkvalg med en fullstendig nav.no-lenke.",
+    availableLanguages: [{ locale: "pl", url: "https://www.nav.no/pl/home" }],
+  },
+  {
+    id: "ukrainsk",
+    navn: "Ukrainsk",
+    beskrivelse:
+      "Dekoratøren godtar ukrainsk som et tilgjengelig språkvalg med en fullstendig nav.no-lenke.",
+    availableLanguages: [{ locale: "uk", url: "https://www.nav.no/uk/home" }],
+  },
+  {
+    id: "russisk",
+    navn: "Russisk",
+    beskrivelse:
+      "Dekoratøren godtar russisk som et tilgjengelig språkvalg med en fullstendig nav.no-lenke.",
+    availableLanguages: [{ locale: "ru", url: "https://www.nav.no/ru/home" }],
   },
   {
     id: "tom-liste",
     navn: "Tom liste",
+    beskrivelse:
+      "Språkvelgeren kan nullstilles ved å sende en tom liste uten at Dekoratøren feiler.",
     availableLanguages: [],
   },
   {
     id: "in-app-navigasjon",
     navn: "In-app-navigasjon",
+    beskrivelse:
+      "Et språkvalg med en gyldig nav.no-lenke og handleInApp=true kan settes.",
     availableLanguages: [
       {
         locale: "en",

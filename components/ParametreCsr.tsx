@@ -25,10 +25,28 @@ export function ParametreCsr() {
     if (startet.current) return;
     startet.current = true;
 
-    void injectDecoratorClientSide({
-      env: "dev",
-      params: decoratorParams,
-    }).then(async () => {
+    void (async () => {
+      try {
+        await injectDecoratorClientSide({
+          env: "dev",
+          params: decoratorParams,
+        });
+      } catch (error) {
+        setRader([
+          {
+            id: "csr-initialisering",
+            parameter: "Dekoratøren",
+            testcase: "Initialisering",
+            verdi: "–",
+            somForventet: false,
+            feilmelding: `Kunne ikke laste Dekoratøren: ${
+              error instanceof Error ? error.message : "Ukjent feil"
+            }`,
+          },
+        ]);
+        return;
+      }
+
       const resultater = await Promise.all(
         breadcrumbTestCases.map(async (testCase): Promise<TestRad> => {
           const verdi = breadcrumbVerdi(testCase);
@@ -57,7 +75,7 @@ export function ParametreCsr() {
       setRader(resultater);
 
       await setBreadcrumbs([{ title: "Parametertester", url: "/parametre" }]);
-    });
+    })();
   }, []);
 
   if (!rader) return <p>⏳ Kjører CSR-tester …</p>;

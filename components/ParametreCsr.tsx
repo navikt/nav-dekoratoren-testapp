@@ -15,11 +15,20 @@ import type { ParameterTestResultat } from "../lib/parameter-sjekk-ssr";
 function evaluer(
   id: string,
   label: string,
+  beskrivelse: string,
   forventetGyldig: boolean,
   faktiskGyldig: boolean,
   detalj?: string,
 ): ParameterTestResultat {
-  return { id, label, forventetGyldig, faktiskGyldig, somForventet: forventetGyldig === faktiskGyldig, detalj };
+  return {
+    id,
+    label,
+    beskrivelse,
+    forventetGyldig,
+    faktiskGyldig,
+    somForventet: forventetGyldig === faktiskGyldig,
+    detalj,
+  };
 }
 
 export function ParametreCsr() {
@@ -40,11 +49,12 @@ export function ParametreCsr() {
         breadcrumbTestCases.map(async (testCase) => {
           try {
             await setBreadcrumbs(testCase.breadcrumbs);
-            return evaluer(testCase.id, testCase.label, testCase.forventetGyldig, true);
+            return evaluer(testCase.id, testCase.label, testCase.beskrivelse, testCase.forventetGyldig, true);
           } catch (error) {
             return evaluer(
               testCase.id,
               testCase.label,
+              testCase.beskrivelse,
               testCase.forventetGyldig,
               false,
               error instanceof Error ? error.message : "Ukjent feil",
@@ -58,11 +68,12 @@ export function ParametreCsr() {
         sprakTestCases.map(async (testCase) => {
           try {
             await setAvailableLanguages(testCase.availableLanguages);
-            return evaluer(testCase.id, testCase.label, testCase.forventetGyldig, true);
+            return evaluer(testCase.id, testCase.label, testCase.beskrivelse, testCase.forventetGyldig, true);
           } catch (error) {
             return evaluer(
               testCase.id,
               testCase.label,
+              testCase.beskrivelse,
               testCase.forventetGyldig,
               false,
               error instanceof Error ? error.message : "Ukjent feil",
@@ -77,13 +88,21 @@ export function ParametreCsr() {
         const params = await getParams();
         const riktig = params.simple === true;
         setRoundtripResultat(
-          evaluer("setparams-roundtrip", "setParams/getParams roundtrip", true, riktig, riktig ? undefined : "getParams returnerte ikke satt verdi"),
+          evaluer(
+            "setparams-roundtrip",
+            "setParams/getParams roundtrip",
+            "Setter simple=true via setParams, henter så params på nytt via getParams og sjekker at verdien faktisk ble lagret. Tester at klientens lokale tilstand og Dekoratørens tilstand holdes i sync.",
+            true,
+            riktig,
+            riktig ? undefined : "getParams returnerte ikke satt verdi",
+          ),
         );
       } catch (error) {
         setRoundtripResultat(
           evaluer(
             "setparams-roundtrip",
             "setParams/getParams roundtrip",
+            "Setter simple=true via setParams, henter så params på nytt via getParams og sjekker at verdien faktisk ble lagret. Tester at klientens lokale tilstand og Dekoratørens tilstand holdes i sync.",
             true,
             false,
             error instanceof Error ? error.message : "Ukjent feil",
@@ -96,6 +115,12 @@ export function ParametreCsr() {
   return (
     <section aria-label="CSR-parametertester">
       <h2>CSR (klient)</h2>
+      <p>
+        Samme testtilfeller som i SSR-seksjonen over, men kjørt via de klientside-funksjonene
+        appen selv ville brukt etter at Dekoratøren allerede er lastet i nettleseren
+        (<code>setBreadcrumbs</code>, <code>setAvailableLanguages</code>). I tillegg testes en
+        roundtrip med <code>setParams</code>/<code>getParams</code>.
+      </p>
       {!klar ? (
         <p>⏳ Initialiserer Dekoratøren …</p>
       ) : (
@@ -117,8 +142,11 @@ function Resultatliste({ tittel, resultater }: { tittel: string; resultater: Par
       <ul>
         {resultater.map((r) => (
           <li key={r.id} data-testid={`csr-test-${r.id}`} data-som-forventet={r.somForventet}>
-            {r.somForventet ? "✅" : "❌"} {r.label}
-            {r.detalj ? ` – ${r.detalj}` : ""}
+            <p>
+              {r.somForventet ? "✅" : "❌"} <strong>{r.label}</strong>
+              {r.detalj ? ` – ${r.detalj}` : ""}
+            </p>
+            <p className="test-beskrivelse">{r.beskrivelse}</p>
           </li>
         ))}
       </ul>

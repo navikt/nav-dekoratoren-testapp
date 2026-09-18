@@ -5,11 +5,9 @@ import { breadcrumbTestCases, sprakTestCases } from "./parameter-testcases";
 export type ParameterTestResultat = {
   id: string;
   label: string;
+  beskrivelse: string;
   forventetGyldig: boolean;
   faktiskGyldig: boolean;
-  // true hvis faktisk utfall stemmer med det vi forventet (enten at
-  // Dekoratøren godtok en gyldig case, eller avviste en ugyldig case uten
-  // å krasje hele rendringen).
   somForventet: boolean;
   detalj?: string;
 };
@@ -17,11 +15,20 @@ export type ParameterTestResultat = {
 function evaluer(
   id: string,
   label: string,
+  beskrivelse: string,
   forventetGyldig: boolean,
   faktiskGyldig: boolean,
   detalj?: string,
 ): ParameterTestResultat {
-  return { id, label, forventetGyldig, faktiskGyldig, somForventet: forventetGyldig === faktiskGyldig, detalj };
+  return {
+    id,
+    label,
+    beskrivelse,
+    forventetGyldig,
+    faktiskGyldig,
+    somForventet: forventetGyldig === faktiskGyldig,
+    detalj,
+  };
 }
 
 async function kjorBreadcrumbTest(testCase: (typeof breadcrumbTestCases)[number]): Promise<ParameterTestResultat> {
@@ -30,11 +37,12 @@ async function kjorBreadcrumbTest(testCase: (typeof breadcrumbTestCases)[number]
       env: "dev",
       params: { ...decoratorParams, breadcrumbs: testCase.breadcrumbs },
     });
-    return evaluer(testCase.id, testCase.label, testCase.forventetGyldig, true);
+    return evaluer(testCase.id, testCase.label, testCase.beskrivelse, testCase.forventetGyldig, true);
   } catch (error) {
     return evaluer(
       testCase.id,
       testCase.label,
+      testCase.beskrivelse,
       testCase.forventetGyldig,
       false,
       error instanceof Error ? error.message : "Ukjent feil",
@@ -48,11 +56,12 @@ async function kjorSprakTest(testCase: (typeof sprakTestCases)[number]): Promise
       env: "dev",
       params: { ...decoratorParams, availableLanguages: testCase.availableLanguages },
     });
-    return evaluer(testCase.id, testCase.label, testCase.forventetGyldig, true);
+    return evaluer(testCase.id, testCase.label, testCase.beskrivelse, testCase.forventetGyldig, true);
   } catch (error) {
     return evaluer(
       testCase.id,
       testCase.label,
+      testCase.beskrivelse,
       testCase.forventetGyldig,
       false,
       error instanceof Error ? error.message : "Ukjent feil",

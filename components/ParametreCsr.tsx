@@ -1,10 +1,17 @@
 "use client";
 
 import {
+  Accordion,
+  AccordionContent,
+  AccordionHeader,
+  AccordionItem,
+} from "@navikt/ds-react/Accordion";
+import {
   injectDecoratorClientSide,
   setAvailableLanguages,
   setBreadcrumbs,
 } from "@navikt/nav-dekoratoren-moduler";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { decoratorParams } from "../lib/decorator-params";
 import {
@@ -124,5 +131,24 @@ export function ParametreCsr() {
   }, []);
 
   if (!rader) return <p>⏳ Kjører CSR-tester …</p>;
-  return <ParameterBolker rader={rader} />;
+  return (
+    <>
+      <ParameterBolker rader={rader} />
+      <Accordion>
+        <AccordionItem>
+          <AccordionHeader>setParams/getParams</AccordionHeader>
+          <AccordionContent>
+            <p>
+              Denne funksjonen testes i en egen visning, der Dekoratøren
+              initialiseres med <code>simple: true</code> og verdien leses
+              tilbake med <code>getParams()</code>.
+            </p>
+            <Link href="/parametre/simple">
+              Åpne testen for simple: true
+            </Link>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </>
+  );
 }

@@ -12,7 +12,8 @@ fire integrasjonsmåtene mot Dekoratøren fungerer som forventet.
 | `/ssr-uten-moduler` | Server-side rendering med direkte kall til `/ssr`                                                |
 | `/csr-med-moduler`  | Client-side rendering med `injectDecoratorClientSide`                                            |
 | `/csr-uten-moduler` | Client-side rendering med CSS, `/env` og `client.js` uten modulpakken                            |
-| `/parametre`        | Levende SSR- og CSR-tester av `breadcrumbs` og `availableLanguages`                              |
+| `/parametre`        | Levende SSR- og CSR-tester av Dekoratør-parametere                                                |
+| `/parametre/simple` | Client-side test av `simple: true` med egen integrasjonsstatus                                    |
 
 Forsiden (`/`) viser en samlet statusoversikt for alle fire integrasjonene, med live helsesjekk
 mot Dekoratøren ved hvert sidelastet. Bruk denne til rask manuell verifikasjon.
@@ -35,7 +36,14 @@ verdi, feilmelding og en kort forklaring av hva som testes.
 
 `breadcrumbs` dekker vanlige nav.no-lenker, tom liste, `handleInApp` og vanlige spesialtegn i en
 tittel. `availableLanguages` dekker alle støttede locales (`nb`, `nn`, `en`, `se`, `pl`, `uk` og
-`ru`), tom liste og `handleInApp`.
+`ru`), tom liste og `handleInApp`. CSR har også en egen accordion for `setParams`/`getParams`,
+med lenke til `/parametre/simple`.
+
+`/parametre/simple` er den faktiske testen av `simple: true`: Den initialiserer Dekoratøren
+client-side med parameteren, venter på at den forenklede headeren er lastet og kontrollerer at
+`getParams()` returnerer `simple: true`. Siden har grønn integrasjonsstatus når dette lykkes og
+rød status ved avvik. Footer er bevisst ikke en del av testen, fordi `simple: true` bruker den
+forenklede Dekoratør-visningen uten footer.
 
 Appen har ingen egne autentiserte endepunkter, identitetsoppslag, database, persistent lagring,
 cookies eller analytics. Den viser og logger bare statisk teknisk integrasjonsstatus. Ingen

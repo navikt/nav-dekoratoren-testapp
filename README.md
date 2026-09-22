@@ -14,6 +14,8 @@ fire integrasjonsmåtene mot Dekoratøren fungerer som forventet.
 | `/csr-uten-moduler` | Client-side rendering med CSS, `/env` og `client.js` uten modulpakken                            |
 | `/parametre`        | Levende SSR- og CSR-tester av Dekoratør-parametere                                                |
 | `/parametre/simple` | Client-side test av `simple: true` med egen integrasjonsstatus                                    |
+| `/parametre/simple-header` | Client-side test av `simpleHeader: true` med forenklet header                 |
+| `/parametre/simple-footer` | Client-side test av `simpleFooter: true` med forenklet footer                 |
 
 Forsiden (`/`) viser en samlet statusoversikt for alle fire integrasjonene, med live helsesjekk
 mot Dekoratøren ved hvert sidelastet. Bruk denne til rask manuell verifikasjon.
@@ -49,6 +51,11 @@ client-side med parameteren, venter på at den forenklede headeren er lastet og 
 `getParams()` returnerer `simple: true`. Siden har grønn integrasjonsstatus når dette lykkes og
 rød status ved avvik. Footer er bevisst ikke en del av testen, fordi `simple: true` bruker den
 forenklede Dekoratør-visningen uten footer.
+
+Accordionen «Forenklede visninger» har egne lenker til `simpleHeader: true` og
+`simpleFooter: true`. Disse sidene verifiserer henholdsvis at den forenklede headeren eller
+footer-versjonen lastes, at den øvrige Dekoratør-delen fortsatt finnes, og at parameteren kan
+leses tilbake med `getParams()`.
 
 Appen har ingen egne autentiserte endepunkter, identitetsoppslag, database, persistent lagring,
 cookies eller analytics. Den viser og logger bare statisk teknisk integrasjonsstatus. Ingen

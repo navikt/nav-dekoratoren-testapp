@@ -38,9 +38,13 @@ export function IntegrationStatus({
     observationStarted.current = true;
     void observe().then(
       () => setStatus("success"),
-      () => {
+      (error: unknown) => {
         setStatus("error");
-        setMessage("Dekoratøren kunne ikke lastes");
+        setMessage(
+          error instanceof Error
+            ? `Dekoratøren kunne ikke lastes: ${error.message}`
+            : "Dekoratøren kunne ikke lastes",
+        );
       },
     );
   }, [observe]);

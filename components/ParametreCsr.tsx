@@ -11,7 +11,6 @@ import {
   setAvailableLanguages,
   setBreadcrumbs,
 } from "@navikt/nav-dekoratoren-moduler";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { decoratorParams } from "../lib/decorator-params";
 import {
@@ -143,9 +142,28 @@ export function ParametreCsr() {
               initialiseres med <code>simple: true</code> og verdien leses
               tilbake med <code>getParams()</code>.
             </p>
-            <Link href="/parametre/simple">
+            <a href="/parametre/simple">
               Åpne testen for simple: true
-            </Link>
+            </a>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem>
+          <AccordionHeader>Forenklede visninger</AccordionHeader>
+          <AccordionContent>
+            <p>
+              Disse parameterne testes i egne visninger fordi de endrer hvilke
+              deler av Dekoratøren som rendres.
+            </p>
+            <p>
+              <a href="/parametre/simple-header">
+                Åpne testen for simpleHeader: true
+              </a>
+            </p>
+            <p>
+              <a href="/parametre/simple-footer">
+                Åpne testen for simpleFooter: true
+              </a>
+            </p>
           </AccordionContent>
         </AccordionItem>
       </Accordion>

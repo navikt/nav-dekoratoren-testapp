@@ -21,6 +21,7 @@ import {
   contextTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
+  redirectToUrlLogoutTestCases,
 } from "../lib/parameter-testcases";
 import type { TestRad } from "../lib/test-rad";
 import { ParameterBolker } from "./ParameterBolker";
@@ -202,12 +203,43 @@ export function ParametreCsr() {
           });
         }
       }
+      const redirectToUrlLogoutResultater: TestRad[] = [];
+      for (const testCase of redirectToUrlLogoutTestCases) {
+        try {
+          await setParams({
+            redirectToUrlLogout: testCase.redirectToUrlLogout,
+          });
+          await ventPaParameter(
+            "redirectToUrlLogout",
+            testCase.redirectToUrlLogout,
+          );
+          redirectToUrlLogoutResultater.push({
+            id: `csr-redirect-to-url-logout-${testCase.id}`,
+            parameter: "redirectToUrlLogout",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.redirectToUrlLogout,
+            somForventet: true,
+          });
+        } catch (error) {
+          redirectToUrlLogoutResultater.push({
+            id: `csr-redirect-to-url-logout-${testCase.id}`,
+            parameter: "redirectToUrlLogout",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.redirectToUrlLogout,
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
       setRader([
         ...breadcrumbResultater,
         ...sprakResultater,
         ...contextResultater,
         ...redirectToAppResultater,
         ...redirectToUrlResultater,
+        ...redirectToUrlLogoutResultater,
       ]);
 
       await setBreadcrumbs([{ title: "Parametertester", url: "/parametre" }]);
@@ -264,7 +296,11 @@ async function ventPaContext(
 }
 
 async function ventPaParameter(
-  parameter: "context" | "redirectToApp" | "redirectToUrl",
+  parameter:
+    | "context"
+    | "redirectToApp"
+    | "redirectToUrl"
+    | "redirectToUrlLogout",
   forventetVerdi: string | boolean,
 ) {
   const deadline = Date.now() + 10_000;

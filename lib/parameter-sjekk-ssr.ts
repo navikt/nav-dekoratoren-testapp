@@ -11,6 +11,7 @@ import {
   contextTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
+  redirectToUrlLogoutTestCases,
 } from "./parameter-testcases";
 import type { TestRad } from "./test-rad";
 
@@ -195,6 +196,40 @@ export async function kjorSsrRedirectToUrlTester(): Promise<TestRad[]> {
           testcase: testCase.navn,
           beskrivelse: testCase.beskrivelse,
           verdi: testCase.redirectToUrl,
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
+  );
+}
+
+export async function kjorSsrRedirectToUrlLogoutTester(): Promise<TestRad[]> {
+  return Promise.all(
+    redirectToUrlLogoutTestCases.map(async (testCase): Promise<TestRad> => {
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: {
+            ...decoratorParams,
+            redirectToUrlLogout: testCase.redirectToUrlLogout,
+          },
+        });
+        return {
+          id: `ssr-redirect-to-url-logout-${testCase.id}`,
+          parameter: "redirectToUrlLogout",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: testCase.redirectToUrlLogout,
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-redirect-to-url-logout-${testCase.id}`,
+          parameter: "redirectToUrlLogout",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: testCase.redirectToUrlLogout,
           somForventet: false,
           feilmelding: error instanceof Error ? error.message : "Ukjent feil",
         };

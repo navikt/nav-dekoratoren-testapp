@@ -35,6 +35,13 @@ export type RedirectToUrlTestCase = {
   redirectToUrl: NonNullable<DecoratorParams["redirectToUrl"]>;
 };
 
+export type RedirectToUrlLogoutTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  redirectToUrlLogout: NonNullable<DecoratorParams["redirectToUrlLogout"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -203,5 +210,15 @@ export const redirectToUrlTestCases: RedirectToUrlTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar en fullstendig nav.no-URL som mål etter innlogging.",
     redirectToUrl: "https://www.nav.no/minside",
+  },
+];
+
+export const redirectToUrlLogoutTestCases: RedirectToUrlLogoutTestCase[] = [
+  {
+    id: "nav-no",
+    navn: "Gyldig nav.no-URL",
+    beskrivelse:
+      "Dekoratøren godtar en fullstendig nav.no-URL som mål etter utlogging.",
+    redirectToUrlLogout: "https://www.nav.no",
   },
 ];

@@ -42,6 +42,7 @@ verdi, feilmelding og en kort forklaring av hva som testes.
 | `availableLanguages` | Alle støttede språk, tom liste og `handleInApp` | SSR og CSR |
 | `context` | `privatperson`, `arbeidsgiver` og `samarbeidspartner` | SSR og CSR |
 | `chatbot` | `true` og `false` | SSR og CSR |
+| `chatbotVisible` | `true` og `false` | SSR og CSR |
 | `feedback` | `true` og `false` | SSR og CSR |
 | `logoutWarning` | `true` og `false` | SSR og CSR |
 | `shareScreen` | `true` og `false`, uten å starte skjermdeling | SSR og CSR |

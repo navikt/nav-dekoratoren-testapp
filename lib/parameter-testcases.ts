@@ -49,6 +49,13 @@ export type ChatbotTestCase = {
   chatbot: NonNullable<DecoratorParams["chatbot"]>;
 };
 
+export type ChatbotVisibleTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  chatbotVisible: NonNullable<DecoratorParams["chatbotVisible"]>;
+};
+
 export type LogoutWarningTestCase = {
   id: string;
   navn: string;
@@ -265,6 +272,23 @@ export const chatbotTestCases: ChatbotTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar chatbot=false, som deaktiverer chatbot-funksjonaliteten.",
     chatbot: false,
+  },
+];
+
+export const chatbotVisibleTestCases: ChatbotVisibleTestCase[] = [
+  {
+    id: "synlig",
+    navn: "Synlig",
+    beskrivelse:
+      "Dekoratøren godtar chatbotVisible=true, som viser chatbot-ikonet.",
+    chatbotVisible: true,
+  },
+  {
+    id: "skjult",
+    navn: "Skjult",
+    beskrivelse:
+      "Dekoratøren godtar chatbotVisible=false, som skjuler chatbot-ikonet når det ikke finnes en aktiv økt.",
+    chatbotVisible: false,
   },
 ];
 

@@ -9,6 +9,7 @@ import {
   availableLanguagesTestCases,
   breadcrumbTestCases,
   chatbotTestCases,
+  chatbotVisibleTestCases,
   contextTestCases,
   feedbackTestCases,
   logoutWarningTestCases,
@@ -125,6 +126,40 @@ export async function kjorSsrChatbotTester(): Promise<TestRad[]> {
           testcase: testCase.navn,
           beskrivelse: testCase.beskrivelse,
           verdi: String(testCase.chatbot),
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
+  );
+}
+
+export async function kjorSsrChatbotVisibleTester(): Promise<TestRad[]> {
+  return Promise.all(
+    chatbotVisibleTestCases.map(async (testCase): Promise<TestRad> => {
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: {
+            ...decoratorParams,
+            chatbotVisible: testCase.chatbotVisible,
+          },
+        });
+        return {
+          id: `ssr-chatbot-visible-${testCase.id}`,
+          parameter: "chatbotVisible",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: String(testCase.chatbotVisible),
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-chatbot-visible-${testCase.id}`,
+          parameter: "chatbotVisible",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: String(testCase.chatbotVisible),
           somForventet: false,
           feilmelding: error instanceof Error ? error.message : "Ukjent feil",
         };

@@ -13,6 +13,7 @@ import {
   availableLanguagesTestCases,
   breadcrumbTestCases,
   chatbotTestCases,
+  chatbotVisibleTestCases,
   contextTestCases,
   feedbackTestCases,
   logoutWarningTestCases,
@@ -171,6 +172,31 @@ export function ParametreCsr() {
             testcase: testCase.navn,
             beskrivelse: testCase.beskrivelse,
             verdi: String(testCase.chatbot),
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
+      const chatbotVisibleResultater: TestRad[] = [];
+      for (const testCase of chatbotVisibleTestCases) {
+        try {
+          await setParams({ chatbotVisible: testCase.chatbotVisible });
+          await ventPaParameter("chatbotVisible", testCase.chatbotVisible);
+          chatbotVisibleResultater.push({
+            id: `csr-chatbot-visible-${testCase.id}`,
+            parameter: "chatbotVisible",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.chatbotVisible),
+            somForventet: true,
+          });
+        } catch (error) {
+          chatbotVisibleResultater.push({
+            id: `csr-chatbot-visible-${testCase.id}`,
+            parameter: "chatbotVisible",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.chatbotVisible),
             somForventet: false,
             feilmelding: error instanceof Error ? error.message : "Ukjent feil",
           });
@@ -336,6 +362,7 @@ export function ParametreCsr() {
         ...sprakResultater,
         ...contextResultater,
         ...chatbotResultater,
+        ...chatbotVisibleResultater,
         ...feedbackResultater,
         ...logoutWarningResultater,
         ...shareScreenResultater,
@@ -348,6 +375,7 @@ export function ParametreCsr() {
       await setAvailableLanguages([]);
       await setParams({ context: "privatperson" });
       await setParams({ chatbot: true });
+      await setParams({ chatbotVisible: false });
       await setParams({ feedback: false });
       await setParams({ logoutWarning: true });
       await setParams({ shareScreen: true });
@@ -411,6 +439,7 @@ async function ventPaParameter(
   parameter:
     | "context"
     | "chatbot"
+    | "chatbotVisible"
     | "feedback"
     | "logoutWarning"
     | "shareScreen"

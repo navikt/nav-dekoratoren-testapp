@@ -4,6 +4,7 @@ import { SsrForenkledeVisninger } from "../../components/SsrForenkledeVisninger"
 import {
   kjorSsrAvailableLanguagesTester,
   kjorSsrBreadcrumbTester,
+  kjorSsrContextTester,
   kjorSsrCspTester,
   kjorSsrDekoratorVersjonTester,
   kjorSsrForenkletVisningTester,
@@ -15,12 +16,14 @@ export default async function ParametrePage() {
   const [
     breadcrumbRader,
     availableLanguagesRader,
+    contextRader,
     forenkletVisningRader,
     cspRader,
     versjonsRader,
   ] = await Promise.all([
       kjorSsrBreadcrumbTester(),
       kjorSsrAvailableLanguagesTester(),
+      kjorSsrContextTester(),
       kjorSsrForenkletVisningTester(),
       kjorSsrCspTester(),
       kjorSsrDekoratorVersjonTester(),
@@ -43,6 +46,7 @@ export default async function ParametrePage() {
         rader={[
           ...breadcrumbRader,
           ...availableLanguagesRader,
+          ...contextRader,
           ...cspRader,
           ...versjonsRader,
         ]}

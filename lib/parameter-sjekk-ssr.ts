@@ -8,6 +8,7 @@ import { decoratorParams } from "./decorator-params";
 import {
   availableLanguagesTestCases,
   breadcrumbTestCases,
+  contextTestCases,
 } from "./parameter-testcases";
 import type { TestRad } from "./test-rad";
 
@@ -91,6 +92,44 @@ export async function kjorSsrAvailableLanguagesTester(): Promise<TestRad[]> {
         };
       }
     }),
+  );
+}
+
+export async function kjorSsrContextTester(): Promise<TestRad[]> {
+  return Promise.all(
+    contextTestCases.map(
+      async (testCase: {
+        context: any;
+        id: any;
+        navn: any;
+        beskrivelse: any;
+      }): Promise<TestRad> => {
+        try {
+          await fetchDecoratorReact({
+            env: "dev",
+            params: { ...decoratorParams, context: testCase.context },
+          });
+          return {
+            id: `ssr-context-${testCase.id}`,
+            parameter: "context",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.context,
+            somForventet: true,
+          };
+        } catch (error) {
+          return {
+            id: `ssr-context-${testCase.id}`,
+            parameter: "context",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.context,
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          };
+        }
+      },
+    ),
   );
 }
 

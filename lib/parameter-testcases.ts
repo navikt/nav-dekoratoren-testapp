@@ -14,6 +14,13 @@ export type AvailableLanguagesTestCase = {
   availableLanguages: NonNullable<DecoratorParams["availableLanguages"]>;
 };
 
+export type ContextTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  context: NonNullable<DecoratorParams["context"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -131,5 +138,29 @@ export const availableLanguagesTestCases: AvailableLanguagesTestCase[] = [
         handleInApp: true,
       },
     ],
+  },
+];
+
+export const contextTestCases: ContextTestCase[] = [
+  {
+    id: "privatperson",
+    navn: "Privatperson",
+    beskrivelse:
+      "Dekoratøren godtar privatperson og viser menyen for privatpersoner.",
+    context: "privatperson",
+  },
+  {
+    id: "arbeidsgiver",
+    navn: "Arbeidsgiver",
+    beskrivelse:
+      "Dekoratøren godtar arbeidsgiver og viser menyen for arbeidsgivere.",
+    context: "arbeidsgiver",
+  },
+  {
+    id: "samarbeidspartner",
+    navn: "Samarbeidspartner",
+    beskrivelse:
+      "Dekoratøren godtar samarbeidspartner og viser menyen for samarbeidspartnere.",
+    context: "samarbeidspartner",
   },
 ];

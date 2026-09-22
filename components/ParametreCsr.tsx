@@ -7,15 +7,18 @@ import {
   AccordionItem,
 } from "@navikt/ds-react/Accordion";
 import {
+  getParams,
   injectDecoratorClientSide,
   setAvailableLanguages,
   setBreadcrumbs,
+  setParams,
 } from "@navikt/nav-dekoratoren-moduler";
 import { useEffect, useRef, useState } from "react";
 import { decoratorParams } from "../lib/decorator-params";
 import {
   availableLanguagesTestCases,
   breadcrumbTestCases,
+  contextTestCases,
 } from "../lib/parameter-testcases";
 import type { TestRad } from "../lib/test-rad";
 import { ParameterBolker } from "./ParameterBolker";
@@ -122,10 +125,41 @@ export function ParametreCsr() {
           }
         }),
       );
-      setRader([...breadcrumbResultater, ...sprakResultater]);
+      const contextResultater: TestRad[] = [];
+      for (const testCase of contextTestCases) {
+        try {
+          await setParams({ context: testCase.context });
+          await ventPaContext(testCase.context);
+          contextResultater.push({
+            id: `csr-context-${testCase.id}`,
+            parameter: "context",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.context,
+            somForventet: true,
+          });
+        } catch (error) {
+          contextResultater.push({
+            id: `csr-context-${testCase.id}`,
+            parameter: "context",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.context,
+            somForventet: false,
+            feilmelding:
+              error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
+      setRader([
+        ...breadcrumbResultater,
+        ...sprakResultater,
+        ...contextResultater,
+      ]);
 
       await setBreadcrumbs([{ title: "Parametertester", url: "/parametre" }]);
       await setAvailableLanguages([]);
+      await setParams({ context: "privatperson" });
     })();
   }, []);
 
@@ -167,4 +201,16 @@ export function ParametreCsr() {
       </Accordion>
     </>
   );
+}
+
+async function ventPaContext(
+  forventetContext: (typeof contextTestCases)[number]["context"],
+) {
+  const deadline = Date.now() + 10_000;
+  while (Date.now() < deadline) {
+    const params = await getParams();
+    if (params?.context === forventetContext) return;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  throw new Error(`CSR_CONTEXT_NOT_SET: ${forventetContext}`);
 }

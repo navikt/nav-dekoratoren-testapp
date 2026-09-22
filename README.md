@@ -38,8 +38,9 @@ verdi, feilmelding og en kort forklaring av hva som testes.
 
 `breadcrumbs` dekker vanlige nav.no-lenker, tom liste, `handleInApp` og vanlige spesialtegn i en
 tittel. `availableLanguages` dekker alle støttede locales (`nb`, `nn`, `en`, `se`, `pl`, `uk` og
-`ru`), tom liste og `handleInApp`. CSR har også en egen accordion for `setParams`/`getParams`,
-med lenke til `/parametre/simple`.
+`ru`), tom liste og `handleInApp`. `context` dekker `privatperson`, `arbeidsgiver` og
+`samarbeidspartner` i både SSR og CSR. CSR har også en egen accordion for
+`setParams`/`getParams`, med lenke til `/parametre/simple`.
 
 SSR-oversikten tester også `buildCspHeader` ved å kontrollere at appens egne CSP-direktiver
 beholdes i den sammenslåtte headeren, og `getDecoratorVersionId` ved å kontrollere at Dekoratøren

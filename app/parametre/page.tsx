@@ -1,19 +1,27 @@
 import { ParametreCsr } from "../../components/ParametreCsr";
 import { ParameterBolker } from "../../components/ParameterBolker";
+import { SsrForenkledeVisninger } from "../../components/SsrForenkledeVisninger";
 import {
   kjorSsrAvailableLanguagesTester,
   kjorSsrBreadcrumbTester,
   kjorSsrCspTester,
   kjorSsrDekoratorVersjonTester,
+  kjorSsrForenkletVisningTester,
 } from "../../lib/parameter-sjekk-ssr";
 
 export const dynamic = "force-dynamic";
 
 export default async function ParametrePage() {
-  const [breadcrumbRader, availableLanguagesRader, cspRader, versjonsRader] =
-    await Promise.all([
+  const [
+    breadcrumbRader,
+    availableLanguagesRader,
+    forenkletVisningRader,
+    cspRader,
+    versjonsRader,
+  ] = await Promise.all([
       kjorSsrBreadcrumbTester(),
       kjorSsrAvailableLanguagesTester(),
+      kjorSsrForenkletVisningTester(),
       kjorSsrCspTester(),
       kjorSsrDekoratorVersjonTester(),
     ]);
@@ -39,6 +47,7 @@ export default async function ParametrePage() {
           ...versjonsRader,
         ]}
       />
+      <SsrForenkledeVisninger rader={forenkletVisningRader} />
 
       <h2>CSR</h2>
       <ParametreCsr />

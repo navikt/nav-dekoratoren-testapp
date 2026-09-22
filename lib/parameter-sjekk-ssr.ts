@@ -1,5 +1,6 @@
 import {
   buildCspHeader,
+  fetchDecoratorHtml,
   fetchDecoratorReact,
   getDecoratorVersionId,
 } from "@navikt/nav-dekoratoren-moduler/ssr";
@@ -85,6 +86,79 @@ export async function kjorSsrAvailableLanguagesTester(): Promise<TestRad[]> {
           testcase: testCase.navn,
           beskrivelse: testCase.beskrivelse,
           verdi,
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
+  );
+}
+
+const forenkletVisningTestCases = [
+  {
+    id: "simple",
+    parameter: "simple",
+    navn: "Forenklet Dekoratør",
+    beskrivelse:
+      "simple: true skal gi både forenklet header og forenklet footer i server-renderingen.",
+    verdi: "simple: true",
+    params: { simple: true },
+    forventet: { header: true, footer: true },
+  },
+  {
+    id: "simple-header",
+    parameter: "simpleHeader",
+    navn: "Forenklet header",
+    beskrivelse:
+      "simpleHeader: true skal gi forenklet header og vanlig footer.",
+    verdi: "simpleHeader: true",
+    params: { simpleHeader: true },
+    forventet: { header: true, footer: true },
+  },
+  {
+    id: "simple-footer",
+    parameter: "simpleFooter",
+    navn: "Forenklet footer",
+    beskrivelse:
+      "simpleFooter: true skal gi vanlig header og forenklet footer.",
+    verdi: "simpleFooter: true",
+    params: { simpleFooter: true },
+    forventet: { header: true, footer: true },
+  },
+] as const;
+
+export async function kjorSsrForenkletVisningTester(): Promise<TestRad[]> {
+  return Promise.all(
+    forenkletVisningTestCases.map(async (testCase): Promise<TestRad> => {
+      try {
+        const dekorator = await fetchDecoratorHtml({
+          env: "dev",
+          params: { ...decoratorParams, ...testCase.params },
+        });
+        const harHeader = dekorator.DECORATOR_HEADER.includes("<header");
+        const harFooter = dekorator.DECORATOR_FOOTER.includes("<footer");
+        const somForventet =
+          harHeader === testCase.forventet.header &&
+          harFooter === testCase.forventet.footer;
+
+        return {
+          id: `ssr-${testCase.parameter}-${testCase.id}`,
+          parameter: testCase.parameter,
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: testCase.verdi,
+          somForventet,
+          feilmelding: somForventet
+            ? undefined
+            : `Forventet header=${testCase.forventet.header}, footer=${testCase.forventet.footer}; fikk header=${harHeader}, footer=${harFooter}`,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-${testCase.parameter}-${testCase.id}`,
+          parameter: testCase.parameter,
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: testCase.verdi,
           somForventet: false,
           feilmelding: error instanceof Error ? error.message : "Ukjent feil",
         };

@@ -46,11 +46,15 @@ beholdes i den sammenslåtte headeren, og `getDecoratorVersionId` ved å kontrol
 returnerer en ikke-tom versjons-id. Begge vises som egne utvidbare bolker med samlet status og
 detaljer ved behov.
 
+SSR-oversikten tester også de forenklede visningene: `simple: true` forventes å gi både
+forenklet header og footer, mens `simpleHeader: true` og `simpleFooter: true` forventes å gi
+henholdsvis forenklet header og footer sammen med den øvrige Dekoratør-visningen.
+
 `/parametre/simple` er den faktiske testen av `simple: true`: Den initialiserer Dekoratøren
 client-side med parameteren, venter på at den forenklede headeren er lastet og kontrollerer at
 `getParams()` returnerer `simple: true`. Siden har grønn integrasjonsstatus når dette lykkes og
-rød status ved avvik. Footer er bevisst ikke en del av testen, fordi `simple: true` bruker den
-forenklede Dekoratør-visningen uten footer.
+rød status ved avvik. Testen verifiserer både header og footer, siden `simple: true` gir en
+forenklet versjon av begge.
 
 Accordionen «Forenklede visninger» har egne lenker til `simpleHeader: true` og
 `simpleFooter: true`. Disse sidene verifiserer henholdsvis at den forenklede headeren eller

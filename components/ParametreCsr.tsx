@@ -135,20 +135,7 @@ export function ParametreCsr() {
       <ParameterBolker rader={rader} />
       <Accordion>
         <AccordionItem>
-          <AccordionHeader>setParams/getParams</AccordionHeader>
-          <AccordionContent>
-            <p>
-              Denne funksjonen testes i en egen visning, der Dekoratøren
-              initialiseres med <code>simple: true</code> og verdien leses
-              tilbake med <code>getParams()</code>.
-            </p>
-            <a href="/parametre/simple">
-              Åpne testen for simple: true
-            </a>
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem>
-          <AccordionHeader>Forenklede visninger</AccordionHeader>
+          <AccordionHeader>Forenklede visninger (simple)</AccordionHeader>
           <AccordionContent>
             <p>
               Disse parameterne testes i egne visninger fordi de endrer hvilke
@@ -164,6 +151,17 @@ export function ParametreCsr() {
                 Åpne testen for simpleFooter: true
               </a>
             </p>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem>
+          <AccordionHeader>setParams/getParams</AccordionHeader>
+          <AccordionContent>
+            <p>
+              Denne funksjonen testes i en egen visning, der Dekoratøren
+              initialiseres med <code>simple: true</code> og verdien leses
+              tilbake med <code>getParams()</code>.
+            </p>
+            <a href="/parametre/simple">Åpne testen for simple: true</a>
           </AccordionContent>
         </AccordionItem>
       </Accordion>

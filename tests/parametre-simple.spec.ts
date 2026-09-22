@@ -6,7 +6,7 @@ test("simple: true initialiserer Dekoratøren med forventet parameter", async ({
   await page.goto("/parametre/simple");
 
   await expect(page.locator("header")).toBeAttached({ timeout: 15_000 });
-  await expect(page.locator("footer")).not.toBeAttached();
+  await expect(page.locator("footer")).toBeAttached({ timeout: 15_000 });
   await expect(page.getByTestId("simple-parameter")).toHaveText(
     "simple: true",
   );

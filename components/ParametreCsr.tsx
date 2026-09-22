@@ -1,12 +1,6 @@
 "use client";
 
 import {
-  Accordion,
-  AccordionContent,
-  AccordionHeader,
-  AccordionItem,
-} from "@navikt/ds-react/Accordion";
-import {
   getParams,
   injectDecoratorClientSide,
   setAvailableLanguages,
@@ -279,12 +273,14 @@ export function ParametreCsr() {
 
   if (!rader) return <p>⏳ Kjører CSR-tester …</p>;
   return (
-    <>
-      <ParameterBolker rader={rader} />
-      <Accordion>
-        <AccordionItem>
-          <AccordionHeader>Forenklede visninger (simple)</AccordionHeader>
-          <AccordionContent>
+    <ParameterBolker
+      rader={rader}
+      ekstraBolker={[
+        {
+          id: "forenklede-visninger",
+          tittel: "Forenklede visninger (simple)",
+          innhold: (
+            <>
             <p>
               Disse parameterne testes i egne visninger fordi de endrer hvilke
               deler av Dekoratøren som rendres.
@@ -299,21 +295,25 @@ export function ParametreCsr() {
                 Åpne testen for simpleFooter: true
               </a>
             </p>
-          </AccordionContent>
-        </AccordionItem>
-        <AccordionItem>
-          <AccordionHeader>setParams/getParams</AccordionHeader>
-          <AccordionContent>
+            </>
+          ),
+        },
+        {
+          id: "set-params-get-params",
+          tittel: "setParams/getParams",
+          innhold: (
+            <>
             <p>
               Denne funksjonen testes i en egen visning, der Dekoratøren
               initialiseres med <code>simple: true</code> og verdien leses
               tilbake med <code>getParams()</code>.
             </p>
             <a href="/parametre/simple">Åpne testen for simple: true</a>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-    </>
+            </>
+          ),
+        },
+      ]}
+    />
   );
 }
 

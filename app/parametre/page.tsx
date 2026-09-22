@@ -1,6 +1,6 @@
 import { ParametreCsr } from "../../components/ParametreCsr";
 import { ParameterBolker } from "../../components/ParameterBolker";
-import { SsrForenkledeVisninger } from "../../components/SsrForenkledeVisninger";
+import { TestTabell } from "../../components/TestTabell";
 import {
   kjorSsrAvailableLanguagesTester,
   kjorSsrBreadcrumbTester,
@@ -66,8 +66,17 @@ export default async function ParametrePage() {
           ...cspRader,
           ...versjonsRader,
         ]}
+        ekstraBolker={[
+          {
+            id: "forenklede-visninger",
+            tittel: "Forenklede visninger (simple)",
+            somForventet: forenkletVisningRader.every(
+              (rad) => rad.somForventet,
+            ),
+            innhold: <TestTabell rader={forenkletVisningRader} />,
+          },
+        ]}
       />
-      <SsrForenkledeVisninger rader={forenkletVisningRader} />
 
       <h2>CSR</h2>
       <ParametreCsr />

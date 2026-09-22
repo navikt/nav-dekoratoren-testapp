@@ -1,6 +1,7 @@
 import {
   buildCspHeader,
   fetchDecoratorReact,
+  getDecoratorVersionId,
 } from "@navikt/nav-dekoratoren-moduler/ssr";
 import { decoratorParams } from "./decorator-params";
 import {
@@ -129,6 +130,41 @@ export async function kjorSsrCspTester(): Promise<TestRad[]> {
           "Dekoratørens CSP kan slås sammen med appens default-src og connect-src uten at appens direktiver forsvinner.",
         verdi:
           "default-src: 'self' | connect-src: nav-dekoratoren-testapp.dev.nav.no",
+        somForventet: false,
+        feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+      },
+    ];
+  }
+}
+
+export async function kjorSsrDekoratorVersjonTester(): Promise<TestRad[]> {
+  try {
+    const versjonsId = await getDecoratorVersionId({ env: "dev" });
+
+    return [
+      {
+        id: "ssr-decorator-version-id",
+        parameter: "getDecoratorVersionId",
+        testcase: "Gjeldende versjon",
+        beskrivelse:
+          "Dekoratøren returnerer en versjons-id som kan brukes til å oppdage oppdateringer og invalidere en eventuell HTML-cache.",
+        verdi: versjonsId || "(tom versjons-id)",
+        somForventet: versjonsId.length > 0,
+        feilmelding:
+          versjonsId.length > 0
+            ? undefined
+            : "Dekoratøren returnerte en tom versjons-id",
+      },
+    ];
+  } catch (error) {
+    return [
+      {
+        id: "ssr-decorator-version-id",
+        parameter: "getDecoratorVersionId",
+        testcase: "Gjeldende versjon",
+        beskrivelse:
+          "Dekoratøren returnerer en versjons-id som kan brukes til å oppdage oppdateringer og invalidere en eventuell HTML-cache.",
+        verdi: "–",
         somForventet: false,
         feilmelding: error instanceof Error ? error.message : "Ukjent feil",
       },

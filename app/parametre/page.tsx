@@ -4,16 +4,18 @@ import {
   kjorSsrAvailableLanguagesTester,
   kjorSsrBreadcrumbTester,
   kjorSsrCspTester,
+  kjorSsrDekoratorVersjonTester,
 } from "../../lib/parameter-sjekk-ssr";
 
 export const dynamic = "force-dynamic";
 
 export default async function ParametrePage() {
-  const [breadcrumbRader, availableLanguagesRader, cspRader] =
+  const [breadcrumbRader, availableLanguagesRader, cspRader, versjonsRader] =
     await Promise.all([
-    kjorSsrBreadcrumbTester(),
-    kjorSsrAvailableLanguagesTester(),
-    kjorSsrCspTester(),
+      kjorSsrBreadcrumbTester(),
+      kjorSsrAvailableLanguagesTester(),
+      kjorSsrCspTester(),
+      kjorSsrDekoratorVersjonTester(),
     ]);
 
   return (
@@ -30,7 +32,12 @@ export default async function ParametrePage() {
 
       <h2>SSR</h2>
       <ParameterBolker
-        rader={[...breadcrumbRader, ...availableLanguagesRader, ...cspRader]}
+        rader={[
+          ...breadcrumbRader,
+          ...availableLanguagesRader,
+          ...cspRader,
+          ...versjonsRader,
+        ]}
       />
 
       <h2>CSR</h2>

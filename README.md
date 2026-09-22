@@ -39,6 +39,11 @@ tittel. `availableLanguages` dekker alle støttede locales (`nb`, `nn`, `en`, `s
 `ru`), tom liste og `handleInApp`. CSR har også en egen accordion for `setParams`/`getParams`,
 med lenke til `/parametre/simple`.
 
+SSR-oversikten tester også `buildCspHeader` ved å kontrollere at appens egne CSP-direktiver
+beholdes i den sammenslåtte headeren, og `getDecoratorVersionId` ved å kontrollere at Dekoratøren
+returnerer en ikke-tom versjons-id. Begge vises som egne utvidbare bolker med samlet status og
+detaljer ved behov.
+
 `/parametre/simple` er den faktiske testen av `simple: true`: Den initialiserer Dekoratøren
 client-side med parameteren, venter på at den forenklede headeren er lastet og kontrollerer at
 `getParams()` returnerer `simple: true`. Siden har grønn integrasjonsstatus når dette lykkes og

@@ -63,6 +63,13 @@ export type ShareScreenTestCase = {
   shareScreen: NonNullable<DecoratorParams["shareScreen"]>;
 };
 
+export type FeedbackTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  feedback: NonNullable<DecoratorParams["feedback"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -292,5 +299,22 @@ export const shareScreenTestCases: ShareScreenTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar shareScreen=false, som deaktiverer funksjonalitet for skjermdeling.",
     shareScreen: false,
+  },
+];
+
+export const feedbackTestCases: FeedbackTestCase[] = [
+  {
+    id: "aktivert",
+    navn: "Aktivert",
+    beskrivelse:
+      "Dekoratøren godtar feedback=true, som viser tilbakemeldingskomponenten.",
+    feedback: true,
+  },
+  {
+    id: "deaktivert",
+    navn: "Deaktivert",
+    beskrivelse:
+      "Dekoratøren godtar feedback=false, som skjuler tilbakemeldingskomponenten.",
+    feedback: false,
   },
 ];

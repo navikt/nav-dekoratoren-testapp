@@ -14,6 +14,7 @@ import {
   breadcrumbTestCases,
   chatbotTestCases,
   contextTestCases,
+  feedbackTestCases,
   logoutWarningTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
@@ -175,6 +176,31 @@ export function ParametreCsr() {
           });
         }
       }
+      const feedbackResultater: TestRad[] = [];
+      for (const testCase of feedbackTestCases) {
+        try {
+          await setParams({ feedback: testCase.feedback });
+          await ventPaParameter("feedback", testCase.feedback);
+          feedbackResultater.push({
+            id: `csr-feedback-${testCase.id}`,
+            parameter: "feedback",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.feedback),
+            somForventet: true,
+          });
+        } catch (error) {
+          feedbackResultater.push({
+            id: `csr-feedback-${testCase.id}`,
+            parameter: "feedback",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.feedback),
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
       const logoutWarningResultater: TestRad[] = [];
       for (const testCase of logoutWarningTestCases) {
         try {
@@ -310,6 +336,7 @@ export function ParametreCsr() {
         ...sprakResultater,
         ...contextResultater,
         ...chatbotResultater,
+        ...feedbackResultater,
         ...logoutWarningResultater,
         ...shareScreenResultater,
         ...redirectToAppResultater,
@@ -321,6 +348,7 @@ export function ParametreCsr() {
       await setAvailableLanguages([]);
       await setParams({ context: "privatperson" });
       await setParams({ chatbot: true });
+      await setParams({ feedback: false });
       await setParams({ logoutWarning: true });
       await setParams({ shareScreen: true });
       await setParams({ redirectToApp: false });
@@ -383,6 +411,7 @@ async function ventPaParameter(
   parameter:
     | "context"
     | "chatbot"
+    | "feedback"
     | "logoutWarning"
     | "shareScreen"
     | "redirectToApp"

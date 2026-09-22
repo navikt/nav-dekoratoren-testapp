@@ -44,6 +44,7 @@ verdi, feilmelding og en kort forklaring av hva som testes.
 | `chatbot` | `true` og `false` | SSR og CSR |
 | `chatbotVisible` | `true` og `false` | SSR og CSR |
 | `feedback` | `true` og `false` | SSR og CSR |
+| `language` | Alle støttede språk (`nb`, `nn`, `en`, `se`, `pl`, `uk`, `ru`) | SSR og CSR |
 | `logoutWarning` | `true` og `false` | SSR og CSR |
 | `shareScreen` | `true` og `false`, uten å starte skjermdeling | SSR og CSR |
 | `redirectToApp` | `true` og `false`, uten å gjennomføre innlogging | SSR og CSR |

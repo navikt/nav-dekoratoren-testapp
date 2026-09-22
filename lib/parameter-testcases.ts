@@ -77,6 +77,13 @@ export type FeedbackTestCase = {
   feedback: NonNullable<DecoratorParams["feedback"]>;
 };
 
+export type LanguageTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  language: NonNullable<DecoratorParams["language"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -340,5 +347,50 @@ export const feedbackTestCases: FeedbackTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar feedback=false, som skjuler tilbakemeldingskomponenten.",
     feedback: false,
+  },
+];
+
+export const languageTestCases: LanguageTestCase[] = [
+  {
+    id: "bokmal",
+    navn: "Bokmål",
+    beskrivelse: "Dekoratøren godtar bokmål som aktivt visningsspråk.",
+    language: "nb",
+  },
+  {
+    id: "nynorsk",
+    navn: "Nynorsk",
+    beskrivelse: "Dekoratøren godtar nynorsk som aktivt visningsspråk.",
+    language: "nn",
+  },
+  {
+    id: "engelsk",
+    navn: "Engelsk",
+    beskrivelse: "Dekoratøren godtar engelsk som aktivt visningsspråk.",
+    language: "en",
+  },
+  {
+    id: "samisk",
+    navn: "Samisk",
+    beskrivelse: "Dekoratøren godtar samisk som aktivt visningsspråk.",
+    language: "se",
+  },
+  {
+    id: "polsk",
+    navn: "Polsk",
+    beskrivelse: "Dekoratøren godtar polsk som aktivt visningsspråk.",
+    language: "pl",
+  },
+  {
+    id: "ukrainsk",
+    navn: "Ukrainsk",
+    beskrivelse: "Dekoratøren godtar ukrainsk som aktivt visningsspråk.",
+    language: "uk",
+  },
+  {
+    id: "russisk",
+    navn: "Russisk",
+    beskrivelse: "Dekoratøren godtar russisk som aktivt visningsspråk.",
+    language: "ru",
   },
 ];

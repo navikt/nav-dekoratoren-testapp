@@ -49,6 +49,13 @@ export type ChatbotTestCase = {
   chatbot: NonNullable<DecoratorParams["chatbot"]>;
 };
 
+export type LogoutWarningTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  logoutWarning: NonNullable<DecoratorParams["logoutWarning"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -244,5 +251,22 @@ export const chatbotTestCases: ChatbotTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar chatbot=false, som deaktiverer chatbot-funksjonaliteten.",
     chatbot: false,
+  },
+];
+
+export const logoutWarningTestCases: LogoutWarningTestCase[] = [
+  {
+    id: "aktivert",
+    navn: "Aktivert",
+    beskrivelse:
+      "Dekoratøren godtar logoutWarning=true, som aktiverer varsel før innloggingsøkten utløper.",
+    logoutWarning: true,
+  },
+  {
+    id: "deaktivert",
+    navn: "Deaktivert",
+    beskrivelse:
+      "Dekoratøren godtar logoutWarning=false, som deaktiverer Dekoratørens utloggingsvarsel.",
+    logoutWarning: false,
   },
 ];

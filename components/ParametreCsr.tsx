@@ -14,6 +14,7 @@ import {
   breadcrumbTestCases,
   chatbotTestCases,
   contextTestCases,
+  logoutWarningTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
   redirectToUrlLogoutTestCases,
@@ -173,6 +174,31 @@ export function ParametreCsr() {
           });
         }
       }
+      const logoutWarningResultater: TestRad[] = [];
+      for (const testCase of logoutWarningTestCases) {
+        try {
+          await setParams({ logoutWarning: testCase.logoutWarning });
+          await ventPaParameter("logoutWarning", testCase.logoutWarning);
+          logoutWarningResultater.push({
+            id: `csr-logout-warning-${testCase.id}`,
+            parameter: "logoutWarning",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.logoutWarning),
+            somForventet: true,
+          });
+        } catch (error) {
+          logoutWarningResultater.push({
+            id: `csr-logout-warning-${testCase.id}`,
+            parameter: "logoutWarning",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.logoutWarning),
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
       const redirectToAppResultater: TestRad[] = [];
       for (const testCase of redirectToAppTestCases) {
         try {
@@ -258,6 +284,7 @@ export function ParametreCsr() {
         ...sprakResultater,
         ...contextResultater,
         ...chatbotResultater,
+        ...logoutWarningResultater,
         ...redirectToAppResultater,
         ...redirectToUrlResultater,
         ...redirectToUrlLogoutResultater,
@@ -267,6 +294,7 @@ export function ParametreCsr() {
       await setAvailableLanguages([]);
       await setParams({ context: "privatperson" });
       await setParams({ chatbot: true });
+      await setParams({ logoutWarning: true });
       await setParams({ redirectToApp: false });
     })();
   }, []);
@@ -327,6 +355,7 @@ async function ventPaParameter(
   parameter:
     | "context"
     | "chatbot"
+    | "logoutWarning"
     | "redirectToApp"
     | "redirectToUrl"
     | "redirectToUrlLogout",

@@ -10,6 +10,7 @@ import {
   breadcrumbTestCases,
   chatbotTestCases,
   contextTestCases,
+  logoutWarningTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
   redirectToUrlLogoutTestCases,
@@ -122,6 +123,40 @@ export async function kjorSsrChatbotTester(): Promise<TestRad[]> {
           testcase: testCase.navn,
           beskrivelse: testCase.beskrivelse,
           verdi: String(testCase.chatbot),
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
+  );
+}
+
+export async function kjorSsrLogoutWarningTester(): Promise<TestRad[]> {
+  return Promise.all(
+    logoutWarningTestCases.map(async (testCase): Promise<TestRad> => {
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: {
+            ...decoratorParams,
+            logoutWarning: testCase.logoutWarning,
+          },
+        });
+        return {
+          id: `ssr-logout-warning-${testCase.id}`,
+          parameter: "logoutWarning",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: String(testCase.logoutWarning),
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-logout-warning-${testCase.id}`,
+          parameter: "logoutWarning",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: String(testCase.logoutWarning),
           somForventet: false,
           feilmelding: error instanceof Error ? error.message : "Ukjent feil",
         };

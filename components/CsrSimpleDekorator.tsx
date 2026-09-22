@@ -17,6 +17,8 @@ export function CsrSimpleDekorator() {
       rendering="klient"
       transport="offentlig dev-ingress"
       teamName={teamName}
+      backHref="/parametre"
+      backLabel="Tilbake"
       initialStatus="initializing"
       observe={async () => {
         await injectDecoratorClientSide({

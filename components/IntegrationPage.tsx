@@ -15,13 +15,17 @@ type Props = {
   initialStatus?: IntegrationStatusValue;
   errorMessage?: string;
   observe?: () => Promise<void>;
+  backHref?: string;
+  backLabel?: string;
 };
 
 export function IntegrationPage(props: Props) {
   return (
     <main>
       <p>
-        <a href="/">Tilbake til oversikten</a>
+        <a href={props.backHref ?? "/"}>
+          {props.backLabel ?? "Tilbake til oversikten"}
+        </a>
       </p>
       <h1>{props.title}</h1>
       <p>{props.description}</p>

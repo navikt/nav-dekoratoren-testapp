@@ -14,6 +14,7 @@ import {
   redirectToAppTestCases,
   redirectToUrlTestCases,
   redirectToUrlLogoutTestCases,
+  shareScreenTestCases,
 } from "./parameter-testcases";
 import type { TestRad } from "./test-rad";
 
@@ -157,6 +158,40 @@ export async function kjorSsrLogoutWarningTester(): Promise<TestRad[]> {
           testcase: testCase.navn,
           beskrivelse: testCase.beskrivelse,
           verdi: String(testCase.logoutWarning),
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
+  );
+}
+
+export async function kjorSsrShareScreenTester(): Promise<TestRad[]> {
+  return Promise.all(
+    shareScreenTestCases.map(async (testCase): Promise<TestRad> => {
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: {
+            ...decoratorParams,
+            shareScreen: testCase.shareScreen,
+          },
+        });
+        return {
+          id: `ssr-share-screen-${testCase.id}`,
+          parameter: "shareScreen",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: String(testCase.shareScreen),
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-share-screen-${testCase.id}`,
+          parameter: "shareScreen",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: String(testCase.shareScreen),
           somForventet: false,
           feilmelding: error instanceof Error ? error.message : "Ukjent feil",
         };

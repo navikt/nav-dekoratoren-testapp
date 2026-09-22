@@ -56,6 +56,13 @@ export type LogoutWarningTestCase = {
   logoutWarning: NonNullable<DecoratorParams["logoutWarning"]>;
 };
 
+export type ShareScreenTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  shareScreen: NonNullable<DecoratorParams["shareScreen"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -268,5 +275,22 @@ export const logoutWarningTestCases: LogoutWarningTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar logoutWarning=false, som deaktiverer Dekoratørens utloggingsvarsel.",
     logoutWarning: false,
+  },
+];
+
+export const shareScreenTestCases: ShareScreenTestCase[] = [
+  {
+    id: "aktivert",
+    navn: "Aktivert",
+    beskrivelse:
+      "Dekoratøren godtar shareScreen=true, som aktiverer funksjonalitet for skjermdeling.",
+    shareScreen: true,
+  },
+  {
+    id: "deaktivert",
+    navn: "Deaktivert",
+    beskrivelse:
+      "Dekoratøren godtar shareScreen=false, som deaktiverer funksjonalitet for skjermdeling.",
+    shareScreen: false,
   },
 ];

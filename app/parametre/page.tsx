@@ -13,6 +13,7 @@ import {
   kjorSsrRedirectToAppTester,
   kjorSsrRedirectToUrlTester,
   kjorSsrRedirectToUrlLogoutTester,
+  kjorSsrShareScreenTester,
 } from "../../lib/parameter-sjekk-ssr";
 
 export const dynamic = "force-dynamic";
@@ -23,6 +24,7 @@ export default async function ParametrePage() {
     availableLanguagesRader,
     chatbotRader,
     logoutWarningRader,
+    shareScreenRader,
     contextRader,
     redirectToAppRader,
     redirectToUrlRader,
@@ -31,18 +33,19 @@ export default async function ParametrePage() {
     cspRader,
     versjonsRader,
   ] = await Promise.all([
-      kjorSsrBreadcrumbTester(),
-      kjorSsrAvailableLanguagesTester(),
-      kjorSsrChatbotTester(),
-      kjorSsrLogoutWarningTester(),
-      kjorSsrContextTester(),
-      kjorSsrRedirectToAppTester(),
-      kjorSsrRedirectToUrlTester(),
-      kjorSsrRedirectToUrlLogoutTester(),
-      kjorSsrForenkletVisningTester(),
-      kjorSsrCspTester(),
-      kjorSsrDekoratorVersjonTester(),
-    ]);
+    kjorSsrBreadcrumbTester(),
+    kjorSsrAvailableLanguagesTester(),
+    kjorSsrChatbotTester(),
+    kjorSsrLogoutWarningTester(),
+    kjorSsrShareScreenTester(),
+    kjorSsrContextTester(),
+    kjorSsrRedirectToAppTester(),
+    kjorSsrRedirectToUrlTester(),
+    kjorSsrRedirectToUrlLogoutTester(),
+    kjorSsrForenkletVisningTester(),
+    kjorSsrCspTester(),
+    kjorSsrDekoratorVersjonTester(),
+  ]);
 
   return (
     <main>
@@ -50,7 +53,10 @@ export default async function ParametrePage() {
         <a href="/">Tilbake til oversikten</a>
       </p>
       <h1>Parametertester</h1>
-      <p>Tester hvordan Dekoratøren håndterer ulike hjelpefunksjoner og parametre.</p>
+      <p>
+        Tester hvordan Dekoratøren håndterer ulike hjelpefunksjoner og
+        parametre.
+      </p>
       <ul>
         <li>✅ utfallet var som forventet</li>
         <li>❌ avvik, se feilmelding-kolonnen</li>
@@ -63,6 +69,7 @@ export default async function ParametrePage() {
           ...availableLanguagesRader,
           ...chatbotRader,
           ...logoutWarningRader,
+          ...shareScreenRader,
           ...contextRader,
           ...redirectToAppRader,
           ...redirectToUrlRader,
@@ -75,7 +82,7 @@ export default async function ParametrePage() {
             id: "forenklede-visninger",
             tittel: "Forenklede visninger (simple)",
             somForventet: forenkletVisningRader.every(
-              (rad) => rad.somForventet,
+              (rad: { somForventet: any }) => rad.somForventet,
             ),
             innhold: <TestTabell rader={forenkletVisningRader} />,
           },

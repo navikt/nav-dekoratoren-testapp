@@ -18,6 +18,7 @@ import {
   redirectToAppTestCases,
   redirectToUrlTestCases,
   redirectToUrlLogoutTestCases,
+  shareScreenTestCases,
 } from "../lib/parameter-testcases";
 import type { TestRad } from "../lib/test-rad";
 import { ParameterBolker } from "./ParameterBolker";
@@ -199,6 +200,31 @@ export function ParametreCsr() {
           });
         }
       }
+      const shareScreenResultater: TestRad[] = [];
+      for (const testCase of shareScreenTestCases) {
+        try {
+          await setParams({ shareScreen: testCase.shareScreen });
+          await ventPaParameter("shareScreen", testCase.shareScreen);
+          shareScreenResultater.push({
+            id: `csr-share-screen-${testCase.id}`,
+            parameter: "shareScreen",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.shareScreen),
+            somForventet: true,
+          });
+        } catch (error) {
+          shareScreenResultater.push({
+            id: `csr-share-screen-${testCase.id}`,
+            parameter: "shareScreen",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.shareScreen),
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
       const redirectToAppResultater: TestRad[] = [];
       for (const testCase of redirectToAppTestCases) {
         try {
@@ -285,6 +311,7 @@ export function ParametreCsr() {
         ...contextResultater,
         ...chatbotResultater,
         ...logoutWarningResultater,
+        ...shareScreenResultater,
         ...redirectToAppResultater,
         ...redirectToUrlResultater,
         ...redirectToUrlLogoutResultater,
@@ -295,6 +322,7 @@ export function ParametreCsr() {
       await setParams({ context: "privatperson" });
       await setParams({ chatbot: true });
       await setParams({ logoutWarning: true });
+      await setParams({ shareScreen: true });
       await setParams({ redirectToApp: false });
     })();
   }, []);
@@ -356,6 +384,7 @@ async function ventPaParameter(
     | "context"
     | "chatbot"
     | "logoutWarning"
+    | "shareScreen"
     | "redirectToApp"
     | "redirectToUrl"
     | "redirectToUrlLogout",

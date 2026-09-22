@@ -9,6 +9,7 @@ import {
   availableLanguagesTestCases,
   breadcrumbTestCases,
   contextTestCases,
+  redirectToAppTestCases,
 } from "./parameter-testcases";
 import type { TestRad } from "./test-rad";
 
@@ -130,6 +131,40 @@ export async function kjorSsrContextTester(): Promise<TestRad[]> {
         }
       },
     ),
+  );
+}
+
+export async function kjorSsrRedirectToAppTester(): Promise<TestRad[]> {
+  return Promise.all(
+    redirectToAppTestCases.map(async (testCase): Promise<TestRad> => {
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: {
+            ...decoratorParams,
+            redirectToApp: testCase.redirectToApp,
+          },
+        });
+        return {
+          id: `ssr-redirect-to-app-${testCase.id}`,
+          parameter: "redirectToApp",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: String(testCase.redirectToApp),
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-redirect-to-app-${testCase.id}`,
+          parameter: "redirectToApp",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: String(testCase.redirectToApp),
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
   );
 }
 

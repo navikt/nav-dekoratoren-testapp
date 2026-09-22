@@ -19,6 +19,7 @@ import {
   availableLanguagesTestCases,
   breadcrumbTestCases,
   contextTestCases,
+  redirectToAppTestCases,
 } from "../lib/parameter-testcases";
 import type { TestRad } from "../lib/test-rad";
 import { ParameterBolker } from "./ParameterBolker";
@@ -146,8 +147,32 @@ export function ParametreCsr() {
             beskrivelse: testCase.beskrivelse,
             verdi: testCase.context,
             somForventet: false,
-            feilmelding:
-              error instanceof Error ? error.message : "Ukjent feil",
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
+      const redirectToAppResultater: TestRad[] = [];
+      for (const testCase of redirectToAppTestCases) {
+        try {
+          await setParams({ redirectToApp: testCase.redirectToApp });
+          await ventPaParameter("redirectToApp", testCase.redirectToApp);
+          redirectToAppResultater.push({
+            id: `csr-redirect-to-app-${testCase.id}`,
+            parameter: "redirectToApp",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.redirectToApp),
+            somForventet: true,
+          });
+        } catch (error) {
+          redirectToAppResultater.push({
+            id: `csr-redirect-to-app-${testCase.id}`,
+            parameter: "redirectToApp",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.redirectToApp),
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
           });
         }
       }
@@ -155,11 +180,13 @@ export function ParametreCsr() {
         ...breadcrumbResultater,
         ...sprakResultater,
         ...contextResultater,
+        ...redirectToAppResultater,
       ]);
 
       await setBreadcrumbs([{ title: "Parametertester", url: "/parametre" }]);
       await setAvailableLanguages([]);
       await setParams({ context: "privatperson" });
+      await setParams({ redirectToApp: false });
     })();
   }, []);
 
@@ -206,11 +233,36 @@ export function ParametreCsr() {
 async function ventPaContext(
   forventetContext: (typeof contextTestCases)[number]["context"],
 ) {
+  return ventPaParameter("context", forventetContext);
+}
+
+async function ventPaParameter(
+  parameter: "context" | "redirectToApp",
+  forventetVerdi: string | boolean,
+) {
   const deadline = Date.now() + 10_000;
   while (Date.now() < deadline) {
     const params = await getParams();
-    if (params?.context === forventetContext) return;
+
+    // Det er en feil i Dekoratøren som gjør at
+    // setParams({ redirectToApp: true }) sender verdien, men Dekoratørens
+    // klientkode har en eksplisitt liste over parametere som kan oppdateres
+    // dynamisk. redirectToApp er ikke med i denne listen, selv om
+    // modulpakkens dokumentasjon sier at alle parametere kan brukes med
+    // setParams.
+
+    // false blir grønn fordi det allerede er standardverdien,
+    // ikke fordi oppdateringen nødvendigvis fungerer.
+
+    // SSR-testen kan fortsatt være grønn fordi redirectToApp fungerer ved
+    // førstegangsinitialisering. CSR-testen viser derimot at parameteren
+    // ikke kan endres dynamisk med setParams. Den røde statusen er derfor
+    // riktig og bør beholdes som et funn.
+
+    if (params?.[parameter] === forventetVerdi) return;
     await new Promise((resolve) => setTimeout(resolve, 100));
   }
-  throw new Error(`CSR_CONTEXT_NOT_SET: ${forventetContext}`);
+  throw new Error(
+    `CSR_${parameter.toUpperCase()}_NOT_SET: ${String(forventetVerdi)}`,
+  );
 }

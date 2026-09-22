@@ -21,6 +21,13 @@ export type ContextTestCase = {
   context: NonNullable<DecoratorParams["context"]>;
 };
 
+export type RedirectToAppTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  redirectToApp: NonNullable<DecoratorParams["redirectToApp"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -162,5 +169,22 @@ export const contextTestCases: ContextTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar samarbeidspartner og viser menyen for samarbeidspartnere.",
     context: "samarbeidspartner",
+  },
+];
+
+export const redirectToAppTestCases: RedirectToAppTestCase[] = [
+  {
+    id: "aktivert",
+    navn: "Aktivert",
+    beskrivelse:
+      "Dekoratøren godtar redirectToApp=true, som sender brukeren tilbake til gjeldende URL etter innlogging.",
+    redirectToApp: true,
+  },
+  {
+    id: "deaktivert",
+    navn: "Deaktivert",
+    beskrivelse:
+      "Dekoratøren godtar redirectToApp=false, som beholder standard oppførsel etter innlogging.",
+    redirectToApp: false,
   },
 ];

@@ -20,6 +20,7 @@ import {
   breadcrumbTestCases,
   contextTestCases,
   redirectToAppTestCases,
+  redirectToUrlTestCases,
 } from "../lib/parameter-testcases";
 import type { TestRad } from "../lib/test-rad";
 import { ParameterBolker } from "./ParameterBolker";
@@ -176,11 +177,37 @@ export function ParametreCsr() {
           });
         }
       }
+      const redirectToUrlResultater: TestRad[] = [];
+      for (const testCase of redirectToUrlTestCases) {
+        try {
+          await setParams({ redirectToUrl: testCase.redirectToUrl });
+          await ventPaParameter("redirectToUrl", testCase.redirectToUrl);
+          redirectToUrlResultater.push({
+            id: `csr-redirect-to-url-${testCase.id}`,
+            parameter: "redirectToUrl",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.redirectToUrl,
+            somForventet: true,
+          });
+        } catch (error) {
+          redirectToUrlResultater.push({
+            id: `csr-redirect-to-url-${testCase.id}`,
+            parameter: "redirectToUrl",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.redirectToUrl,
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
       setRader([
         ...breadcrumbResultater,
         ...sprakResultater,
         ...contextResultater,
         ...redirectToAppResultater,
+        ...redirectToUrlResultater,
       ]);
 
       await setBreadcrumbs([{ title: "Parametertester", url: "/parametre" }]);
@@ -237,27 +264,12 @@ async function ventPaContext(
 }
 
 async function ventPaParameter(
-  parameter: "context" | "redirectToApp",
+  parameter: "context" | "redirectToApp" | "redirectToUrl",
   forventetVerdi: string | boolean,
 ) {
   const deadline = Date.now() + 10_000;
   while (Date.now() < deadline) {
     const params = await getParams();
-
-    // Det er en feil i Dekoratøren som gjør at
-    // setParams({ redirectToApp: true }) sender verdien, men Dekoratørens
-    // klientkode har en eksplisitt liste over parametere som kan oppdateres
-    // dynamisk. redirectToApp er ikke med i denne listen, selv om
-    // modulpakkens dokumentasjon sier at alle parametere kan brukes med
-    // setParams.
-
-    // false blir grønn fordi det allerede er standardverdien,
-    // ikke fordi oppdateringen nødvendigvis fungerer.
-
-    // SSR-testen kan fortsatt være grønn fordi redirectToApp fungerer ved
-    // førstegangsinitialisering. CSR-testen viser derimot at parameteren
-    // ikke kan endres dynamisk med setParams. Den røde statusen er derfor
-    // riktig og bør beholdes som et funn.
 
     if (params?.[parameter] === forventetVerdi) return;
     await new Promise((resolve) => setTimeout(resolve, 100));

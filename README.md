@@ -41,8 +41,8 @@ tittel. `availableLanguages` dekker alle støttede locales (`nb`, `nn`, `en`, `s
 `ru`), tom liste og `handleInApp`. `context` dekker `privatperson`, `arbeidsgiver` og
 `samarbeidspartner` i både SSR og CSR. `redirectToApp` testes med både `true` og `false`; testen
 verifiserer at konfigurasjonen godtas og kan leses tilbake, men gjennomfører ikke en faktisk
-innlogging. CSR har også en egen accordion for `setParams`/`getParams`, med lenke til
-`/parametre/simple`.
+innlogging. `redirectToUrl` testes med en gyldig nav.no-URL etter samme prinsipp. CSR har også en
+egen accordion for `setParams`/`getParams`, med lenke til `/parametre/simple`.
 
 SSR-oversikten tester også `buildCspHeader` ved å kontrollere at appens egne CSP-direktiver
 beholdes i den sammenslåtte headeren, og `getDecoratorVersionId` ved å kontrollere at Dekoratøren

@@ -10,6 +10,7 @@ import {
   breadcrumbTestCases,
   contextTestCases,
   redirectToAppTestCases,
+  redirectToUrlTestCases,
 } from "./parameter-testcases";
 import type { TestRad } from "./test-rad";
 
@@ -160,6 +161,40 @@ export async function kjorSsrRedirectToAppTester(): Promise<TestRad[]> {
           testcase: testCase.navn,
           beskrivelse: testCase.beskrivelse,
           verdi: String(testCase.redirectToApp),
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
+  );
+}
+
+export async function kjorSsrRedirectToUrlTester(): Promise<TestRad[]> {
+  return Promise.all(
+    redirectToUrlTestCases.map(async (testCase): Promise<TestRad> => {
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: {
+            ...decoratorParams,
+            redirectToUrl: testCase.redirectToUrl,
+          },
+        });
+        return {
+          id: `ssr-redirect-to-url-${testCase.id}`,
+          parameter: "redirectToUrl",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: testCase.redirectToUrl,
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-redirect-to-url-${testCase.id}`,
+          parameter: "redirectToUrl",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: testCase.redirectToUrl,
           somForventet: false,
           feilmelding: error instanceof Error ? error.message : "Ukjent feil",
         };

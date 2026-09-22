@@ -9,6 +9,7 @@ import {
   kjorSsrDekoratorVersjonTester,
   kjorSsrForenkletVisningTester,
   kjorSsrRedirectToAppTester,
+  kjorSsrRedirectToUrlTester,
 } from "../../lib/parameter-sjekk-ssr";
 
 export const dynamic = "force-dynamic";
@@ -19,6 +20,7 @@ export default async function ParametrePage() {
     availableLanguagesRader,
     contextRader,
     redirectToAppRader,
+    redirectToUrlRader,
     forenkletVisningRader,
     cspRader,
     versjonsRader,
@@ -27,6 +29,7 @@ export default async function ParametrePage() {
       kjorSsrAvailableLanguagesTester(),
       kjorSsrContextTester(),
       kjorSsrRedirectToAppTester(),
+      kjorSsrRedirectToUrlTester(),
       kjorSsrForenkletVisningTester(),
       kjorSsrCspTester(),
       kjorSsrDekoratorVersjonTester(),
@@ -51,6 +54,7 @@ export default async function ParametrePage() {
           ...availableLanguagesRader,
           ...contextRader,
           ...redirectToAppRader,
+          ...redirectToUrlRader,
           ...cspRader,
           ...versjonsRader,
         ]}

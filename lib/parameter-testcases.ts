@@ -28,6 +28,13 @@ export type RedirectToAppTestCase = {
   redirectToApp: NonNullable<DecoratorParams["redirectToApp"]>;
 };
 
+export type RedirectToUrlTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  redirectToUrl: NonNullable<DecoratorParams["redirectToUrl"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -186,5 +193,15 @@ export const redirectToAppTestCases: RedirectToAppTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar redirectToApp=false, som beholder standard oppførsel etter innlogging.",
     redirectToApp: false,
+  },
+];
+
+export const redirectToUrlTestCases: RedirectToUrlTestCase[] = [
+  {
+    id: "nav-no",
+    navn: "Gyldig nav.no-URL",
+    beskrivelse:
+      "Dekoratøren godtar en fullstendig nav.no-URL som mål etter innlogging.",
+    redirectToUrl: "https://www.nav.no/minside",
   },
 ];

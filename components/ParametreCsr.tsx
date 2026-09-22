@@ -18,6 +18,7 @@ import { decoratorParams } from "../lib/decorator-params";
 import {
   availableLanguagesTestCases,
   breadcrumbTestCases,
+  chatbotTestCases,
   contextTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
@@ -153,6 +154,31 @@ export function ParametreCsr() {
           });
         }
       }
+      const chatbotResultater: TestRad[] = [];
+      for (const testCase of chatbotTestCases) {
+        try {
+          await setParams({ chatbot: testCase.chatbot });
+          await ventPaParameter("chatbot", testCase.chatbot);
+          chatbotResultater.push({
+            id: `csr-chatbot-${testCase.id}`,
+            parameter: "chatbot",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.chatbot),
+            somForventet: true,
+          });
+        } catch (error) {
+          chatbotResultater.push({
+            id: `csr-chatbot-${testCase.id}`,
+            parameter: "chatbot",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.chatbot),
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
       const redirectToAppResultater: TestRad[] = [];
       for (const testCase of redirectToAppTestCases) {
         try {
@@ -237,6 +263,7 @@ export function ParametreCsr() {
         ...breadcrumbResultater,
         ...sprakResultater,
         ...contextResultater,
+        ...chatbotResultater,
         ...redirectToAppResultater,
         ...redirectToUrlResultater,
         ...redirectToUrlLogoutResultater,
@@ -245,6 +272,7 @@ export function ParametreCsr() {
       await setBreadcrumbs([{ title: "Parametertester", url: "/parametre" }]);
       await setAvailableLanguages([]);
       await setParams({ context: "privatperson" });
+      await setParams({ chatbot: true });
       await setParams({ redirectToApp: false });
     })();
   }, []);
@@ -298,6 +326,7 @@ async function ventPaContext(
 async function ventPaParameter(
   parameter:
     | "context"
+    | "chatbot"
     | "redirectToApp"
     | "redirectToUrl"
     | "redirectToUrlLogout",

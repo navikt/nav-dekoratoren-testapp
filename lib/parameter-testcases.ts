@@ -42,6 +42,13 @@ export type RedirectToUrlLogoutTestCase = {
   redirectToUrlLogout: NonNullable<DecoratorParams["redirectToUrlLogout"]>;
 };
 
+export type ChatbotTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  chatbot: NonNullable<DecoratorParams["chatbot"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -220,5 +227,22 @@ export const redirectToUrlLogoutTestCases: RedirectToUrlLogoutTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar en fullstendig nav.no-URL som mål etter utlogging.",
     redirectToUrlLogout: "https://www.nav.no",
+  },
+];
+
+export const chatbotTestCases: ChatbotTestCase[] = [
+  {
+    id: "aktivert",
+    navn: "Aktivert",
+    beskrivelse:
+      "Dekoratøren godtar chatbot=true, som aktiverer chatbot-funksjonaliteten.",
+    chatbot: true,
+  },
+  {
+    id: "deaktivert",
+    navn: "Deaktivert",
+    beskrivelse:
+      "Dekoratøren godtar chatbot=false, som deaktiverer chatbot-funksjonaliteten.",
+    chatbot: false,
   },
 ];

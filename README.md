@@ -36,34 +36,21 @@ Hver parameter vises som en utvidbar Aksel-bolk. Bolkens status er grønn når a
 testcaser er grønne, og rød når minst én testcase feiler. Detaljtabellen viser testcase, komplett
 verdi, feilmelding og en kort forklaring av hva som testes.
 
-`breadcrumbs` dekker vanlige nav.no-lenker, tom liste, `handleInApp` og vanlige spesialtegn i en
-tittel. `availableLanguages` dekker alle støttede locales (`nb`, `nn`, `en`, `se`, `pl`, `uk` og
-`ru`), tom liste og `handleInApp`. `context` dekker `privatperson`, `arbeidsgiver` og
-`samarbeidspartner` i både SSR og CSR. `redirectToApp` testes med både `true` og `false`; testen
-verifiserer at konfigurasjonen godtas og kan leses tilbake, men gjennomfører ikke en faktisk
-innlogging. `redirectToUrl` testes med en gyldig nav.no-URL etter samme prinsipp, og
-`redirectToUrlLogout` gjør det samme for utlogging. CSR har også en egen accordion for
-`setParams`/`getParams`, med lenke til `/parametre/simple`.
-
-SSR-oversikten tester også `buildCspHeader` ved å kontrollere at appens egne CSP-direktiver
-beholdes i den sammenslåtte headeren, og `getDecoratorVersionId` ved å kontrollere at Dekoratøren
-returnerer en ikke-tom versjons-id. Begge vises som egne utvidbare bolker med samlet status og
-detaljer ved behov.
-
-SSR-oversikten tester også de forenklede visningene: `simple: true` forventes å gi både
-forenklet header og footer, mens `simpleHeader: true` og `simpleFooter: true` forventes å gi
-henholdsvis forenklet header og footer sammen med den øvrige Dekoratør-visningen.
-
-`/parametre/simple` er den faktiske testen av `simple: true`: Den initialiserer Dekoratøren
-client-side med parameteren, venter på at den forenklede headeren er lastet og kontrollerer at
-`getParams()` returnerer `simple: true`. Siden har grønn integrasjonsstatus når dette lykkes og
-rød status ved avvik. Testen verifiserer både header og footer, siden `simple: true` gir en
-forenklet versjon av begge.
-
-Accordionen «Forenklede visninger» har egne lenker til `simpleHeader: true` og
-`simpleFooter: true`. Disse sidene verifiserer henholdsvis at den forenklede headeren eller
-footer-versjonen lastes, at den øvrige Dekoratør-delen fortsatt finnes, og at parameteren kan
-leses tilbake med `getParams()`.
+| Parameter eller funksjon | Testdekning | Integrasjon |
+| ------------------------ | ----------- | ----------- |
+| `breadcrumbs` | Vanlige nav.no-lenker, tom liste, `handleInApp` og spesialtegn i tittel | SSR og CSR |
+| `availableLanguages` | Alle støttede språk, tom liste og `handleInApp` | SSR og CSR |
+| `context` | `privatperson`, `arbeidsgiver` og `samarbeidspartner` | SSR og CSR |
+| `chatbot` | `true` og `false` | SSR og CSR |
+| `redirectToApp` | `true` og `false`, uten å gjennomføre innlogging | SSR og CSR |
+| `redirectToUrl` | Gyldig nav.no-URL, uten å gjennomføre innlogging | SSR og CSR |
+| `redirectToUrlLogout` | Gyldig nav.no-URL, uten å gjennomføre utlogging | SSR og CSR |
+| `simple` | Forenklet header og footer, samt tilbakeverdi fra `getParams()` | SSR og CSR på `/parametre/simple` |
+| `simpleHeader` | Forenklet header mens footeren fortsatt finnes, samt tilbakeverdi fra `getParams()` | SSR og CSR på `/parametre/simple-header` |
+| `simpleFooter` | Forenklet footer mens headeren fortsatt finnes, samt tilbakeverdi fra `getParams()` | SSR og CSR på `/parametre/simple-footer` |
+| `setParams` / `getParams` | Setter og leser tilbake CSR-parametere | CSR |
+| `buildCspHeader` | Appens CSP-direktiver beholdes i den sammenslåtte headeren | SSR |
+| `getDecoratorVersionId` | Dekoratøren returnerer en ikke-tom versjons-id | SSR |
 
 Appen har ingen egne autentiserte endepunkter, identitetsoppslag, database, persistent lagring,
 cookies eller analytics. Den viser og logger bare statisk teknisk integrasjonsstatus. Ingen

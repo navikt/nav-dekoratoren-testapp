@@ -119,6 +119,13 @@ export type PageTypeTestCase = {
   pageType: NonNullable<DecoratorParams["pageType"]>;
 };
 
+export type AnalyticsQueryParamsTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  analyticsQueryParams: NonNullable<DecoratorParams["analyticsQueryParams"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -498,5 +505,15 @@ export const pageTypeTestCases: PageTypeTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar en pageType som brukes til å kategorisere sidevisninger i Analytics.",
     pageType: "skjema",
+  },
+];
+
+export const analyticsQueryParamsTestCases: AnalyticsQueryParamsTestCase[] = [
+  {
+    id: "hviteliste",
+    navn: "Hviteliste for spørrestrengparametre",
+    beskrivelse:
+      "Dekoratøren godtar en liste over spørrestrengparametre som skal beholdes i URL-en når Analytics logger sidevisninger.",
+    analyticsQueryParams: ["steg", "skjema-id"],
   },
 ];

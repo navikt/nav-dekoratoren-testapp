@@ -10,6 +10,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { decoratorParams } from "../lib/decorator-params";
 import {
+  analyticsQueryParamsTestCases,
   availableLanguagesTestCases,
   breadcrumbTestCases,
   chatbotTestCases,
@@ -58,7 +59,11 @@ export function ParametreCsr() {
       try {
         await injectDecoratorClientSide({
           env: "dev",
-          params: decoratorParams,
+          params: {
+            ...decoratorParams,
+            analyticsQueryParams:
+              analyticsQueryParamsTestCases[0]?.analyticsQueryParams ?? [],
+          },
         });
       } catch (error) {
         setRader([
@@ -104,6 +109,42 @@ export function ParametreCsr() {
             testcase: "Satt ved initialisering",
             beskrivelse:
               "Dekoratøren tar imot origin ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
+            verdi: "–",
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          };
+        }
+      })();
+
+      const analyticsQueryParamsResultat: TestRad = await (async () => {
+        const forventet =
+          analyticsQueryParamsTestCases[0]?.analyticsQueryParams ?? [];
+        try {
+          const params = await getParams();
+          const verdi = params?.analyticsQueryParams ?? [];
+          const somForventet =
+            JSON.stringify(verdi) === JSON.stringify(forventet);
+          return {
+            id: "csr-analytics-query-params-initialisering",
+            parameter: "analyticsQueryParams",
+            testcase: "Satt ved initialisering",
+            beskrivelse:
+              "Dekoratøren tar imot analyticsQueryParams ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
+            verdi: verdi.join(", ") || "(tom liste)",
+            somForventet,
+            ...(somForventet
+              ? {}
+              : {
+                  feilmelding: `Forventet analyticsQueryParams=${forventet.join(", ")}, fikk ${verdi.join(", ") || "(tom liste)"}`,
+                }),
+          };
+        } catch (error) {
+          return {
+            id: "csr-analytics-query-params-initialisering",
+            parameter: "analyticsQueryParams",
+            testcase: "Satt ved initialisering",
+            beskrivelse:
+              "Dekoratøren tar imot analyticsQueryParams ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
             verdi: "–",
             somForventet: false,
             feilmelding: error instanceof Error ? error.message : "Ukjent feil",
@@ -543,6 +584,7 @@ export function ParametreCsr() {
 
       setRader([
         originResultat,
+        analyticsQueryParamsResultat,
         ...breadcrumbResultater,
         ...sprakResultater,
         ...contextResultater,

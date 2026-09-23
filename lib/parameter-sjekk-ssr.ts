@@ -6,6 +6,7 @@ import {
 } from "@navikt/nav-dekoratoren-moduler/ssr";
 import { decoratorParams } from "./decorator-params";
 import {
+  analyticsQueryParamsTestCases,
   availableLanguagesTestCases,
   breadcrumbTestCases,
   chatbotTestCases,
@@ -40,6 +41,43 @@ function sprakVerdi(
   return testCase.availableLanguages
     .map((sprak) => `${sprak.locale} → ${sprak.url}`)
     .join(" | ");
+}
+
+export async function kjorSsrAnalyticsQueryParamsTester(): Promise<
+  TestRad[]
+> {
+  return Promise.all(
+    analyticsQueryParamsTestCases.map(async (testCase): Promise<TestRad> => {
+      const verdi = testCase.analyticsQueryParams.join(", ");
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: {
+            ...decoratorParams,
+            analyticsQueryParams: testCase.analyticsQueryParams,
+          },
+        });
+        return {
+          id: `ssr-analytics-query-params-${testCase.id}`,
+          parameter: "analyticsQueryParams",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi,
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-analytics-query-params-${testCase.id}`,
+          parameter: "analyticsQueryParams",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi,
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
+  );
 }
 
 export async function kjorSsrBreadcrumbTester(): Promise<TestRad[]> {

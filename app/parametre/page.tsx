@@ -132,6 +132,21 @@ export default async function ParametrePage() {
             ),
             innhold: <TestTabell rader={forenkletVisningRader} />,
           },
+          {
+            id: "dekorator-oppdateringer",
+            tittel: "addDecoratorUpdateListener",
+            innhold: (
+              <>
+                <p>
+                  Lytter etter nye Dekoratør-versjoner slik at en SSR-cache kan
+                  ugyldiggjøres.
+                </p>
+                <a href="/parametre/dekorator-oppdateringer">
+                  Åpne testen for addDecoratorUpdateListener
+                </a>
+              </>
+            ),
+          },
         ]}
       />
     </main>

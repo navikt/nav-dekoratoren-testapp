@@ -18,6 +18,7 @@ fire integrasjonsmåtene mot Dekoratøren fungerer som forventet.
 | `/parametre/simple-footer` | Client-side test av `simpleFooter: true` med forenklet footer                 |
 | `/parametre/klikk-callbacks` | Client-side test av `onBreadcrumbClick` og `onLanguageSelect`               |
 | `/parametre/open-chatbot` | Client-side test av `openChatbot`                                              |
+| `/parametre/dekorator-oppdateringer` | Server-side test av `addDecoratorUpdateListener`                      |
 
 Forsiden (`/`) viser en samlet statusoversikt for alle fire integrasjonene, med live helsesjekk
 mot Dekoratøren ved hvert sidelastet. Bruk denne til rask manuell verifikasjon.
@@ -67,6 +68,7 @@ verdi, feilmelding og en kort forklaring av hva som testes.
 | `setParams` / `getParams` | Setter og leser tilbake CSR-parametere | CSR |
 | `buildCspHeader` | Appens CSP-direktiver beholdes i den sammenslåtte headeren | SSR |
 | `getDecoratorVersionId` | Dekoratøren returnerer en ikke-tom versjons-id | SSR |
+| `addDecoratorUpdateListener` | Starter én prosessdelt lytter som registrerer siste observerte Dekoratør-versjon | SSR på `/parametre/dekorator-oppdateringer` |
 
 `level` testes bevisst ikke her: den er sikkerhetssensitiv og ikke ment å være en offentlig
 parameter som apper skal kunne sette selv.

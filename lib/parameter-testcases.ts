@@ -84,6 +84,13 @@ export type LanguageTestCase = {
   language: NonNullable<DecoratorParams["language"]>;
 };
 
+export type UtilsBackgroundTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  utilsBackground: NonNullable<DecoratorParams["utilsBackground"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -392,5 +399,29 @@ export const languageTestCases: LanguageTestCase[] = [
     navn: "Russisk",
     beskrivelse: "Dekoratøren godtar russisk som aktivt visningsspråk.",
     language: "ru",
+  },
+];
+
+export const utilsBackgroundTestCases: UtilsBackgroundTestCase[] = [
+  {
+    id: "hvit",
+    navn: "Hvit",
+    beskrivelse:
+      "Dekoratøren godtar utilsBackground=white, som gir hvit bakgrunn på verktøylinjen.",
+    utilsBackground: "white",
+  },
+  {
+    id: "gra",
+    navn: "Grå",
+    beskrivelse:
+      "Dekoratøren godtar utilsBackground=gray, som gir grå bakgrunn på verktøylinjen.",
+    utilsBackground: "gray",
+  },
+  {
+    id: "gjennomsiktig",
+    navn: "Gjennomsiktig",
+    beskrivelse:
+      "Dekoratøren godtar utilsBackground=transparent, som gir gjennomsiktig bakgrunn på verktøylinjen.",
+    utilsBackground: "transparent",
   },
 ];

@@ -17,6 +17,7 @@ import {
   kjorSsrRedirectToUrlTester,
   kjorSsrRedirectToUrlLogoutTester,
   kjorSsrShareScreenTester,
+  kjorSsrUtilsBackgroundTester,
 } from "../../lib/parameter-sjekk-ssr";
 
 export const dynamic = "force-dynamic";
@@ -31,6 +32,7 @@ export default async function ParametrePage() {
     languageRader,
     logoutWarningRader,
     shareScreenRader,
+    utilsBackgroundRader,
     contextRader,
     redirectToAppRader,
     redirectToUrlRader,
@@ -47,6 +49,7 @@ export default async function ParametrePage() {
     kjorSsrLanguageTester(),
     kjorSsrLogoutWarningTester(),
     kjorSsrShareScreenTester(),
+    kjorSsrUtilsBackgroundTester(),
     kjorSsrContextTester(),
     kjorSsrRedirectToAppTester(),
     kjorSsrRedirectToUrlTester(),
@@ -82,6 +85,7 @@ export default async function ParametrePage() {
           ...languageRader,
           ...logoutWarningRader,
           ...shareScreenRader,
+          ...utilsBackgroundRader,
           ...contextRader,
           ...redirectToAppRader,
           ...redirectToUrlRader,

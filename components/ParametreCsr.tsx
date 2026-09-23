@@ -22,6 +22,7 @@ import {
   redirectToUrlTestCases,
   redirectToUrlLogoutTestCases,
   shareScreenTestCases,
+  utilsBackgroundTestCases,
 } from "../lib/parameter-testcases";
 import type { TestRad } from "../lib/test-rad";
 import { ParameterBolker } from "./ParameterBolker";
@@ -101,6 +102,7 @@ export function ParametreCsr() {
           }
         }),
       );
+
       const sprakResultater = await Promise.all(
         availableLanguagesTestCases.map(async (testCase): Promise<TestRad> => {
           const verdi = sprakVerdi(testCase);
@@ -128,6 +130,7 @@ export function ParametreCsr() {
           }
         }),
       );
+
       const contextResultater: TestRad[] = [];
       for (const testCase of contextTestCases) {
         try {
@@ -153,6 +156,7 @@ export function ParametreCsr() {
           });
         }
       }
+
       const chatbotResultater: TestRad[] = [];
       for (const testCase of chatbotTestCases) {
         try {
@@ -178,6 +182,7 @@ export function ParametreCsr() {
           });
         }
       }
+
       const chatbotVisibleResultater: TestRad[] = [];
       for (const testCase of chatbotVisibleTestCases) {
         try {
@@ -203,6 +208,7 @@ export function ParametreCsr() {
           });
         }
       }
+
       const feedbackResultater: TestRad[] = [];
       for (const testCase of feedbackTestCases) {
         try {
@@ -228,6 +234,7 @@ export function ParametreCsr() {
           });
         }
       }
+
       const languageResultater: TestRad[] = [];
       for (const testCase of languageTestCases) {
         try {
@@ -253,6 +260,7 @@ export function ParametreCsr() {
           });
         }
       }
+
       const logoutWarningResultater: TestRad[] = [];
       for (const testCase of logoutWarningTestCases) {
         try {
@@ -278,6 +286,7 @@ export function ParametreCsr() {
           });
         }
       }
+
       const shareScreenResultater: TestRad[] = [];
       for (const testCase of shareScreenTestCases) {
         try {
@@ -303,6 +312,33 @@ export function ParametreCsr() {
           });
         }
       }
+
+      const utilsBackgroundResultater: TestRad[] = [];
+      for (const testCase of utilsBackgroundTestCases) {
+        try {
+          await setParams({ utilsBackground: testCase.utilsBackground });
+          await ventPaParameter("utilsBackground", testCase.utilsBackground);
+          utilsBackgroundResultater.push({
+            id: `csr-utils-background-${testCase.id}`,
+            parameter: "utilsBackground",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.utilsBackground,
+            somForventet: true,
+          });
+        } catch (error) {
+          utilsBackgroundResultater.push({
+            id: `csr-utils-background-${testCase.id}`,
+            parameter: "utilsBackground",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.utilsBackground,
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
+
       const redirectToAppResultater: TestRad[] = [];
       for (const testCase of redirectToAppTestCases) {
         try {
@@ -328,6 +364,7 @@ export function ParametreCsr() {
           });
         }
       }
+
       const redirectToUrlResultater: TestRad[] = [];
       for (const testCase of redirectToUrlTestCases) {
         try {
@@ -353,6 +390,7 @@ export function ParametreCsr() {
           });
         }
       }
+
       const redirectToUrlLogoutResultater: TestRad[] = [];
       for (const testCase of redirectToUrlLogoutTestCases) {
         try {
@@ -383,6 +421,7 @@ export function ParametreCsr() {
           });
         }
       }
+
       setRader([
         ...breadcrumbResultater,
         ...sprakResultater,
@@ -393,6 +432,7 @@ export function ParametreCsr() {
         ...languageResultater,
         ...logoutWarningResultater,
         ...shareScreenResultater,
+        ...utilsBackgroundResultater,
         ...redirectToAppResultater,
         ...redirectToUrlResultater,
         ...redirectToUrlLogoutResultater,
@@ -407,6 +447,7 @@ export function ParametreCsr() {
       await setParams({ language: "nb" });
       await setParams({ logoutWarning: true });
       await setParams({ shareScreen: true });
+      await setParams({ utilsBackground: "white" });
       await setParams({ redirectToApp: false });
     })();
   }, []);
@@ -421,20 +462,20 @@ export function ParametreCsr() {
           tittel: "Forenklede visninger (simple)",
           innhold: (
             <>
-            <p>
-              Disse parameterne testes i egne visninger fordi de endrer hvilke
-              deler av Dekoratøren som rendres.
-            </p>
-            <p>
-              <a href="/parametre/simple-header">
-                Åpne testen for simpleHeader: true
-              </a>
-            </p>
-            <p>
-              <a href="/parametre/simple-footer">
-                Åpne testen for simpleFooter: true
-              </a>
-            </p>
+              <p>
+                Disse parameterne testes i egne visninger fordi de endrer hvilke
+                deler av Dekoratøren som rendres.
+              </p>
+              <p>
+                <a href="/parametre/simple-header">
+                  Åpne testen for simpleHeader: true
+                </a>
+              </p>
+              <p>
+                <a href="/parametre/simple-footer">
+                  Åpne testen for simpleFooter: true
+                </a>
+              </p>
             </>
           ),
         },
@@ -443,12 +484,12 @@ export function ParametreCsr() {
           tittel: "setParams/getParams",
           innhold: (
             <>
-            <p>
-              Denne funksjonen testes i en egen visning, der Dekoratøren
-              initialiseres med <code>simple: true</code> og verdien leses
-              tilbake med <code>getParams()</code>.
-            </p>
-            <a href="/parametre/simple">Åpne testen for simple: true</a>
+              <p>
+                Denne funksjonen testes i en egen visning, der Dekoratøren
+                initialiseres med <code>simple: true</code> og verdien leses
+                tilbake med <code>getParams()</code>.
+              </p>
+              <a href="/parametre/simple">Åpne testen for simple: true</a>
             </>
           ),
         },
@@ -472,6 +513,7 @@ async function ventPaParameter(
     | "language"
     | "logoutWarning"
     | "shareScreen"
+    | "utilsBackground"
     | "redirectToApp"
     | "redirectToUrl"
     | "redirectToUrlLogout",

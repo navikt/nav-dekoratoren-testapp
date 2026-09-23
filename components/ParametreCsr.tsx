@@ -455,6 +455,7 @@ export function ParametreCsr({ onStatusChange }: ParametreCsrProps = {}) {
   return (
     <ParameterBolker
       rader={rader}
+      storageKey="parametre-csr"
       ekstraBolker={[
         {
           id: "forenklede-visninger",

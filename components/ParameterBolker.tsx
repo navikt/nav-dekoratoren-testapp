@@ -6,6 +6,7 @@ import {
 } from "@navikt/ds-react/Accordion";
 import type { ReactNode } from "react";
 import type { TestRad } from "../lib/test-rad";
+import { usePersistertAccordionTilstand } from "../lib/use-persistert-accordion-tilstand";
 import { TestTabell } from "./TestTabell";
 
 type ParameterBolkerProps = {
@@ -16,12 +17,15 @@ type ParameterBolkerProps = {
     innhold: ReactNode;
     somForventet?: boolean;
   }[];
+  storageKey: string;
 };
 
 export function ParameterBolker({
   rader,
   ekstraBolker = [],
+  storageKey,
 }: ParameterBolkerProps) {
+  const { erApen, settApen } = usePersistertAccordionTilstand(storageKey);
   const grupper = rader.reduce<TestRad[][]>((resultat, rad) => {
     const gruppe = resultat.find(
       ([forsteRad]) => forsteRad.parameter === rad.parameter,
@@ -52,7 +56,11 @@ export function ParameterBolker({
   return (
     <Accordion>
       {bolker.map((bolk) => (
-        <AccordionItem key={bolk.id}>
+        <AccordionItem
+          key={bolk.id}
+          open={erApen(bolk.id)}
+          onOpenChange={(apen) => settApen(bolk.id, apen)}
+        >
           <AccordionHeader>
             {bolk.somForventet === undefined
               ? null

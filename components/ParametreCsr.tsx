@@ -19,6 +19,7 @@ import {
   languageTestCases,
   logoutUrlTestCases,
   logoutWarningTestCases,
+  pageTypeTestCases,
   redirectOnUserChangeTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
@@ -400,6 +401,32 @@ export function ParametreCsr() {
         }
       }
 
+      const pageTypeResultater: TestRad[] = [];
+      for (const testCase of pageTypeTestCases) {
+        try {
+          await setParams({ pageType: testCase.pageType });
+          await ventPaParameter("pageType", testCase.pageType);
+          pageTypeResultater.push({
+            id: `csr-page-type-${testCase.id}`,
+            parameter: "pageType",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.pageType,
+            somForventet: true,
+          });
+        } catch (error) {
+          pageTypeResultater.push({
+            id: `csr-page-type-${testCase.id}`,
+            parameter: "pageType",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.pageType,
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
+
       const redirectOnUserChangeResultater: TestRad[] = [];
       for (const testCase of redirectOnUserChangeTestCases) {
         try {
@@ -527,6 +554,7 @@ export function ParametreCsr() {
         ...logoutWarningResultater,
         ...shareScreenResultater,
         ...utilsBackgroundResultater,
+        ...pageTypeResultater,
         ...redirectOnUserChangeResultater,
         ...redirectToAppResultater,
         ...redirectToUrlResultater,
@@ -613,6 +641,7 @@ async function ventPaParameter(
     | "shareScreen"
     | "utilsBackground"
     | "redirectOnUserChange"
+    | "pageType"
     | "redirectToApp"
     | "redirectToUrl"
     | "redirectToUrlLogout",

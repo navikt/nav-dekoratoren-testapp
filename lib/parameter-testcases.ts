@@ -112,6 +112,13 @@ export type OriginTestCase = {
   origin: NonNullable<DecoratorParams["origin"]>;
 };
 
+export type PageTypeTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  pageType: NonNullable<DecoratorParams["pageType"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -481,5 +488,15 @@ export const originTestCases: OriginTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar et stabilt appnavn som brukes til å filtrere sidevisninger i Analytics.",
     origin: "nav-dekoratoren-testapp-alternativ",
+  },
+];
+
+export const pageTypeTestCases: PageTypeTestCase[] = [
+  {
+    id: "skjema",
+    navn: "Sidetype for skjema",
+    beskrivelse:
+      "Dekoratøren godtar en pageType som brukes til å kategorisere sidevisninger i Analytics.",
+    pageType: "skjema",
   },
 ];

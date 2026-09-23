@@ -16,6 +16,7 @@ import {
   logoutUrlTestCases,
   logoutWarningTestCases,
   originTestCases,
+  pageTypeTestCases,
   redirectOnUserChangeTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
@@ -429,6 +430,37 @@ export async function kjorSsrOriginTester(): Promise<TestRad[]> {
           testcase: testCase.navn,
           beskrivelse: testCase.beskrivelse,
           verdi: testCase.origin,
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
+  );
+}
+
+export async function kjorSsrPageTypeTester(): Promise<TestRad[]> {
+  return Promise.all(
+    pageTypeTestCases.map(async (testCase): Promise<TestRad> => {
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: { ...decoratorParams, pageType: testCase.pageType },
+        });
+        return {
+          id: `ssr-page-type-${testCase.id}`,
+          parameter: "pageType",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: testCase.pageType,
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-page-type-${testCase.id}`,
+          parameter: "pageType",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: testCase.pageType,
           somForventet: false,
           feilmelding: error instanceof Error ? error.message : "Ukjent feil",
         };

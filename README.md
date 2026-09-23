@@ -64,6 +64,9 @@ verdi, feilmelding og en kort forklaring av hva som testes.
 | `buildCspHeader` | Appens CSP-direktiver beholdes i den sammenslåtte headeren | SSR |
 | `getDecoratorVersionId` | Dekoratøren returnerer en ikke-tom versjons-id | SSR |
 
+`level` testes bevisst ikke her: den er sikkerhetssensitiv og ikke ment å være en offentlig
+parameter som apper skal kunne sette selv.
+
 Appen har ingen egne autentiserte endepunkter, identitetsoppslag, database, persistent lagring,
 cookies eller analytics. Den viser og logger bare statisk teknisk integrasjonsstatus. Ingen
 brukerdata eller Dekoratørens auth-data leses, lagres eller logges.

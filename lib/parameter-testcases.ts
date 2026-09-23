@@ -1,139 +1,42 @@
 import type { DecoratorParams } from "@navikt/nav-dekoratoren-moduler/ssr";
 
-export type BreadcrumbTestCase = {
+export type ParameterTestCase = {
   id: string;
   navn: string;
   beskrivelse: string;
-  breadcrumbs: NonNullable<DecoratorParams["breadcrumbs"]>;
 };
 
-export type AvailableLanguagesTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  availableLanguages: NonNullable<DecoratorParams["availableLanguages"]>;
-};
+type DecoratorParameterTestCase<K extends keyof DecoratorParams> =
+  ParameterTestCase & {
+    [P in K]: NonNullable<DecoratorParams[P]>;
+  };
 
-export type ContextTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  context: NonNullable<DecoratorParams["context"]>;
-};
-
-export type RedirectToAppTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  redirectToApp: NonNullable<DecoratorParams["redirectToApp"]>;
-};
-
-export type RedirectToUrlTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  redirectToUrl: NonNullable<DecoratorParams["redirectToUrl"]>;
-};
-
-export type RedirectToUrlLogoutTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  redirectToUrlLogout: NonNullable<DecoratorParams["redirectToUrlLogout"]>;
-};
-
-export type ChatbotTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  chatbot: NonNullable<DecoratorParams["chatbot"]>;
-};
-
-export type ChatbotVisibleTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  chatbotVisible: NonNullable<DecoratorParams["chatbotVisible"]>;
-};
-
-export type LogoutWarningTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  logoutWarning: NonNullable<DecoratorParams["logoutWarning"]>;
-};
-
-export type ShareScreenTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  shareScreen: NonNullable<DecoratorParams["shareScreen"]>;
-};
-
-export type FeedbackTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  feedback: NonNullable<DecoratorParams["feedback"]>;
-};
-
-export type LanguageTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  language: NonNullable<DecoratorParams["language"]>;
-};
-
-export type UtilsBackgroundTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  utilsBackground: NonNullable<DecoratorParams["utilsBackground"]>;
-};
-
-export type LogoutUrlTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  logoutUrl: NonNullable<DecoratorParams["logoutUrl"]>;
-};
-
-export type RedirectOnUserChangeTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  redirectOnUserChange: NonNullable<DecoratorParams["redirectOnUserChange"]>;
-};
-
-export type OriginTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  origin: NonNullable<DecoratorParams["origin"]>;
-};
-
-export type PageTypeTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  pageType: NonNullable<DecoratorParams["pageType"]>;
-};
-
-export type AnalyticsQueryParamsTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  analyticsQueryParams: NonNullable<DecoratorParams["analyticsQueryParams"]>;
-};
-
-export type AnalyticsRedactFilterTestCase = {
-  id: string;
-  navn: string;
-  beskrivelse: string;
-  analyticsRedactFilter: NonNullable<
-    DecoratorParams["analyticsRedactFilter"]
-  >;
-};
+export type BreadcrumbTestCase = DecoratorParameterTestCase<"breadcrumbs">;
+export type AvailableLanguagesTestCase =
+  DecoratorParameterTestCase<"availableLanguages">;
+export type ContextTestCase = DecoratorParameterTestCase<"context">;
+export type RedirectToAppTestCase = DecoratorParameterTestCase<"redirectToApp">;
+export type RedirectToUrlTestCase = DecoratorParameterTestCase<"redirectToUrl">;
+export type RedirectToUrlLogoutTestCase =
+  DecoratorParameterTestCase<"redirectToUrlLogout">;
+export type ChatbotTestCase = DecoratorParameterTestCase<"chatbot">;
+export type ChatbotVisibleTestCase =
+  DecoratorParameterTestCase<"chatbotVisible">;
+export type LogoutWarningTestCase = DecoratorParameterTestCase<"logoutWarning">;
+export type ShareScreenTestCase = DecoratorParameterTestCase<"shareScreen">;
+export type FeedbackTestCase = DecoratorParameterTestCase<"feedback">;
+export type LanguageTestCase = DecoratorParameterTestCase<"language">;
+export type UtilsBackgroundTestCase =
+  DecoratorParameterTestCase<"utilsBackground">;
+export type LogoutUrlTestCase = DecoratorParameterTestCase<"logoutUrl">;
+export type RedirectOnUserChangeTestCase =
+  DecoratorParameterTestCase<"redirectOnUserChange">;
+export type OriginTestCase = DecoratorParameterTestCase<"origin">;
+export type PageTypeTestCase = DecoratorParameterTestCase<"pageType">;
+export type AnalyticsQueryParamsTestCase =
+  DecoratorParameterTestCase<"analyticsQueryParams">;
+export type AnalyticsRedactFilterTestCase =
+  DecoratorParameterTestCase<"analyticsRedactFilter">;
 
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {

@@ -3,6 +3,7 @@ import {
   fetchDecoratorHtml,
   fetchDecoratorReact,
   getDecoratorVersionId,
+  type DecoratorParams,
 } from "@navikt/nav-dekoratoren-moduler/ssr";
 import { decoratorParams } from "./decorator-params";
 import {
@@ -28,6 +29,12 @@ import {
 } from "./parameter-testcases";
 import type { TestRad } from "./test-rad";
 
+type ParameterTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+};
+
 function breadcrumbVerdi(
   testCase: (typeof breadcrumbTestCases)[number],
 ): string {
@@ -44,60 +51,26 @@ function sprakVerdi(
     .join(" | ");
 }
 
-export async function kjorSsrAnalyticsQueryParamsTester(): Promise<
-  TestRad[]
-> {
+async function kjorSsrParameterTester<T extends ParameterTestCase>(
+  idPrefix: string,
+  parameter: string,
+  testCases: readonly T[],
+  hentVerdi: (testCase: T) => string,
+  byggParams: (testCase: T) => Partial<DecoratorParams>,
+): Promise<TestRad[]> {
   return Promise.all(
-    analyticsQueryParamsTestCases.map(async (testCase): Promise<TestRad> => {
-      const verdi = testCase.analyticsQueryParams.join(", ");
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: {
-            ...decoratorParams,
-            analyticsQueryParams: testCase.analyticsQueryParams,
-          },
-        });
-        return {
-          id: `ssr-analytics-query-params-${testCase.id}`,
-          parameter: "analyticsQueryParams",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi,
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-analytics-query-params-${testCase.id}`,
-          parameter: "analyticsQueryParams",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi,
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
-  );
-}
+    testCases.map(async (testCase): Promise<TestRad> => {
+      const verdi = hentVerdi(testCase);
+      const id = `ssr-${idPrefix}-${testCase.id}`;
 
-export async function kjorSsrAnalyticsRedactFilterTester(): Promise<
-  TestRad[]
-> {
-  return Promise.all(
-    analyticsRedactFilterTestCases.map(async (testCase): Promise<TestRad> => {
-      const verdi = testCase.analyticsRedactFilter.join(", ");
       try {
         await fetchDecoratorReact({
           env: "dev",
-          params: {
-            ...decoratorParams,
-            analyticsRedactFilter: testCase.analyticsRedactFilter,
-          },
+          params: { ...decoratorParams, ...byggParams(testCase) },
         });
         return {
-          id: `ssr-analytics-redact-filter-${testCase.id}`,
-          parameter: "analyticsRedactFilter",
+          id,
+          parameter,
           testcase: testCase.navn,
           beskrivelse: testCase.beskrivelse,
           verdi,
@@ -105,8 +78,8 @@ export async function kjorSsrAnalyticsRedactFilterTester(): Promise<
         };
       } catch (error) {
         return {
-          id: `ssr-analytics-redact-filter-${testCase.id}`,
-          parameter: "analyticsRedactFilter",
+          id,
+          parameter,
           testcase: testCase.navn,
           beskrivelse: testCase.beskrivelse,
           verdi,
@@ -118,568 +91,193 @@ export async function kjorSsrAnalyticsRedactFilterTester(): Promise<
   );
 }
 
-export async function kjorSsrBreadcrumbTester(): Promise<TestRad[]> {
-  return Promise.all(
-    breadcrumbTestCases.map(async (testCase): Promise<TestRad> => {
-      const verdi = breadcrumbVerdi(testCase);
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: { ...decoratorParams, breadcrumbs: testCase.breadcrumbs },
-        });
-        return {
-          id: `ssr-breadcrumbs-${testCase.id}`,
-          parameter: "breadcrumbs",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi,
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-breadcrumbs-${testCase.id}`,
-          parameter: "breadcrumbs",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi,
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrAnalyticsQueryParamsTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "analytics-query-params",
+    "analyticsQueryParams",
+    analyticsQueryParamsTestCases,
+    (testCase) => testCase.analyticsQueryParams.join(", "),
+    (testCase) => ({ analyticsQueryParams: testCase.analyticsQueryParams }),
   );
 }
 
-export async function kjorSsrAvailableLanguagesTester(): Promise<TestRad[]> {
-  return Promise.all(
-    availableLanguagesTestCases.map(async (testCase): Promise<TestRad> => {
-      const verdi = sprakVerdi(testCase);
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: {
-            ...decoratorParams,
-            availableLanguages: testCase.availableLanguages,
-          },
-        });
-        return {
-          id: `ssr-available-languages-${testCase.id}`,
-          parameter: "availableLanguages",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi,
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-available-languages-${testCase.id}`,
-          parameter: "availableLanguages",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi,
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrAnalyticsRedactFilterTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "analytics-redact-filter",
+    "analyticsRedactFilter",
+    analyticsRedactFilterTestCases,
+    (testCase) => testCase.analyticsRedactFilter.join(", "),
+    (testCase) => ({ analyticsRedactFilter: testCase.analyticsRedactFilter }),
   );
 }
 
-export async function kjorSsrChatbotTester(): Promise<TestRad[]> {
-  return Promise.all(
-    chatbotTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: { ...decoratorParams, chatbot: testCase.chatbot },
-        });
-        return {
-          id: `ssr-chatbot-${testCase.id}`,
-          parameter: "chatbot",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.chatbot),
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-chatbot-${testCase.id}`,
-          parameter: "chatbot",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.chatbot),
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrBreadcrumbTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "breadcrumbs",
+    "breadcrumbs",
+    breadcrumbTestCases,
+    breadcrumbVerdi,
+    (testCase) => ({ breadcrumbs: testCase.breadcrumbs }),
   );
 }
 
-export async function kjorSsrChatbotVisibleTester(): Promise<TestRad[]> {
-  return Promise.all(
-    chatbotVisibleTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: {
-            ...decoratorParams,
-            chatbotVisible: testCase.chatbotVisible,
-          },
-        });
-        return {
-          id: `ssr-chatbot-visible-${testCase.id}`,
-          parameter: "chatbotVisible",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.chatbotVisible),
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-chatbot-visible-${testCase.id}`,
-          parameter: "chatbotVisible",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.chatbotVisible),
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrAvailableLanguagesTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "available-languages",
+    "availableLanguages",
+    availableLanguagesTestCases,
+    sprakVerdi,
+    (testCase) => ({ availableLanguages: testCase.availableLanguages }),
   );
 }
 
-export async function kjorSsrFeedbackTester(): Promise<TestRad[]> {
-  return Promise.all(
-    feedbackTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: { ...decoratorParams, feedback: testCase.feedback },
-        });
-        return {
-          id: `ssr-feedback-${testCase.id}`,
-          parameter: "feedback",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.feedback),
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-feedback-${testCase.id}`,
-          parameter: "feedback",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.feedback),
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrChatbotTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "chatbot",
+    "chatbot",
+    chatbotTestCases,
+    (testCase) => String(testCase.chatbot),
+    (testCase) => ({ chatbot: testCase.chatbot }),
   );
 }
 
-export async function kjorSsrLanguageTester(): Promise<TestRad[]> {
-  return Promise.all(
-    languageTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: { ...decoratorParams, language: testCase.language },
-        });
-        return {
-          id: `ssr-language-${testCase.id}`,
-          parameter: "language",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.language,
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-language-${testCase.id}`,
-          parameter: "language",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.language,
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrChatbotVisibleTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "chatbot-visible",
+    "chatbotVisible",
+    chatbotVisibleTestCases,
+    (testCase) => String(testCase.chatbotVisible),
+    (testCase) => ({ chatbotVisible: testCase.chatbotVisible }),
   );
 }
 
-export async function kjorSsrLogoutUrlTester(): Promise<TestRad[]> {
-  return Promise.all(
-    logoutUrlTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: { ...decoratorParams, logoutUrl: testCase.logoutUrl },
-        });
-        return {
-          id: `ssr-logout-url-${testCase.id}`,
-          parameter: "logoutUrl",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.logoutUrl,
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-logout-url-${testCase.id}`,
-          parameter: "logoutUrl",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.logoutUrl,
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrFeedbackTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "feedback",
+    "feedback",
+    feedbackTestCases,
+    (testCase) => String(testCase.feedback),
+    (testCase) => ({ feedback: testCase.feedback }),
   );
 }
 
-export async function kjorSsrLogoutWarningTester(): Promise<TestRad[]> {
-  return Promise.all(
-    logoutWarningTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: {
-            ...decoratorParams,
-            logoutWarning: testCase.logoutWarning,
-          },
-        });
-        return {
-          id: `ssr-logout-warning-${testCase.id}`,
-          parameter: "logoutWarning",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.logoutWarning),
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-logout-warning-${testCase.id}`,
-          parameter: "logoutWarning",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.logoutWarning),
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrLanguageTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "language",
+    "language",
+    languageTestCases,
+    (testCase) => testCase.language,
+    (testCase) => ({ language: testCase.language }),
   );
 }
 
-export async function kjorSsrShareScreenTester(): Promise<TestRad[]> {
-  return Promise.all(
-    shareScreenTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: {
-            ...decoratorParams,
-            shareScreen: testCase.shareScreen,
-          },
-        });
-        return {
-          id: `ssr-share-screen-${testCase.id}`,
-          parameter: "shareScreen",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.shareScreen),
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-share-screen-${testCase.id}`,
-          parameter: "shareScreen",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.shareScreen),
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrLogoutUrlTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "logout-url",
+    "logoutUrl",
+    logoutUrlTestCases,
+    (testCase) => testCase.logoutUrl,
+    (testCase) => ({ logoutUrl: testCase.logoutUrl }),
   );
 }
 
-export async function kjorSsrUtilsBackgroundTester(): Promise<TestRad[]> {
-  return Promise.all(
-    utilsBackgroundTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: {
-            ...decoratorParams,
-            utilsBackground: testCase.utilsBackground,
-          },
-        });
-        return {
-          id: `ssr-utils-background-${testCase.id}`,
-          parameter: "utilsBackground",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.utilsBackground,
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-utils-background-${testCase.id}`,
-          parameter: "utilsBackground",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.utilsBackground,
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrLogoutWarningTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "logout-warning",
+    "logoutWarning",
+    logoutWarningTestCases,
+    (testCase) => String(testCase.logoutWarning),
+    (testCase) => ({ logoutWarning: testCase.logoutWarning }),
   );
 }
 
-export async function kjorSsrContextTester(): Promise<TestRad[]> {
-  return Promise.all(
-    contextTestCases.map(
-      async (testCase: {
-        context: any;
-        id: any;
-        navn: any;
-        beskrivelse: any;
-      }): Promise<TestRad> => {
-        try {
-          await fetchDecoratorReact({
-            env: "dev",
-            params: { ...decoratorParams, context: testCase.context },
-          });
-          return {
-            id: `ssr-context-${testCase.id}`,
-            parameter: "context",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.context,
-            somForventet: true,
-          };
-        } catch (error) {
-          return {
-            id: `ssr-context-${testCase.id}`,
-            parameter: "context",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.context,
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          };
-        }
-      },
-    ),
+export function kjorSsrShareScreenTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "share-screen",
+    "shareScreen",
+    shareScreenTestCases,
+    (testCase) => String(testCase.shareScreen),
+    (testCase) => ({ shareScreen: testCase.shareScreen }),
   );
 }
 
-export async function kjorSsrOriginTester(): Promise<TestRad[]> {
-  return Promise.all(
-    originTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: { ...decoratorParams, origin: testCase.origin },
-        });
-        return {
-          id: `ssr-origin-${testCase.id}`,
-          parameter: "origin",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.origin,
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-origin-${testCase.id}`,
-          parameter: "origin",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.origin,
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrUtilsBackgroundTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "utils-background",
+    "utilsBackground",
+    utilsBackgroundTestCases,
+    (testCase) => testCase.utilsBackground,
+    (testCase) => ({ utilsBackground: testCase.utilsBackground }),
   );
 }
 
-export async function kjorSsrPageTypeTester(): Promise<TestRad[]> {
-  return Promise.all(
-    pageTypeTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: { ...decoratorParams, pageType: testCase.pageType },
-        });
-        return {
-          id: `ssr-page-type-${testCase.id}`,
-          parameter: "pageType",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.pageType,
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-page-type-${testCase.id}`,
-          parameter: "pageType",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.pageType,
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrContextTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "context",
+    "context",
+    contextTestCases,
+    (testCase) => testCase.context,
+    (testCase) => ({ context: testCase.context }),
   );
 }
 
-export async function kjorSsrRedirectOnUserChangeTester(): Promise<
-  TestRad[]
-> {
-  return Promise.all(
-    redirectOnUserChangeTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: {
-            ...decoratorParams,
-            redirectOnUserChange: testCase.redirectOnUserChange,
-          },
-        });
-        return {
-          id: `ssr-redirect-on-user-change-${testCase.id}`,
-          parameter: "redirectOnUserChange",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.redirectOnUserChange),
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-redirect-on-user-change-${testCase.id}`,
-          parameter: "redirectOnUserChange",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.redirectOnUserChange),
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrOriginTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "origin",
+    "origin",
+    originTestCases,
+    (testCase) => testCase.origin,
+    (testCase) => ({ origin: testCase.origin }),
   );
 }
 
-export async function kjorSsrRedirectToAppTester(): Promise<TestRad[]> {
-  return Promise.all(
-    redirectToAppTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: {
-            ...decoratorParams,
-            redirectToApp: testCase.redirectToApp,
-          },
-        });
-        return {
-          id: `ssr-redirect-to-app-${testCase.id}`,
-          parameter: "redirectToApp",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.redirectToApp),
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-redirect-to-app-${testCase.id}`,
-          parameter: "redirectToApp",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: String(testCase.redirectToApp),
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrPageTypeTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "page-type",
+    "pageType",
+    pageTypeTestCases,
+    (testCase) => testCase.pageType,
+    (testCase) => ({ pageType: testCase.pageType }),
   );
 }
 
-export async function kjorSsrRedirectToUrlTester(): Promise<TestRad[]> {
-  return Promise.all(
-    redirectToUrlTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: {
-            ...decoratorParams,
-            redirectToUrl: testCase.redirectToUrl,
-          },
-        });
-        return {
-          id: `ssr-redirect-to-url-${testCase.id}`,
-          parameter: "redirectToUrl",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.redirectToUrl,
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-redirect-to-url-${testCase.id}`,
-          parameter: "redirectToUrl",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.redirectToUrl,
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrRedirectOnUserChangeTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "redirect-on-user-change",
+    "redirectOnUserChange",
+    redirectOnUserChangeTestCases,
+    (testCase) => String(testCase.redirectOnUserChange),
+    (testCase) => ({ redirectOnUserChange: testCase.redirectOnUserChange }),
   );
 }
 
-export async function kjorSsrRedirectToUrlLogoutTester(): Promise<TestRad[]> {
-  return Promise.all(
-    redirectToUrlLogoutTestCases.map(async (testCase): Promise<TestRad> => {
-      try {
-        await fetchDecoratorReact({
-          env: "dev",
-          params: {
-            ...decoratorParams,
-            redirectToUrlLogout: testCase.redirectToUrlLogout,
-          },
-        });
-        return {
-          id: `ssr-redirect-to-url-logout-${testCase.id}`,
-          parameter: "redirectToUrlLogout",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.redirectToUrlLogout,
-          somForventet: true,
-        };
-      } catch (error) {
-        return {
-          id: `ssr-redirect-to-url-logout-${testCase.id}`,
-          parameter: "redirectToUrlLogout",
-          testcase: testCase.navn,
-          beskrivelse: testCase.beskrivelse,
-          verdi: testCase.redirectToUrlLogout,
-          somForventet: false,
-          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-        };
-      }
-    }),
+export function kjorSsrRedirectToAppTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "redirect-to-app",
+    "redirectToApp",
+    redirectToAppTestCases,
+    (testCase) => String(testCase.redirectToApp),
+    (testCase) => ({ redirectToApp: testCase.redirectToApp }),
+  );
+}
+
+export function kjorSsrRedirectToUrlTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "redirect-to-url",
+    "redirectToUrl",
+    redirectToUrlTestCases,
+    (testCase) => testCase.redirectToUrl,
+    (testCase) => ({ redirectToUrl: testCase.redirectToUrl }),
+  );
+}
+
+export function kjorSsrRedirectToUrlLogoutTester(): Promise<TestRad[]> {
+  return kjorSsrParameterTester(
+    "redirect-to-url-logout",
+    "redirectToUrlLogout",
+    redirectToUrlLogoutTestCases,
+    (testCase) => testCase.redirectToUrlLogout,
+    (testCase) => ({ redirectToUrlLogout: testCase.redirectToUrlLogout }),
   );
 }
 

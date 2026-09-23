@@ -32,6 +32,14 @@ import {
 import type { TestRad } from "../lib/test-rad";
 import { ParameterBolker } from "./ParameterBolker";
 
+type ParameterTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+};
+
+type DekoratorParametre = Awaited<ReturnType<typeof getParams>>;
+
 function breadcrumbVerdi(
   testCase: (typeof breadcrumbTestCases)[number],
 ): string {
@@ -46,6 +54,110 @@ function sprakVerdi(
   return testCase.availableLanguages
     .map((sprak) => `${sprak.locale} → ${sprak.url}`)
     .join(" | ");
+}
+
+async function kjorCsrEnkeltParameterTest<T extends ParameterTestCase>(
+  idPrefix: string,
+  parameter: string,
+  testCase: T,
+  hentVerdi: (testCase: T) => string,
+  oppdater: (testCase: T) => Promise<void>,
+): Promise<TestRad> {
+  const verdi = hentVerdi(testCase);
+  const id = `csr-${idPrefix}-${testCase.id}`;
+
+  try {
+    await oppdater(testCase);
+    return {
+      id,
+      parameter,
+      testcase: testCase.navn,
+      beskrivelse: testCase.beskrivelse,
+      verdi,
+      somForventet: true,
+    };
+  } catch (error) {
+    return {
+      id,
+      parameter,
+      testcase: testCase.navn,
+      beskrivelse: testCase.beskrivelse,
+      verdi,
+      somForventet: false,
+      feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+    };
+  }
+}
+
+async function kjorCsrParameterTester<T extends ParameterTestCase>(
+  idPrefix: string,
+  parameter: string,
+  testCases: readonly T[],
+  hentVerdi: (testCase: T) => string,
+  oppdater: (testCase: T) => Promise<void>,
+  parallelt = false,
+): Promise<TestRad[]> {
+  const kjorTest = (testCase: T) =>
+    kjorCsrEnkeltParameterTest(
+      idPrefix,
+      parameter,
+      testCase,
+      hentVerdi,
+      oppdater,
+    );
+
+  if (parallelt) return Promise.all(testCases.map(kjorTest));
+
+  const resultater: TestRad[] = [];
+  for (const testCase of testCases) {
+    resultater.push(await kjorTest(testCase));
+  }
+  return resultater;
+}
+
+async function sjekkInitParameter<T>({
+  id,
+  parameter,
+  beskrivelse,
+  forventet,
+  hentVerdi,
+  formatterVerdi,
+  sammenlign = (a, b) => a === b,
+  feilmelding,
+}: {
+  id: string;
+  parameter: string;
+  beskrivelse: string;
+  forventet: T;
+  hentVerdi: (params: DekoratorParametre) => T;
+  formatterVerdi: (verdi: T) => string;
+  sammenlign?: (a: T, b: T) => boolean;
+  feilmelding: (forventet: T, verdi: T) => string;
+}): Promise<TestRad> {
+  try {
+    const verdi = hentVerdi(await getParams());
+    const somForventet = sammenlign(verdi, forventet);
+
+    return {
+      id,
+      parameter,
+      testcase: "Satt ved initialisering",
+      beskrivelse,
+      verdi: formatterVerdi(verdi),
+      somForventet,
+      ...(somForventet ? {} : { feilmelding: feilmelding(forventet, verdi) }),
+    };
+  } catch (error) {
+    return {
+      id,
+      parameter,
+      testcase: "Satt ved initialisering",
+      beskrivelse,
+      verdi: "–",
+      somForventet: false,
+      feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+    };
+  }
 }
 
 export function ParametreCsr() {
@@ -86,540 +198,208 @@ export function ParametreCsr() {
         return;
       }
 
-      const originResultat: TestRad = await (async () => {
-        try {
-          const params = await getParams();
-          const verdi = params?.origin;
-          const somForventet = verdi === decoratorParams.origin;
-          return {
-            id: "csr-origin-initialisering",
-            parameter: "origin",
-            testcase: "Satt ved initialisering",
-            beskrivelse:
-              "Dekoratøren tar imot origin ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
-            verdi: verdi ?? "(ikke satt)",
-            somForventet,
-            ...(somForventet
-              ? {}
-              : {
-                  feilmelding: `Forventet origin=${decoratorParams.origin}, fikk ${verdi ?? "(ikke satt)"}`,
-                }),
-          };
-        } catch (error) {
-          return {
-            id: "csr-origin-initialisering",
-            parameter: "origin",
-            testcase: "Satt ved initialisering",
-            beskrivelse:
-              "Dekoratøren tar imot origin ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
-            verdi: "–",
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          };
-        }
-      })();
+      const originResultat = await sjekkInitParameter({
+        id: "csr-origin-initialisering",
+        parameter: "origin",
+        beskrivelse:
+          "Dekoratøren tar imot origin ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
+        forventet: decoratorParams.origin,
+        hentVerdi: (params) => params?.origin,
+        formatterVerdi: (verdi) => verdi ?? "(ikke satt)",
+        feilmelding: (forventet, verdi) =>
+          `Forventet origin=${forventet}, fikk ${verdi ?? "(ikke satt)"}`,
+      });
 
-      const analyticsQueryParamsResultat: TestRad = await (async () => {
-        const forventet =
-          analyticsQueryParamsTestCases[0]?.analyticsQueryParams ?? [];
-        try {
-          const params = await getParams();
-          const verdi = params?.analyticsQueryParams ?? [];
-          const somForventet =
-            JSON.stringify(verdi) === JSON.stringify(forventet);
-          return {
-            id: "csr-analytics-query-params-initialisering",
-            parameter: "analyticsQueryParams",
-            testcase: "Satt ved initialisering",
-            beskrivelse:
-              "Dekoratøren tar imot analyticsQueryParams ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
-            verdi: verdi.join(", ") || "(tom liste)",
-            somForventet,
-            ...(somForventet
-              ? {}
-              : {
-                  feilmelding: `Forventet analyticsQueryParams=${forventet.join(", ")}, fikk ${verdi.join(", ") || "(tom liste)"}`,
-                }),
-          };
-        } catch (error) {
-          return {
-            id: "csr-analytics-query-params-initialisering",
-            parameter: "analyticsQueryParams",
-            testcase: "Satt ved initialisering",
-            beskrivelse:
-              "Dekoratøren tar imot analyticsQueryParams ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
-            verdi: "–",
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          };
-        }
-      })();
+      const analyticsQueryParamsResultat = await sjekkInitParameter({
+        id: "csr-analytics-query-params-initialisering",
+        parameter: "analyticsQueryParams",
+        beskrivelse:
+          "Dekoratøren tar imot analyticsQueryParams ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
+        forventet:
+          analyticsQueryParamsTestCases[0]?.analyticsQueryParams ?? [],
+        hentVerdi: (params) => params?.analyticsQueryParams ?? [],
+        formatterVerdi: (verdi) => verdi.join(", ") || "(tom liste)",
+        sammenlign: (a, b) => JSON.stringify(a) === JSON.stringify(b),
+        feilmelding: (forventet, verdi) =>
+          `Forventet analyticsQueryParams=${forventet.join(", ")}, fikk ${verdi.join(", ") || "(tom liste)"}`,
+      });
 
-      const analyticsRedactFilterResultat: TestRad = await (async () => {
-        const forventet =
-          analyticsRedactFilterTestCases[0]?.analyticsRedactFilter ?? [];
-        try {
-          const params = await getParams();
-          const verdi = params?.analyticsRedactFilter ?? [];
-          const somForventet =
-            JSON.stringify(verdi) === JSON.stringify(forventet);
-          return {
-            id: "csr-analytics-redact-filter-initialisering",
-            parameter: "analyticsRedactFilter",
-            testcase: "Satt ved initialisering",
-            beskrivelse:
-              "Dekoratøren tar imot analyticsRedactFilter ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
-            verdi: verdi.join(", ") || "(tom liste)",
-            somForventet,
-            ...(somForventet
-              ? {}
-              : {
-                  feilmelding: `Forventet analyticsRedactFilter=${forventet.join(", ")}, fikk ${verdi.join(", ") || "(tom liste)"}`,
-                }),
-          };
-        } catch (error) {
-          return {
-            id: "csr-analytics-redact-filter-initialisering",
-            parameter: "analyticsRedactFilter",
-            testcase: "Satt ved initialisering",
-            beskrivelse:
-              "Dekoratøren tar imot analyticsRedactFilter ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
-            verdi: "–",
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          };
-        }
-      })();
+      const analyticsRedactFilterResultat = await sjekkInitParameter({
+        id: "csr-analytics-redact-filter-initialisering",
+        parameter: "analyticsRedactFilter",
+        beskrivelse:
+          "Dekoratøren tar imot analyticsRedactFilter ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
+        forventet:
+          analyticsRedactFilterTestCases[0]?.analyticsRedactFilter ?? [],
+        hentVerdi: (params) => params?.analyticsRedactFilter ?? [],
+        formatterVerdi: (verdi) => verdi.join(", ") || "(tom liste)",
+        sammenlign: (a, b) => JSON.stringify(a) === JSON.stringify(b),
+        feilmelding: (forventet, verdi) =>
+          `Forventet analyticsRedactFilter=${forventet.join(", ")}, fikk ${verdi.join(", ") || "(tom liste)"}`,
+      });
 
-      const breadcrumbResultater = await Promise.all(
-        breadcrumbTestCases.map(async (testCase): Promise<TestRad> => {
-          const verdi = breadcrumbVerdi(testCase);
-          try {
-            await setBreadcrumbs(testCase.breadcrumbs);
-            return {
-              id: `csr-breadcrumbs-${testCase.id}`,
-              parameter: "breadcrumbs",
-              testcase: testCase.navn,
-              beskrivelse: testCase.beskrivelse,
-              verdi,
-              somForventet: true,
-            };
-          } catch (error) {
-            return {
-              id: `csr-breadcrumbs-${testCase.id}`,
-              parameter: "breadcrumbs",
-              testcase: testCase.navn,
-              beskrivelse: testCase.beskrivelse,
-              verdi,
-              somForventet: false,
-              feilmelding:
-                error instanceof Error ? error.message : "Ukjent feil",
-            };
-          }
-        }),
+      const breadcrumbResultater = await kjorCsrParameterTester(
+        "breadcrumbs",
+        "breadcrumbs",
+        breadcrumbTestCases,
+        breadcrumbVerdi,
+        (testCase) => setBreadcrumbs(testCase.breadcrumbs),
+        true,
       );
-
-      const sprakResultater = await Promise.all(
-        availableLanguagesTestCases.map(async (testCase): Promise<TestRad> => {
-          const verdi = sprakVerdi(testCase);
-          try {
-            await setAvailableLanguages(testCase.availableLanguages);
-            return {
-              id: `csr-available-languages-${testCase.id}`,
-              parameter: "availableLanguages",
-              testcase: testCase.navn,
-              beskrivelse: testCase.beskrivelse,
-              verdi,
-              somForventet: true,
-            };
-          } catch (error) {
-            return {
-              id: `csr-available-languages-${testCase.id}`,
-              parameter: "availableLanguages",
-              testcase: testCase.navn,
-              beskrivelse: testCase.beskrivelse,
-              verdi,
-              somForventet: false,
-              feilmelding:
-                error instanceof Error ? error.message : "Ukjent feil",
-            };
-          }
-        }),
+      const sprakResultater = await kjorCsrParameterTester(
+        "available-languages",
+        "availableLanguages",
+        availableLanguagesTestCases,
+        sprakVerdi,
+        (testCase) => setAvailableLanguages(testCase.availableLanguages),
+        true,
       );
-
-      const contextResultater: TestRad[] = [];
-      for (const testCase of contextTestCases) {
-        try {
+      const contextResultater = await kjorCsrParameterTester(
+        "context",
+        "context",
+        contextTestCases,
+        (testCase) => testCase.context,
+        async (testCase) => {
           await setParams({ context: testCase.context });
           await ventPaContext(testCase.context);
-          contextResultater.push({
-            id: `csr-context-${testCase.id}`,
-            parameter: "context",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.context,
-            somForventet: true,
-          });
-        } catch (error) {
-          contextResultater.push({
-            id: `csr-context-${testCase.id}`,
-            parameter: "context",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.context,
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const chatbotResultater: TestRad[] = [];
-      for (const testCase of chatbotTestCases) {
-        try {
+        },
+      );
+      const chatbotResultater = await kjorCsrParameterTester(
+        "chatbot",
+        "chatbot",
+        chatbotTestCases,
+        (testCase) => String(testCase.chatbot),
+        async (testCase) => {
           await setParams({ chatbot: testCase.chatbot });
           await ventPaParameter("chatbot", testCase.chatbot);
-          chatbotResultater.push({
-            id: `csr-chatbot-${testCase.id}`,
-            parameter: "chatbot",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.chatbot),
-            somForventet: true,
-          });
-        } catch (error) {
-          chatbotResultater.push({
-            id: `csr-chatbot-${testCase.id}`,
-            parameter: "chatbot",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.chatbot),
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const chatbotVisibleResultater: TestRad[] = [];
-      for (const testCase of chatbotVisibleTestCases) {
-        try {
+        },
+      );
+      const chatbotVisibleResultater = await kjorCsrParameterTester(
+        "chatbot-visible",
+        "chatbotVisible",
+        chatbotVisibleTestCases,
+        (testCase) => String(testCase.chatbotVisible),
+        async (testCase) => {
           await setParams({ chatbotVisible: testCase.chatbotVisible });
           await ventPaParameter("chatbotVisible", testCase.chatbotVisible);
-          chatbotVisibleResultater.push({
-            id: `csr-chatbot-visible-${testCase.id}`,
-            parameter: "chatbotVisible",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.chatbotVisible),
-            somForventet: true,
-          });
-        } catch (error) {
-          chatbotVisibleResultater.push({
-            id: `csr-chatbot-visible-${testCase.id}`,
-            parameter: "chatbotVisible",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.chatbotVisible),
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const feedbackResultater: TestRad[] = [];
-      for (const testCase of feedbackTestCases) {
-        try {
+        },
+      );
+      const feedbackResultater = await kjorCsrParameterTester(
+        "feedback",
+        "feedback",
+        feedbackTestCases,
+        (testCase) => String(testCase.feedback),
+        async (testCase) => {
           await setParams({ feedback: testCase.feedback });
           await ventPaParameter("feedback", testCase.feedback);
-          feedbackResultater.push({
-            id: `csr-feedback-${testCase.id}`,
-            parameter: "feedback",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.feedback),
-            somForventet: true,
-          });
-        } catch (error) {
-          feedbackResultater.push({
-            id: `csr-feedback-${testCase.id}`,
-            parameter: "feedback",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.feedback),
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const languageResultater: TestRad[] = [];
-      for (const testCase of languageTestCases) {
-        try {
+        },
+      );
+      const languageResultater = await kjorCsrParameterTester(
+        "language",
+        "language",
+        languageTestCases,
+        (testCase) => testCase.language,
+        async (testCase) => {
           await setParams({ language: testCase.language });
           await ventPaParameter("language", testCase.language);
-          languageResultater.push({
-            id: `csr-language-${testCase.id}`,
-            parameter: "language",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.language,
-            somForventet: true,
-          });
-        } catch (error) {
-          languageResultater.push({
-            id: `csr-language-${testCase.id}`,
-            parameter: "language",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.language,
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const logoutUrlResultater: TestRad[] = [];
-      for (const testCase of logoutUrlTestCases) {
-        try {
+        },
+      );
+      const logoutUrlResultater = await kjorCsrParameterTester(
+        "logout-url",
+        "logoutUrl",
+        logoutUrlTestCases,
+        (testCase) => testCase.logoutUrl,
+        async (testCase) => {
           await setParams({ logoutUrl: testCase.logoutUrl });
           await ventPaParameter("logoutUrl", testCase.logoutUrl);
-          logoutUrlResultater.push({
-            id: `csr-logout-url-${testCase.id}`,
-            parameter: "logoutUrl",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.logoutUrl,
-            somForventet: true,
-          });
-        } catch (error) {
-          logoutUrlResultater.push({
-            id: `csr-logout-url-${testCase.id}`,
-            parameter: "logoutUrl",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.logoutUrl,
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const logoutWarningResultater: TestRad[] = [];
-      for (const testCase of logoutWarningTestCases) {
-        try {
+        },
+      );
+      const logoutWarningResultater = await kjorCsrParameterTester(
+        "logout-warning",
+        "logoutWarning",
+        logoutWarningTestCases,
+        (testCase) => String(testCase.logoutWarning),
+        async (testCase) => {
           await setParams({ logoutWarning: testCase.logoutWarning });
           await ventPaParameter("logoutWarning", testCase.logoutWarning);
-          logoutWarningResultater.push({
-            id: `csr-logout-warning-${testCase.id}`,
-            parameter: "logoutWarning",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.logoutWarning),
-            somForventet: true,
-          });
-        } catch (error) {
-          logoutWarningResultater.push({
-            id: `csr-logout-warning-${testCase.id}`,
-            parameter: "logoutWarning",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.logoutWarning),
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const shareScreenResultater: TestRad[] = [];
-      for (const testCase of shareScreenTestCases) {
-        try {
+        },
+      );
+      const shareScreenResultater = await kjorCsrParameterTester(
+        "share-screen",
+        "shareScreen",
+        shareScreenTestCases,
+        (testCase) => String(testCase.shareScreen),
+        async (testCase) => {
           await setParams({ shareScreen: testCase.shareScreen });
           await ventPaParameter("shareScreen", testCase.shareScreen);
-          shareScreenResultater.push({
-            id: `csr-share-screen-${testCase.id}`,
-            parameter: "shareScreen",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.shareScreen),
-            somForventet: true,
-          });
-        } catch (error) {
-          shareScreenResultater.push({
-            id: `csr-share-screen-${testCase.id}`,
-            parameter: "shareScreen",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.shareScreen),
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const utilsBackgroundResultater: TestRad[] = [];
-      for (const testCase of utilsBackgroundTestCases) {
-        try {
+        },
+      );
+      const utilsBackgroundResultater = await kjorCsrParameterTester(
+        "utils-background",
+        "utilsBackground",
+        utilsBackgroundTestCases,
+        (testCase) => testCase.utilsBackground,
+        async (testCase) => {
           await setParams({ utilsBackground: testCase.utilsBackground });
           await ventPaParameter("utilsBackground", testCase.utilsBackground);
-          utilsBackgroundResultater.push({
-            id: `csr-utils-background-${testCase.id}`,
-            parameter: "utilsBackground",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.utilsBackground,
-            somForventet: true,
-          });
-        } catch (error) {
-          utilsBackgroundResultater.push({
-            id: `csr-utils-background-${testCase.id}`,
-            parameter: "utilsBackground",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.utilsBackground,
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const pageTypeResultater: TestRad[] = [];
-      for (const testCase of pageTypeTestCases) {
-        try {
+        },
+      );
+      const pageTypeResultater = await kjorCsrParameterTester(
+        "page-type",
+        "pageType",
+        pageTypeTestCases,
+        (testCase) => testCase.pageType,
+        async (testCase) => {
           await setParams({ pageType: testCase.pageType });
           await ventPaParameter("pageType", testCase.pageType);
-          pageTypeResultater.push({
-            id: `csr-page-type-${testCase.id}`,
-            parameter: "pageType",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.pageType,
-            somForventet: true,
-          });
-        } catch (error) {
-          pageTypeResultater.push({
-            id: `csr-page-type-${testCase.id}`,
-            parameter: "pageType",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.pageType,
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const redirectOnUserChangeResultater: TestRad[] = [];
-      for (const testCase of redirectOnUserChangeTestCases) {
-        try {
-          await setParams({
-            redirectOnUserChange: testCase.redirectOnUserChange,
-          });
+        },
+      );
+      const redirectOnUserChangeResultater = await kjorCsrParameterTester(
+        "redirect-on-user-change",
+        "redirectOnUserChange",
+        redirectOnUserChangeTestCases,
+        (testCase) => String(testCase.redirectOnUserChange),
+        async (testCase) => {
+          await setParams({ redirectOnUserChange: testCase.redirectOnUserChange });
           await ventPaParameter(
             "redirectOnUserChange",
             testCase.redirectOnUserChange,
           );
-          redirectOnUserChangeResultater.push({
-            id: `csr-redirect-on-user-change-${testCase.id}`,
-            parameter: "redirectOnUserChange",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.redirectOnUserChange),
-            somForventet: true,
-          });
-        } catch (error) {
-          redirectOnUserChangeResultater.push({
-            id: `csr-redirect-on-user-change-${testCase.id}`,
-            parameter: "redirectOnUserChange",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.redirectOnUserChange),
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const redirectToAppResultater: TestRad[] = [];
-      for (const testCase of redirectToAppTestCases) {
-        try {
+        },
+      );
+      const redirectToAppResultater = await kjorCsrParameterTester(
+        "redirect-to-app",
+        "redirectToApp",
+        redirectToAppTestCases,
+        (testCase) => String(testCase.redirectToApp),
+        async (testCase) => {
           await setParams({ redirectToApp: testCase.redirectToApp });
           await ventPaParameter("redirectToApp", testCase.redirectToApp);
-          redirectToAppResultater.push({
-            id: `csr-redirect-to-app-${testCase.id}`,
-            parameter: "redirectToApp",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.redirectToApp),
-            somForventet: true,
-          });
-        } catch (error) {
-          redirectToAppResultater.push({
-            id: `csr-redirect-to-app-${testCase.id}`,
-            parameter: "redirectToApp",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: String(testCase.redirectToApp),
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const redirectToUrlResultater: TestRad[] = [];
-      for (const testCase of redirectToUrlTestCases) {
-        try {
+        },
+      );
+      const redirectToUrlResultater = await kjorCsrParameterTester(
+        "redirect-to-url",
+        "redirectToUrl",
+        redirectToUrlTestCases,
+        (testCase) => testCase.redirectToUrl,
+        async (testCase) => {
           await setParams({ redirectToUrl: testCase.redirectToUrl });
           await ventPaParameter("redirectToUrl", testCase.redirectToUrl);
-          redirectToUrlResultater.push({
-            id: `csr-redirect-to-url-${testCase.id}`,
-            parameter: "redirectToUrl",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.redirectToUrl,
-            somForventet: true,
-          });
-        } catch (error) {
-          redirectToUrlResultater.push({
-            id: `csr-redirect-to-url-${testCase.id}`,
-            parameter: "redirectToUrl",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.redirectToUrl,
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
-
-      const redirectToUrlLogoutResultater: TestRad[] = [];
-      for (const testCase of redirectToUrlLogoutTestCases) {
-        try {
-          await setParams({
-            redirectToUrlLogout: testCase.redirectToUrlLogout,
-          });
+        },
+      );
+      const redirectToUrlLogoutResultater = await kjorCsrParameterTester(
+        "redirect-to-url-logout",
+        "redirectToUrlLogout",
+        redirectToUrlLogoutTestCases,
+        (testCase) => testCase.redirectToUrlLogout,
+        async (testCase) => {
+          await setParams({ redirectToUrlLogout: testCase.redirectToUrlLogout });
           await ventPaParameter(
             "redirectToUrlLogout",
             testCase.redirectToUrlLogout,
           );
-          redirectToUrlLogoutResultater.push({
-            id: `csr-redirect-to-url-logout-${testCase.id}`,
-            parameter: "redirectToUrlLogout",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.redirectToUrlLogout,
-            somForventet: true,
-          });
-        } catch (error) {
-          redirectToUrlLogoutResultater.push({
-            id: `csr-redirect-to-url-logout-${testCase.id}`,
-            parameter: "redirectToUrlLogout",
-            testcase: testCase.navn,
-            beskrivelse: testCase.beskrivelse,
-            verdi: testCase.redirectToUrlLogout,
-            somForventet: false,
-            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
-          });
-        }
-      }
+        },
+      );
 
       setRader([
         originResultat,

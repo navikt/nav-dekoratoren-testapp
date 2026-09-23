@@ -15,6 +15,7 @@ import {
   languageTestCases,
   logoutUrlTestCases,
   logoutWarningTestCases,
+  redirectOnUserChangeTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
   redirectToUrlLogoutTestCases,
@@ -401,6 +402,42 @@ export async function kjorSsrContextTester(): Promise<TestRad[]> {
         }
       },
     ),
+  );
+}
+
+export async function kjorSsrRedirectOnUserChangeTester(): Promise<
+  TestRad[]
+> {
+  return Promise.all(
+    redirectOnUserChangeTestCases.map(async (testCase): Promise<TestRad> => {
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: {
+            ...decoratorParams,
+            redirectOnUserChange: testCase.redirectOnUserChange,
+          },
+        });
+        return {
+          id: `ssr-redirect-on-user-change-${testCase.id}`,
+          parameter: "redirectOnUserChange",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: String(testCase.redirectOnUserChange),
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-redirect-on-user-change-${testCase.id}`,
+          parameter: "redirectOnUserChange",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: String(testCase.redirectOnUserChange),
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
   );
 }
 

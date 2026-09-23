@@ -49,6 +49,7 @@ verdi, feilmelding og en kort forklaring av hva som testes.
 | `logoutWarning` | `true` og `false` | SSR og CSR |
 | `shareScreen` | `true` og `false`, uten å starte skjermdeling | SSR og CSR |
 | `utilsBackground` | `white`, `gray` og `transparent` | SSR og CSR |
+| `redirectOnUserChange` | `true` og `false` | SSR og CSR |
 | `redirectToApp` | `true` og `false`, uten å gjennomføre innlogging | SSR og CSR |
 | `redirectToUrl` | Gyldig nav.no-URL, uten å gjennomføre innlogging | SSR og CSR |
 | `redirectToUrlLogout` | Gyldig nav.no-URL, uten å gjennomføre utlogging | SSR og CSR |

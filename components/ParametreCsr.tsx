@@ -19,6 +19,7 @@ import {
   languageTestCases,
   logoutUrlTestCases,
   logoutWarningTestCases,
+  redirectOnUserChangeTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
   redirectToUrlLogoutTestCases,
@@ -366,6 +367,37 @@ export function ParametreCsr() {
         }
       }
 
+      const redirectOnUserChangeResultater: TestRad[] = [];
+      for (const testCase of redirectOnUserChangeTestCases) {
+        try {
+          await setParams({
+            redirectOnUserChange: testCase.redirectOnUserChange,
+          });
+          await ventPaParameter(
+            "redirectOnUserChange",
+            testCase.redirectOnUserChange,
+          );
+          redirectOnUserChangeResultater.push({
+            id: `csr-redirect-on-user-change-${testCase.id}`,
+            parameter: "redirectOnUserChange",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.redirectOnUserChange),
+            somForventet: true,
+          });
+        } catch (error) {
+          redirectOnUserChangeResultater.push({
+            id: `csr-redirect-on-user-change-${testCase.id}`,
+            parameter: "redirectOnUserChange",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: String(testCase.redirectOnUserChange),
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
+
       const redirectToAppResultater: TestRad[] = [];
       for (const testCase of redirectToAppTestCases) {
         try {
@@ -461,6 +493,7 @@ export function ParametreCsr() {
         ...logoutWarningResultater,
         ...shareScreenResultater,
         ...utilsBackgroundResultater,
+        ...redirectOnUserChangeResultater,
         ...redirectToAppResultater,
         ...redirectToUrlResultater,
         ...redirectToUrlLogoutResultater,
@@ -477,6 +510,7 @@ export function ParametreCsr() {
       await setParams({ logoutWarning: true });
       await setParams({ shareScreen: true });
       await setParams({ utilsBackground: "white" });
+      await setParams({ redirectOnUserChange: false });
       await setParams({ redirectToApp: false });
     })();
   }, []);
@@ -544,6 +578,7 @@ async function ventPaParameter(
     | "logoutWarning"
     | "shareScreen"
     | "utilsBackground"
+    | "redirectOnUserChange"
     | "redirectToApp"
     | "redirectToUrl"
     | "redirectToUrlLogout",

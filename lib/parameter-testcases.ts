@@ -98,6 +98,13 @@ export type LogoutUrlTestCase = {
   logoutUrl: NonNullable<DecoratorParams["logoutUrl"]>;
 };
 
+export type RedirectOnUserChangeTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  redirectOnUserChange: NonNullable<DecoratorParams["redirectOnUserChange"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -440,5 +447,22 @@ export const logoutUrlTestCases: LogoutUrlTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar en fullstendig nav.no-URL som mål etter automatisk utlogging, for eksempel ved inaktivitet.",
     logoutUrl: "https://www.nav.no",
+  },
+];
+
+export const redirectOnUserChangeTestCases: RedirectOnUserChangeTestCase[] = [
+  {
+    id: "aktivert",
+    navn: "Aktivert",
+    beskrivelse:
+      "Dekoratøren godtar redirectOnUserChange=true, som sender brukeren til innloggingssiden dersom en annen bruker logger inn i samme nettleser.",
+    redirectOnUserChange: true,
+  },
+  {
+    id: "deaktivert",
+    navn: "Deaktivert",
+    beskrivelse:
+      "Dekoratøren godtar redirectOnUserChange=false, som deaktiverer automatisk omdirigering ved brukerbytte.",
+    redirectOnUserChange: false,
   },
 ];

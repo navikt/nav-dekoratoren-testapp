@@ -493,6 +493,22 @@ export function ParametreCsr({ onStatusChange }: ParametreCsrProps = {}) {
             </>
           ),
         },
+        {
+          id: "klikk-callbacks",
+          tittel: "onBreadcrumbClick/onLanguageSelect",
+          innhold: (
+            <>
+              <p>
+                Disse funksjonene testes i en egen visning, som simulerer
+                Dekoratørens postMessage-kontrakt for et breadcrumb-klikk og
+                et språkvalg.
+              </p>
+              <a href="/parametre/klikk-callbacks">
+                Åpne testen for onBreadcrumbClick/onLanguageSelect
+              </a>
+            </>
+          ),
+        },
       ]}
     />
   );

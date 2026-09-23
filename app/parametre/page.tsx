@@ -1,5 +1,4 @@
-import { ParametreCsr } from "../../components/ParametreCsr";
-import { ParameterBolker } from "../../components/ParameterBolker";
+import { ParametreOversikt } from "../../components/ParametreOversikt";
 import { TestTabell } from "../../components/TestTabell";
 import {
   kjorSsrAnalyticsQueryParamsTester,
@@ -91,10 +90,15 @@ export default async function ParametrePage() {
         <li>✅ utfallet var som forventet</li>
         <li>❌ avvik, se feilmelding-kolonnen</li>
       </ul>
+      <p>
+        <strong>NB!</strong> Status-ikonet for CSR gjelder testene i
+        hovedlisten. Testene for «Forenklede visninger» og «setParams/getParams»
+        kjøres i egne visninger og er ikke med i den samlede statusen – gå inn
+        på CSR og følg lenkene for å se om de er som forventet.
+      </p>
 
-      <h2>SSR</h2>
-      <ParameterBolker
-        rader={[
+      <ParametreOversikt
+        ssrRader={[
           ...analyticsQueryParamsRader,
           ...analyticsRedactFilterRader,
           ...breadcrumbRader,
@@ -117,7 +121,7 @@ export default async function ParametrePage() {
           ...cspRader,
           ...versjonsRader,
         ]}
-        ekstraBolker={[
+        ssrEkstraBolker={[
           {
             id: "forenklede-visninger",
             tittel: "Forenklede visninger (simple)",
@@ -128,9 +132,6 @@ export default async function ParametrePage() {
           },
         ]}
       />
-
-      <h2>CSR</h2>
-      <ParametreCsr />
     </main>
   );
 }

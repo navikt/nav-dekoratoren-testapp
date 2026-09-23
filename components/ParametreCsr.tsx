@@ -160,9 +160,21 @@ async function sjekkInitParameter<T>({
   }
 }
 
-export function ParametreCsr() {
+type ParametreCsrProps = {
+  onStatusChange?: (somForventet: boolean | undefined) => void;
+};
+
+export function ParametreCsr({ onStatusChange }: ParametreCsrProps = {}) {
   const [rader, setRader] = useState<TestRad[] | null>(null);
   const startet = useRef(false);
+  const onStatusChangeRef = useRef(onStatusChange);
+  onStatusChangeRef.current = onStatusChange;
+
+  useEffect(() => {
+    onStatusChangeRef.current?.(
+      rader ? rader.every((rad) => rad.somForventet) : undefined,
+    );
+  }, [rader]);
 
   useEffect(() => {
     if (startet.current) return;
@@ -450,8 +462,8 @@ export function ParametreCsr() {
           innhold: (
             <>
               <p>
-                Disse parameterne testes i egne visninger fordi de endrer hvilke
-                deler av Dekoratøren som rendres.
+                Disse parameterne testes i egne visninger fordi de endrer
+                hvilke deler av Dekoratøren som rendres.
               </p>
               <p>
                 <a href="/parametre/simple-header">

@@ -105,6 +105,13 @@ export type RedirectOnUserChangeTestCase = {
   redirectOnUserChange: NonNullable<DecoratorParams["redirectOnUserChange"]>;
 };
 
+export type OriginTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  origin: NonNullable<DecoratorParams["origin"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -464,5 +471,15 @@ export const redirectOnUserChangeTestCases: RedirectOnUserChangeTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar redirectOnUserChange=false, som deaktiverer automatisk omdirigering ved brukerbytte.",
     redirectOnUserChange: false,
+  },
+];
+
+export const originTestCases: OriginTestCase[] = [
+  {
+    id: "app-navn",
+    navn: "Stabilt appnavn",
+    beskrivelse:
+      "Dekoratøren godtar et stabilt appnavn som brukes til å filtrere sidevisninger i Analytics.",
+    origin: "nav-dekoratoren-testapp-alternativ",
   },
 ];

@@ -15,6 +15,7 @@ import {
   languageTestCases,
   logoutUrlTestCases,
   logoutWarningTestCases,
+  originTestCases,
   redirectOnUserChangeTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
@@ -402,6 +403,37 @@ export async function kjorSsrContextTester(): Promise<TestRad[]> {
         }
       },
     ),
+  );
+}
+
+export async function kjorSsrOriginTester(): Promise<TestRad[]> {
+  return Promise.all(
+    originTestCases.map(async (testCase): Promise<TestRad> => {
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: { ...decoratorParams, origin: testCase.origin },
+        });
+        return {
+          id: `ssr-origin-${testCase.id}`,
+          parameter: "origin",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: testCase.origin,
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-origin-${testCase.id}`,
+          parameter: "origin",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: testCase.origin,
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
   );
 }
 

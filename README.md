@@ -41,6 +41,7 @@ verdi, feilmelding og en kort forklaring av hva som testes.
 | `breadcrumbs` | Vanlige nav.no-lenker, tom liste, `handleInApp` og spesialtegn i tittel | SSR og CSR |
 | `availableLanguages` | Alle støttede språk, tom liste og `handleInApp` | SSR og CSR |
 | `context` | `privatperson`, `arbeidsgiver` og `samarbeidspartner` | SSR og CSR |
+| `origin` | Stabilt appnavn brukt til å filtrere sidevisninger i Analytics | SSR og CSR (kun ved initialisering, endres ikke med `setParams()`) |
 | `chatbot` | `true` og `false` | SSR og CSR |
 | `chatbotVisible` | `true` og `false` | SSR og CSR |
 | `feedback` | `true` og `false` | SSR og CSR |

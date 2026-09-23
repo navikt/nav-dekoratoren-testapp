@@ -77,6 +77,39 @@ export function ParametreCsr() {
         return;
       }
 
+      const originResultat: TestRad = await (async () => {
+        try {
+          const params = await getParams();
+          const verdi = params?.origin;
+          const somForventet = verdi === decoratorParams.origin;
+          return {
+            id: "csr-origin-initialisering",
+            parameter: "origin",
+            testcase: "Satt ved initialisering",
+            beskrivelse:
+              "Dekoratøren tar imot origin ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
+            verdi: verdi ?? "(ikke satt)",
+            somForventet,
+            ...(somForventet
+              ? {}
+              : {
+                  feilmelding: `Forventet origin=${decoratorParams.origin}, fikk ${verdi ?? "(ikke satt)"}`,
+                }),
+          };
+        } catch (error) {
+          return {
+            id: "csr-origin-initialisering",
+            parameter: "origin",
+            testcase: "Satt ved initialisering",
+            beskrivelse:
+              "Dekoratøren tar imot origin ved injectDecoratorClientSide og gjør verdien tilgjengelig via getParams(). Parameteren er ikke ment å endres med setParams() i løpet av økten.",
+            verdi: "–",
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          };
+        }
+      })();
+
       const breadcrumbResultater = await Promise.all(
         breadcrumbTestCases.map(async (testCase): Promise<TestRad> => {
           const verdi = breadcrumbVerdi(testCase);
@@ -482,6 +515,7 @@ export function ParametreCsr() {
       }
 
       setRader([
+        originResultat,
         ...breadcrumbResultater,
         ...sprakResultater,
         ...contextResultater,

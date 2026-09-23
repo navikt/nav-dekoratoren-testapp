@@ -3,7 +3,7 @@
 import { injectDecoratorClientSide } from "@navikt/nav-dekoratoren-moduler";
 import { useEffect } from "react";
 import { IntegrationPage } from "./IntegrationPage";
-import { decoratorParams, teamName } from "../lib/decorator-params";
+import { decoratorParams } from "../lib/decorator-params";
 
 export function CsrMedModulerDekorator() {
   useEffect(() => {
@@ -28,7 +28,6 @@ export function CsrMedModulerDekorator() {
       integrationVariant="csr-med-moduler"
       rendering="klient"
       transport="offentlig dev-ingress"
-      teamName={teamName}
       initialStatus="initializing"
       observe={async () => {
         await waitForDecorator();

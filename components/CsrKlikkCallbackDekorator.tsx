@@ -6,7 +6,7 @@ import {
   onLanguageSelect,
   type DecoratorFetchProps,
 } from "@navikt/nav-dekoratoren-moduler";
-import { decoratorParams, teamName } from "../lib/decorator-params";
+import { decoratorParams } from "../lib/decorator-params";
 import { IntegrationPage } from "./IntegrationPage";
 
 const testBreadcrumb = {
@@ -29,7 +29,6 @@ export function CsrKlikkCallbackDekorator() {
       integrationVariant="csr-med-moduler"
       rendering="klient"
       transport="offentlig dev-ingress"
-      teamName={teamName}
       backHref="/parametre"
       backLabel="Tilbake"
       initialStatus="initializing"

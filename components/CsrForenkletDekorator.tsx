@@ -5,7 +5,7 @@ import {
   injectDecoratorClientSide,
   setParams,
 } from "@navikt/nav-dekoratoren-moduler";
-import { decoratorParams, teamName } from "../lib/decorator-params";
+import { decoratorParams } from "../lib/decorator-params";
 import { IntegrationPage } from "./IntegrationPage";
 
 type Parameter = "simpleHeader" | "simpleFooter";
@@ -43,7 +43,6 @@ export function CsrForenkletDekorator({ parameter }: Props) {
       integrationVariant="csr-med-moduler"
       rendering="klient"
       transport="offentlig dev-ingress"
-      teamName={teamName}
       backHref="/parametre"
       backLabel="Tilbake"
       initialStatus="initializing"

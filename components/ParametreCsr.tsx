@@ -17,6 +17,7 @@ import {
   contextTestCases,
   feedbackTestCases,
   languageTestCases,
+  logoutUrlTestCases,
   logoutWarningTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
@@ -261,6 +262,32 @@ export function ParametreCsr() {
         }
       }
 
+      const logoutUrlResultater: TestRad[] = [];
+      for (const testCase of logoutUrlTestCases) {
+        try {
+          await setParams({ logoutUrl: testCase.logoutUrl });
+          await ventPaParameter("logoutUrl", testCase.logoutUrl);
+          logoutUrlResultater.push({
+            id: `csr-logout-url-${testCase.id}`,
+            parameter: "logoutUrl",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.logoutUrl,
+            somForventet: true,
+          });
+        } catch (error) {
+          logoutUrlResultater.push({
+            id: `csr-logout-url-${testCase.id}`,
+            parameter: "logoutUrl",
+            testcase: testCase.navn,
+            beskrivelse: testCase.beskrivelse,
+            verdi: testCase.logoutUrl,
+            somForventet: false,
+            feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+          });
+        }
+      }
+
       const logoutWarningResultater: TestRad[] = [];
       for (const testCase of logoutWarningTestCases) {
         try {
@@ -430,6 +457,7 @@ export function ParametreCsr() {
         ...chatbotVisibleResultater,
         ...feedbackResultater,
         ...languageResultater,
+        ...logoutUrlResultater,
         ...logoutWarningResultater,
         ...shareScreenResultater,
         ...utilsBackgroundResultater,
@@ -445,6 +473,7 @@ export function ParametreCsr() {
       await setParams({ chatbotVisible: false });
       await setParams({ feedback: false });
       await setParams({ language: "nb" });
+      await setParams({ logoutUrl: "https://www.nav.no" });
       await setParams({ logoutWarning: true });
       await setParams({ shareScreen: true });
       await setParams({ utilsBackground: "white" });
@@ -511,6 +540,7 @@ async function ventPaParameter(
     | "chatbotVisible"
     | "feedback"
     | "language"
+    | "logoutUrl"
     | "logoutWarning"
     | "shareScreen"
     | "utilsBackground"

@@ -45,6 +45,7 @@ verdi, feilmelding og en kort forklaring av hva som testes.
 | `chatbotVisible` | `true` og `false` | SSR og CSR |
 | `feedback` | `true` og `false` | SSR og CSR |
 | `language` | Alle støttede språk (`nb`, `nn`, `en`, `se`, `pl`, `uk`, `ru`) | SSR og CSR |
+| `logoutUrl` | Gyldig nav.no-URL | SSR og CSR |
 | `logoutWarning` | `true` og `false` | SSR og CSR |
 | `shareScreen` | `true` og `false`, uten å starte skjermdeling | SSR og CSR |
 | `utilsBackground` | `white`, `gray` og `transparent` | SSR og CSR |

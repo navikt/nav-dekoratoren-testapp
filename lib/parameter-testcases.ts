@@ -91,6 +91,13 @@ export type UtilsBackgroundTestCase = {
   utilsBackground: NonNullable<DecoratorParams["utilsBackground"]>;
 };
 
+export type LogoutUrlTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  logoutUrl: NonNullable<DecoratorParams["logoutUrl"]>;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -423,5 +430,15 @@ export const utilsBackgroundTestCases: UtilsBackgroundTestCase[] = [
     beskrivelse:
       "Dekoratøren godtar utilsBackground=transparent, som gir gjennomsiktig bakgrunn på verktøylinjen.",
     utilsBackground: "transparent",
+  },
+];
+
+export const logoutUrlTestCases: LogoutUrlTestCase[] = [
+  {
+    id: "nav-no",
+    navn: "Gyldig nav.no-URL",
+    beskrivelse:
+      "Dekoratøren godtar en fullstendig nav.no-URL som mål etter automatisk utlogging, for eksempel ved inaktivitet.",
+    logoutUrl: "https://www.nav.no",
   },
 ];

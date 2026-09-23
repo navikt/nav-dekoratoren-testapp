@@ -13,6 +13,7 @@ import {
   contextTestCases,
   feedbackTestCases,
   languageTestCases,
+  logoutUrlTestCases,
   logoutWarningTestCases,
   redirectToAppTestCases,
   redirectToUrlTestCases,
@@ -224,6 +225,37 @@ export async function kjorSsrLanguageTester(): Promise<TestRad[]> {
           testcase: testCase.navn,
           beskrivelse: testCase.beskrivelse,
           verdi: testCase.language,
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
+  );
+}
+
+export async function kjorSsrLogoutUrlTester(): Promise<TestRad[]> {
+  return Promise.all(
+    logoutUrlTestCases.map(async (testCase): Promise<TestRad> => {
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: { ...decoratorParams, logoutUrl: testCase.logoutUrl },
+        });
+        return {
+          id: `ssr-logout-url-${testCase.id}`,
+          parameter: "logoutUrl",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: testCase.logoutUrl,
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-logout-url-${testCase.id}`,
+          parameter: "logoutUrl",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi: testCase.logoutUrl,
           somForventet: false,
           feilmelding: error instanceof Error ? error.message : "Ukjent feil",
         };

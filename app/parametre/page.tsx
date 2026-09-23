@@ -93,9 +93,10 @@ export default async function ParametrePage() {
       <p>
         <strong>NB!</strong> Status-ikonet for CSR gjelder testene i
         hovedlisten. Testene for «Forenklede visninger»,
-        «setParams/getParams» og «onBreadcrumbClick/onLanguageSelect» kjøres i
-        egne visninger og er ikke med i den samlede statusen – gå inn på CSR
-        og følg lenkene for å se om de er som forventet.
+        «setParams/getParams», «onBreadcrumbClick/onLanguageSelect» og
+        «openChatbot» kjøres i egne visninger og er ikke med i den samlede
+        statusen – gå inn på CSR og følg lenkene for å se om de er som
+        forventet.
       </p>
 
       <ParametreOversikt

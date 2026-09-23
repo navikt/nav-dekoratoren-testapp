@@ -509,6 +509,20 @@ export function ParametreCsr({ onStatusChange }: ParametreCsrProps = {}) {
             </>
           ),
         },
+        {
+          id: "open-chatbot",
+          tittel: "openChatbot",
+          innhold: (
+            <>
+              <p>
+                Denne funksjonen testes i en egen visning, som verifiserer at{" "}
+                <code>chatbotVisible</code> settes til <code>true</code> etter
+                kallet.
+              </p>
+              <a href="/parametre/open-chatbot">Åpne testen for openChatbot</a>
+            </>
+          ),
+        },
       ]}
     />
   );

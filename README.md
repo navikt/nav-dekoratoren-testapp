@@ -17,6 +17,7 @@ fire integrasjonsmåtene mot Dekoratøren fungerer som forventet.
 | `/parametre/simple-header` | Client-side test av `simpleHeader: true` med forenklet header                 |
 | `/parametre/simple-footer` | Client-side test av `simpleFooter: true` med forenklet footer                 |
 | `/parametre/klikk-callbacks` | Client-side test av `onBreadcrumbClick` og `onLanguageSelect`               |
+| `/parametre/open-chatbot` | Client-side test av `openChatbot`                                              |
 
 Forsiden (`/`) viser en samlet statusoversikt for alle fire integrasjonene, med live helsesjekk
 mot Dekoratøren ved hvert sidelastet. Bruk denne til rask manuell verifikasjon.
@@ -62,6 +63,7 @@ verdi, feilmelding og en kort forklaring av hva som testes.
 | `simpleHeader` | Forenklet header mens footeren fortsatt finnes, samt tilbakeverdi fra `getParams()` | SSR og CSR på `/parametre/simple-header` |
 | `simpleFooter` | Forenklet footer mens headeren fortsatt finnes, samt tilbakeverdi fra `getParams()` | SSR og CSR på `/parametre/simple-footer` |
 | `onBreadcrumbClick` / `onLanguageSelect` | Simulerer Dekoratørens postMessage-kontrakt for et breadcrumb-klikk og et språkvalg, og verifiserer at callbacken mottar riktig nyttelast | CSR på `/parametre/klikk-callbacks` |
+| `openChatbot` | Verifiserer at `chatbotVisible` settes til `true` etter kallet | CSR på `/parametre/open-chatbot` |
 | `setParams` / `getParams` | Setter og leser tilbake CSR-parametere | CSR |
 | `buildCspHeader` | Appens CSP-direktiver beholdes i den sammenslåtte headeren | SSR |
 | `getDecoratorVersionId` | Dekoratøren returnerer en ikke-tom versjons-id | SSR |

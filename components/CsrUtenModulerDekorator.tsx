@@ -9,13 +9,26 @@ import { IntegrationPage } from "./IntegrationPage";
 
 export function CsrUtenModulerDekorator() {
   useEffect(() => {
+    const header = document.createElement("div");
+    header.id = "decorator-header";
+    document.body.prepend(header);
+
+    const footer = document.createElement("div");
+    footer.id = "decorator-footer";
+    document.body.append(footer);
+
     const script = document.createElement("script");
     script.src = csrUtenModulerClientUrl();
     script.async = true;
     script.onerror = () =>
       window.dispatchEvent(new Event("decorator-script-error"));
     document.body.appendChild(script);
-    return () => script.remove();
+
+    return () => {
+      document.getElementById("decorator-header")?.remove();
+      document.getElementById("decorator-footer")?.remove();
+      script.remove();
+    };
   }, []);
 
   return (
@@ -25,7 +38,6 @@ export function CsrUtenModulerDekorator() {
         href="https://dekoratoren.ekstern.dev.nav.no/css"
       />
       <div id="decorator-env" data-src={buildDirectCsrEnvironmentUrl()} />
-      <div id="decorator-header" />
       <IntegrationPage
         title="CSR uten moduler"
         description="Dekoratøren er satt inn manuelt med CSS, env og client.js."
@@ -37,7 +49,6 @@ export function CsrUtenModulerDekorator() {
       >
         <p data-testid="app-content">CSR uten moduler er initialisert.</p>
       </IntegrationPage>
-      <div id="decorator-footer" />
     </>
   );
 }

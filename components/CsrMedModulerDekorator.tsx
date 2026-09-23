@@ -8,6 +8,17 @@ import { decoratorParams, teamName } from "../lib/decorator-params";
 export function CsrMedModulerDekorator() {
   useEffect(() => {
     injectDecoratorClientSide({ env: "dev", params: decoratorParams });
+    return () => {
+      document.getElementById("decorator-header")?.remove();
+      document.getElementById("decorator-footer")?.remove();
+      document.getElementById("decorator-env")?.remove();
+      document
+        .querySelectorAll('script[src*="/client.js"]')
+        .forEach((el) => el.remove());
+      document
+        .querySelectorAll('link[href*="/css/client.css"]')
+        .forEach((el) => el.remove());
+    };
   }, []);
 
   return (

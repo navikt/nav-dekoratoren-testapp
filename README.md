@@ -39,6 +39,7 @@ verdi, feilmelding og en kort forklaring av hva som testes.
 | Parameter eller funksjon | Testdekning | Integrasjon |
 | ------------------------ | ----------- | ----------- |
 | `analyticsQueryParams` | Hviteliste med spørrestrengparametre som beholdes i URL-en for Analytics | SSR og CSR (kun ved initialisering, endres ikke med `setParams()`) |
+| `analyticsRedactFilter` | Filter for spørrestrengparametre som redigeres bort (redaction) fra URL-en for Analytics | SSR og CSR (kun ved initialisering, endres ikke med `setParams()`) |
 | `breadcrumbs` | Vanlige nav.no-lenker, tom liste, `handleInApp` og spesialtegn i tittel | SSR og CSR |
 | `availableLanguages` | Alle støttede språk, tom liste og `handleInApp` | SSR og CSR |
 | `context` | `privatperson`, `arbeidsgiver` og `samarbeidspartner` | SSR og CSR |

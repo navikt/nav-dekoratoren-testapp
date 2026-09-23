@@ -3,6 +3,7 @@ import { ParameterBolker } from "../../components/ParameterBolker";
 import { TestTabell } from "../../components/TestTabell";
 import {
   kjorSsrAnalyticsQueryParamsTester,
+  kjorSsrAnalyticsRedactFilterTester,
   kjorSsrAvailableLanguagesTester,
   kjorSsrBreadcrumbTester,
   kjorSsrChatbotTester,
@@ -30,6 +31,7 @@ export const dynamic = "force-dynamic";
 export default async function ParametrePage() {
   const [
     analyticsQueryParamsRader,
+    analyticsRedactFilterRader,
     breadcrumbRader,
     availableLanguagesRader,
     chatbotRader,
@@ -52,6 +54,7 @@ export default async function ParametrePage() {
     versjonsRader,
   ] = await Promise.all([
     kjorSsrAnalyticsQueryParamsTester(),
+    kjorSsrAnalyticsRedactFilterTester(),
     kjorSsrBreadcrumbTester(),
     kjorSsrAvailableLanguagesTester(),
     kjorSsrChatbotTester(),
@@ -93,6 +96,7 @@ export default async function ParametrePage() {
       <ParameterBolker
         rader={[
           ...analyticsQueryParamsRader,
+          ...analyticsRedactFilterRader,
           ...breadcrumbRader,
           ...availableLanguagesRader,
           ...chatbotRader,

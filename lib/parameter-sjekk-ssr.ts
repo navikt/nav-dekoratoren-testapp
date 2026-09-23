@@ -7,6 +7,7 @@ import {
 import { decoratorParams } from "./decorator-params";
 import {
   analyticsQueryParamsTestCases,
+  analyticsRedactFilterTestCases,
   availableLanguagesTestCases,
   breadcrumbTestCases,
   chatbotTestCases,
@@ -69,6 +70,43 @@ export async function kjorSsrAnalyticsQueryParamsTester(): Promise<
         return {
           id: `ssr-analytics-query-params-${testCase.id}`,
           parameter: "analyticsQueryParams",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi,
+          somForventet: false,
+          feilmelding: error instanceof Error ? error.message : "Ukjent feil",
+        };
+      }
+    }),
+  );
+}
+
+export async function kjorSsrAnalyticsRedactFilterTester(): Promise<
+  TestRad[]
+> {
+  return Promise.all(
+    analyticsRedactFilterTestCases.map(async (testCase): Promise<TestRad> => {
+      const verdi = testCase.analyticsRedactFilter.join(", ");
+      try {
+        await fetchDecoratorReact({
+          env: "dev",
+          params: {
+            ...decoratorParams,
+            analyticsRedactFilter: testCase.analyticsRedactFilter,
+          },
+        });
+        return {
+          id: `ssr-analytics-redact-filter-${testCase.id}`,
+          parameter: "analyticsRedactFilter",
+          testcase: testCase.navn,
+          beskrivelse: testCase.beskrivelse,
+          verdi,
+          somForventet: true,
+        };
+      } catch (error) {
+        return {
+          id: `ssr-analytics-redact-filter-${testCase.id}`,
+          parameter: "analyticsRedactFilter",
           testcase: testCase.navn,
           beskrivelse: testCase.beskrivelse,
           verdi,

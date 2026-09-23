@@ -126,6 +126,15 @@ export type AnalyticsQueryParamsTestCase = {
   analyticsQueryParams: NonNullable<DecoratorParams["analyticsQueryParams"]>;
 };
 
+export type AnalyticsRedactFilterTestCase = {
+  id: string;
+  navn: string;
+  beskrivelse: string;
+  analyticsRedactFilter: NonNullable<
+    DecoratorParams["analyticsRedactFilter"]
+  >;
+};
+
 export const breadcrumbTestCases: BreadcrumbTestCase[] = [
   {
     id: "vanlige-lenker",
@@ -517,3 +526,14 @@ export const analyticsQueryParamsTestCases: AnalyticsQueryParamsTestCase[] = [
     analyticsQueryParams: ["steg", "skjema-id"],
   },
 ];
+
+export const analyticsRedactFilterTestCases: AnalyticsRedactFilterTestCase[] =
+  [
+    {
+      id: "redigeringsfilter",
+      navn: "Filter for sensitive spørrestrengparametre",
+      beskrivelse:
+        "Dekoratøren godtar en liste over spørrestrengparametre som skal redigeres bort (redaction) fra URL-en når Analytics logger sidevisninger.",
+      analyticsRedactFilter: ["fnr", "token"],
+    },
+  ];

@@ -1,0 +1,24 @@
+name: Deploy dev
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag or SHA to deploy to dev
+        required: true
+        default: main
+        type: string
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/deploy-environment.yml
+    with:
+      ref: ${{ inputs.ref || github.sha }}
+      environment_name: dev
+      cluster: dev-gcp
+      manifest_path: .nais/nais-dev.yaml
+      runner_label: union-dev
+      test_app_url: https://nav-dekoratoren-testapp.ansatt.dev.nav.no
+    secrets: inherit

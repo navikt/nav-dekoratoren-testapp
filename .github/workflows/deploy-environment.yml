@@ -1,13 +1,30 @@
-name: Deploy
+name: Deploy environment
 
 on:
-  workflow_dispatch:
-  push:
-    branches: [main]
-
-concurrency:
-  group: nav-dekoratoren-testapp-deploy
-  cancel-in-progress: true
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+      environment_name:
+        required: true
+        type: string
+      cluster:
+        required: true
+        type: string
+      manifest_path:
+        required: true
+        type: string
+      runner_label:
+        required: true
+        type: string
+      test_app_url:
+        required: true
+        type: string
+      require_tag:
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   build:
@@ -19,8 +36,17 @@ jobs:
       id-token: write
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
+    env:
+      DEPLOY_REF: ${{ inputs.ref }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ inputs.ref }}
+      - name: Verify release tag
+        if: ${{ inputs.require_tag }}
+        run: |
+          git check-ref-format --allow-onelevel "refs/tags/${DEPLOY_REF}"
+          git ls-remote --exit-code --refs origin "refs/tags/${DEPLOY_REF}"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 22
@@ -40,62 +66,34 @@ jobs:
         with:
           team: personbruker
 
-  deploy-dev:
-    name: Deploy dev
+  deploy:
+    name: Deploy ${{ inputs.environment_name }}
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    environment: dev
+    environment: ${{ inputs.environment_name }}
     permissions:
       contents: read
       id-token: write
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ inputs.ref }}
       - uses: nais/setup@ea33c90b68228e6f04fb34b88bfd8ab6ad523ce8 # v1.0.2
         with:
           team: personbruker
-      - name: Deploy to Nais dev-gcp
+      - name: Deploy to Nais
         run: |
-          nais apply .nais/nais-dev.yaml \
-            --environment dev-gcp \
+          nais apply "${{ inputs.manifest_path }}" \
+            --environment "${{ inputs.cluster }}" \
             --set spec.image="${{ needs.build.outputs.image }}" \
             --wait
 
-  deploy-prod:
-    name: Deploy prod
-    needs: [build, verify-dev]
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    environment: prod
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: nais/setup@ea33c90b68228e6f04fb34b88bfd8ab6ad523ce8 # v1.0.2
-        with:
-          team: personbruker
-      - name: Deploy to Nais prod-gcp
-        run: |
-          nais apply .nais/nais-prod.yaml \
-            --environment prod-gcp \
-            --set spec.image="${{ needs.build.outputs.image }}" \
-            --wait
-
-  verify-dev:
-    name: Verify dev
-    needs: deploy-dev
+  verify:
+    name: Verify ${{ inputs.environment_name }}
+    needs: deploy
     uses: ./.github/workflows/verify.yml
     with:
-      runner_label: union-dev
-      test_app_url: https://nav-dekoratoren-testapp.ansatt.dev.nav.no
-    secrets: inherit
-
-  verify-prod:
-    name: Verify prod
-    needs: deploy-prod
-    uses: ./.github/workflows/verify.yml
-    with:
-      runner_label: union-prod
-      test_app_url: https://nav-dekoratoren-testapp.ansatt.nav.no
+      runner_label: ${{ inputs.runner_label }}
+      test_app_url: ${{ inputs.test_app_url }}
     secrets: inherit

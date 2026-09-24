@@ -101,16 +101,19 @@ for validering.
 
 ## CI og deploy
 
-CI trenger GitHub-secretet `READER_TOKEN` for GitHub Packages. Ved push til `main` bygger
-deploy-workflowen ett image etter grønn lint, typecheck, test og build. Det samme imaget
-deployes først til dev-gcp. Alle fire Playwright-integrasjonstestene kjører deretter mot
-dev-ansatt-ingressen på den Nav-tilkoblede runneren med label `union-dev`. Først når de er
-grønne deployes imaget til prod-gcp. De samme testene kjører mot prod-ansatt-ingressen på
-`union-prod` som etterkontroll uten automatisk rollback.
+CI trenger GitHub-secretet `READER_TOKEN` for GitHub Packages.
+
+- **Deploy dev** kjører automatisk ved push til `main`, eller manuelt mot en valgfri branch, tag
+  eller SHA. Workflowen bygger, tester og deployer til dev-gcp, og kjører deretter alle fire
+  Playwright-integrasjonstestene mot dev-ansatt-ingressen på `union-dev`.
+- **Deploy prod** starter når en GitHub Release publiseres. Den bygger og tester release-taggen
+  før den deployes til prod-gcp, og kjører deretter de samme testene mot prod-ansatt-ingressen
+  på `union-prod`. Workflowen kan også startes manuelt med en eksisterende release-tag for
+  rollback.
 
 Runnerne må ha tilgang til ansatt-ingressene og kunne installere Chromium med
 `pnpm exec playwright install --with-deps chromium`. Manuell verifikasjon av rendering og
 interaksjon kommer i tillegg til de automatiske testene.
 
-Rollback er en Nais-redeploy av forrige fungerende image; appen har ingen datamigreringer eller
-persistent tilstand. Alerting er bevisst ikke konfigurert ennå.
+Rollback skjer ved å starte **Deploy prod** manuelt med forrige fungerende release-tag. Appen har
+ingen datamigreringer eller persistent tilstand. Alerting er bevisst ikke konfigurert ennå.

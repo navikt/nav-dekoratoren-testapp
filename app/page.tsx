@@ -9,7 +9,7 @@ export default async function HomePage() {
 
   return (
     <main>
-      <h1>Nav Dekoratøren testapp</h1>
+      <h1>Nav Dekoratøren status</h1>
       <p>Referanseimplementasjon for de fire støttede integrasjonsmåtene.</p>
       <nav aria-label="Integrasjoner">
         <IntegrasjonsOversikt ssrHelse={ssrHelse} />

@@ -12,7 +12,7 @@ describe("CSR uten moduler URL", () => {
     const url = new URL(buildDirectCsrEnvironmentUrl());
     expect(url.searchParams.get("teamName")).toBeNull();
     expect(url.searchParams.get("context")).toBe("privatperson");
-    expect(url.searchParams.get("origin")).toBe("nav-dekoratoren-testapp");
+    expect(url.searchParams.get("origin")).toBe("nav-dekoratoren-status");
   });
 
   it("preserves the Dekoratøren path prefix in prod", async () => {
@@ -25,7 +25,7 @@ describe("CSR uten moduler URL", () => {
 
   it("uses the production Dekoratøren environment on the prod ansatt ingress", () => {
     expect(
-      getDecoratorEnvironment("nav-dekoratoren-testapp.ansatt.nav.no"),
+      getDecoratorEnvironment("nav-dekoratoren-status.ansatt.nav.no"),
     ).toBe("prod");
   });
 });

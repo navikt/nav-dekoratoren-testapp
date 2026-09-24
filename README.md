@@ -1,4 +1,4 @@
-# nav-dekoratoren-testapp
+# nav-dekoratoren-status
 
 Dette er en vedlikeholdbar referanse- og integrasjonsapp for Nav Dekoratøren. Den er ikke en
 produksjonsmal. Appen skal stå oppe kontinuerlig i Nais dev og brukes til å verifisere at alle
@@ -25,12 +25,12 @@ mot Dekoratøren ved hvert sidelastet. Bruk denne til rask manuell verifikasjon.
 
 ## Miljøer og tilgang
 
-Testappen er tilgjengelig kun for Nav-ansatte:
+Statusappen er tilgjengelig kun for Nav-ansatte:
 
-| Miljø | Testapp                                             | Dekoratøren SSR                       | Dekoratøren CSR                          |
-| ----- | --------------------------------------------------- | ------------------------------------- | ---------------------------------------- |
-| Dev   | `https://nav-dekoratoren-testapp.ansatt.dev.nav.no` | `http://nav-dekoratoren.personbruker` | `https://dekoratoren.ekstern.dev.nav.no` |
-| Prod  | `https://nav-dekoratoren-testapp.ansatt.nav.no`     | `http://nav-dekoratoren.personbruker` | `https://www.nav.no/dekoratoren`         |
+| Miljø | Statusapp                                          | Dekoratøren SSR                       | Dekoratøren CSR                          |
+| ----- | -------------------------------------------------- | ------------------------------------- | ---------------------------------------- |
+| Dev   | `https://nav-dekoratoren-status.ansatt.dev.nav.no` | `http://nav-dekoratoren.personbruker` | `https://dekoratoren.ekstern.dev.nav.no` |
+| Prod  | `https://nav-dekoratoren-status.ansatt.nav.no`     | `http://nav-dekoratoren.personbruker` | `https://www.nav.no/dekoratoren`         |
 
 SSR-rutene bruker service discovery i riktig Nais-cluster. CSR-rutene kjører i nettleseren og
 bruker derfor Dekoratørens offentlige ingress for miljøet. Direkte SSR sender eksplisitt
@@ -111,7 +111,7 @@ CI trenger GitHub-secretet `READER_TOKEN` for GitHub Packages.
   også startes manuelt med en eksisterende tag for rollback.
 
 CI og deploy-workflowene kjører alle fire Playwright-integrasjonstestene på GitHub-hostede
-runnere mot en lokal bygget testapp. Chromium installeres med
+runnere mot en lokal bygget statusapp. Chromium installeres med
 `pnpm exec playwright install --with-deps chromium`. Dette er trygt for det offentlige repoet,
 men verifiserer ikke ansatt-ingressen; rendering og interaksjon der verifiseres manuelt.
 

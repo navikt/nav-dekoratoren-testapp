@@ -1,14 +1,14 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: nav-dekoratoren-testapp
+  name: nav-dekoratoren-status
   namespace: personbruker
   labels:
     "team": personbruker
 spec:
   port: 3000
   ingresses:
-    - https://nav-dekoratoren-testapp.ansatt.dev.nav.no
+    - https://nav-dekoratoren-status.ansatt.dev.nav.no
   env:
     - name: DECORATOR_ENV
       value: dev

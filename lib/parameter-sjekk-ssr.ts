@@ -358,7 +358,7 @@ export async function kjorSsrForenkletVisningTester(): Promise<TestRad[]> {
 export async function kjorSsrCspTester(): Promise<TestRad[]> {
   const appDirectives = {
     "default-src": ["'self'"],
-    "connect-src": ["nav-dekoratoren-testapp.dev.nav.no"],
+    "connect-src": ["nav-dekoratoren-status.dev.nav.no"],
   };
 
   try {
@@ -367,7 +367,7 @@ export async function kjorSsrCspTester(): Promise<TestRad[]> {
     });
     const inneholderAppensDirektiver =
       cspHeader.includes("default-src 'self'") &&
-      cspHeader.includes("connect-src nav-dekoratoren-testapp.dev.nav.no");
+      cspHeader.includes("connect-src nav-dekoratoren-status.dev.nav.no");
 
     return [
       {
@@ -377,7 +377,7 @@ export async function kjorSsrCspTester(): Promise<TestRad[]> {
         beskrivelse:
           "Dekoratørens CSP kan slås sammen med appens default-src og connect-src uten at appens direktiver forsvinner.",
         verdi:
-          "default-src: 'self' | connect-src: nav-dekoratoren-testapp.dev.nav.no",
+          "default-src: 'self' | connect-src: nav-dekoratoren-status.dev.nav.no",
         somForventet: inneholderAppensDirektiver,
         feilmelding: inneholderAppensDirektiver
           ? undefined
@@ -393,7 +393,7 @@ export async function kjorSsrCspTester(): Promise<TestRad[]> {
         beskrivelse:
           "Dekoratørens CSP kan slås sammen med appens default-src og connect-src uten at appens direktiver forsvinner.",
         verdi:
-          "default-src: 'self' | connect-src: nav-dekoratoren-testapp.dev.nav.no",
+          "default-src: 'self' | connect-src: nav-dekoratoren-status.dev.nav.no",
         somForventet: false,
         feilmelding: error instanceof Error ? error.message : "Ukjent feil",
       },

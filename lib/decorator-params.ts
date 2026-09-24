@@ -6,5 +6,5 @@ export const teamName = `${naisAppName}.${naisNamespace}`;
 export const decoratorParams = {
   context: "privatperson" as const,
   language: "nb" as const,
-  origin: "nav-dekoratoren-testapp",
+  origin: "nav-dekoratoren-status",
 };

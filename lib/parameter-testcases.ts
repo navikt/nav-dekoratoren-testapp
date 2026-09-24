@@ -406,7 +406,7 @@ export const originTestCases: OriginTestCase[] = [
     navn: "Stabilt appnavn",
     beskrivelse:
       "Dekoratøren godtar et stabilt appnavn som brukes til å filtrere sidevisninger i Analytics.",
-    origin: "nav-dekoratoren-testapp-alternativ",
+    origin: "nav-dekoratoren-status-alternativ",
   },
 ];
 

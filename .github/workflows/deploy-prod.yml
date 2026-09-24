@@ -12,6 +12,9 @@ on:
 
 jobs:
   deploy:
+    permissions:
+      contents: read
+      id-token: write
     uses: ./.github/workflows/deploy-environment.yml
     with:
       ref: ${{ github.event.release.tag_name || inputs.tag }}

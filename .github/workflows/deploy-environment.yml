@@ -39,6 +39,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ inputs.ref }}
+
       - name: Verify release tag
         if: ${{ inputs.require_tag }}
         run: |
@@ -82,6 +83,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           ref: ${{ inputs.ref }}
+
       - uses: nais/setup@ea33c90b68228e6f04fb34b88bfd8ab6ad523ce8 # v1.0.2
         with:
           team: personbruker

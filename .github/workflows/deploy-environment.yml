@@ -15,10 +15,7 @@ on:
       manifest_path:
         required: true
         type: string
-      runner_label:
-        required: true
-        type: string
-      test_app_url:
+      decorator_environment:
         required: true
         type: string
       require_tag:
@@ -60,6 +57,12 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+        env:
+          DECORATOR_ENV: ${{ inputs.decorator_environment }}
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm exec playwright test
+        env:
+          DECORATOR_ENV: ${{ inputs.decorator_environment }}
       - name: Build and push image and SBOM to OCI registry
         uses: nais/docker-build-push@423a915c9b72edf2ba848b88171ccb0489e2a40a # v0
         id: docker-build-push
@@ -88,12 +91,3 @@ jobs:
             --environment "${{ inputs.cluster }}" \
             --set spec.image="${{ needs.build.outputs.image }}" \
             --wait
-
-  verify:
-    name: Verify ${{ inputs.environment_name }}
-    needs: deploy
-    uses: ./.github/workflows/verify.yml
-    with:
-      runner_label: ${{ inputs.runner_label }}
-      test_app_url: ${{ inputs.test_app_url }}
-    secrets: inherit

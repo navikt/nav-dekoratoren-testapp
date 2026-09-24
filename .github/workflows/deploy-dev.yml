@@ -22,6 +22,5 @@ jobs:
       environment_name: dev
       cluster: dev-gcp
       manifest_path: .nais/nais-dev.yaml
-      runner_label: union-dev
-      test_app_url: https://nav-dekoratoren-testapp.ansatt.dev.nav.no
+      decorator_environment: dev
     secrets: inherit

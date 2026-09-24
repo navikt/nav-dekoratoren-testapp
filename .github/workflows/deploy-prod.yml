@@ -21,7 +21,6 @@ jobs:
       environment_name: prod
       cluster: prod-gcp
       manifest_path: .nais/nais-prod.yaml
-      runner_label: union-prod
-      test_app_url: https://nav-dekoratoren-testapp.ansatt.nav.no
+      decorator_environment: prod
       require_tag: true
     secrets: inherit

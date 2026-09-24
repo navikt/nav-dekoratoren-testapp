@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { getDecoratorEnvironment } from "./decorator-config";
 
 describe("CSR uten moduler URL", () => {
   afterEach(() => {
@@ -20,5 +21,11 @@ describe("CSR uten moduler URL", () => {
     expect(buildDirectCsrEnvironmentUrl()).toContain(
       "https://www.nav.no/dekoratoren/env?",
     );
+  });
+
+  it("uses the production Dekoratøren environment on the prod ansatt ingress", () => {
+    expect(
+      getDecoratorEnvironment("nav-dekoratoren-testapp.ansatt.nav.no"),
+    ).toBe("prod");
   });
 });

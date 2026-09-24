@@ -3,12 +3,16 @@ export type DecoratorEnvironment = "dev" | "prod";
 export const decoratorEnvironment: DecoratorEnvironment =
   process.env.DECORATOR_ENV === "prod" ? "prod" : "dev";
 
-export function getDecoratorEnvironment(): DecoratorEnvironment {
-  if (typeof window === "undefined") {
+export function getDecoratorEnvironment(
+  hostname = typeof window === "undefined"
+    ? undefined
+    : window.location.hostname,
+): DecoratorEnvironment {
+  if (!hostname) {
     return decoratorEnvironment;
   }
 
-  return window.location.hostname.endsWith(".ansatt.nav.no") ? "prod" : "dev";
+  return hostname.endsWith(".ansatt.nav.no") ? "prod" : "dev";
 }
 
 export function getDirectDecoratorOrigin() {

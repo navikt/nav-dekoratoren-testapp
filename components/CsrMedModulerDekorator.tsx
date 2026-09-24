@@ -4,10 +4,14 @@ import { injectDecoratorClientSide } from "@navikt/nav-dekoratoren-moduler";
 import { useEffect } from "react";
 import { IntegrationPage } from "./IntegrationPage";
 import { decoratorParams } from "../lib/decorator-params";
+import { getDecoratorEnvironment } from "../lib/decorator-config";
 
 export function CsrMedModulerDekorator() {
   useEffect(() => {
-    injectDecoratorClientSide({ env: "dev", params: decoratorParams });
+    injectDecoratorClientSide({
+      env: getDecoratorEnvironment(),
+      params: decoratorParams,
+    });
     return () => {
       document.getElementById("decorator-header")?.remove();
       document.getElementById("decorator-footer")?.remove();

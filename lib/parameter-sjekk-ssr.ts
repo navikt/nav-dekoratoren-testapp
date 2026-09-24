@@ -6,6 +6,7 @@ import {
   type DecoratorParams,
 } from "@navikt/nav-dekoratoren-moduler/ssr";
 import { decoratorParams } from "./decorator-params";
+import { decoratorEnvironment } from "./decorator-config";
 import {
   analyticsQueryParamsTestCases,
   analyticsRedactFilterTestCases,
@@ -65,7 +66,7 @@ async function kjorSsrParameterTester<T extends ParameterTestCase>(
 
       try {
         await fetchDecoratorReact({
-          env: "dev",
+          env: decoratorEnvironment,
           params: { ...decoratorParams, ...byggParams(testCase) },
         });
         return {
@@ -319,7 +320,7 @@ export async function kjorSsrForenkletVisningTester(): Promise<TestRad[]> {
     forenkletVisningTestCases.map(async (testCase): Promise<TestRad> => {
       try {
         const dekorator = await fetchDecoratorHtml({
-          env: "dev",
+          env: decoratorEnvironment,
           params: { ...decoratorParams, ...testCase.params },
         });
         const harHeader = dekorator.DECORATOR_HEADER.includes("<header");
@@ -361,7 +362,9 @@ export async function kjorSsrCspTester(): Promise<TestRad[]> {
   };
 
   try {
-    const cspHeader = await buildCspHeader(appDirectives, { env: "dev" });
+    const cspHeader = await buildCspHeader(appDirectives, {
+      env: decoratorEnvironment,
+    });
     const inneholderAppensDirektiver =
       cspHeader.includes("default-src 'self'") &&
       cspHeader.includes("connect-src nav-dekoratoren-testapp.dev.nav.no");
@@ -400,7 +403,9 @@ export async function kjorSsrCspTester(): Promise<TestRad[]> {
 
 export async function kjorSsrDekoratorVersjonTester(): Promise<TestRad[]> {
   try {
-    const versjonsId = await getDecoratorVersionId({ env: "dev" });
+    const versjonsId = await getDecoratorVersionId({
+      env: decoratorEnvironment,
+    });
 
     return [
       {

@@ -1,4 +1,5 @@
 import { startDekoratorOppdateringslytter } from "../../../lib/decorator-oppdateringslytter";
+import { decoratorEnvironment } from "../../../lib/decorator-config";
 
 export const dynamic = "force-dynamic";
 
@@ -12,8 +13,8 @@ export default async function DekoratorOppdateringerPage() {
       </p>
       <h1>addDecoratorUpdateListener</h1>
       <p>
-        Lytter etter nye Dekoratør-versjoner i dev og kan brukes til å
-        ugyldiggjøre en SSR-cache.
+        Lytter etter nye Dekoratør-versjoner i {decoratorEnvironment} og kan
+        brukes til å ugyldiggjøre en SSR-cache.
       </p>
       <p data-testid="update-listener-status">
         {status.lytterAktiv

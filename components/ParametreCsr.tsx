@@ -9,6 +9,7 @@ import {
 } from "@navikt/nav-dekoratoren-moduler";
 import { useEffect, useRef, useState } from "react";
 import { decoratorParams } from "../lib/decorator-params";
+import { getDecoratorEnvironment } from "../lib/decorator-config";
 import {
   analyticsQueryParamsTestCases,
   analyticsRedactFilterTestCases,
@@ -183,7 +184,7 @@ export function ParametreCsr({ onStatusChange }: ParametreCsrProps = {}) {
     void (async () => {
       try {
         await injectDecoratorClientSide({
-          env: "dev",
+          env: getDecoratorEnvironment(),
           params: {
             ...decoratorParams,
             analyticsQueryParams:

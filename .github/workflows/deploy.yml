@@ -1,0 +1,101 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+concurrency:
+  group: nav-dekoratoren-testapp-deploy
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and push image
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
+        with:
+          version: 10.33.0
+      - run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - name: Build and push image and SBOM to OCI registry
+        uses: nais/docker-build-push@423a915c9b72edf2ba848b88171ccb0489e2a40a # v0
+        id: docker-build-push
+        with:
+          team: personbruker
+
+  deploy-dev:
+    name: Deploy dev
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: dev
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: nais/setup@ea33c90b68228e6f04fb34b88bfd8ab6ad523ce8 # v1.0.2
+        with:
+          team: personbruker
+      - name: Deploy to Nais dev-gcp
+        run: |
+          nais apply .nais/nais-dev.yaml \
+            --environment dev-gcp \
+            --set spec.image="${{ needs.build.outputs.image }}" \
+            --wait
+
+  deploy-prod:
+    name: Deploy prod
+    needs: [build, verify-dev]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: prod
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: nais/setup@ea33c90b68228e6f04fb34b88bfd8ab6ad523ce8 # v1.0.2
+        with:
+          team: personbruker
+      - name: Deploy to Nais prod-gcp
+        run: |
+          nais apply .nais/nais-prod.yaml \
+            --environment prod-gcp \
+            --set spec.image="${{ needs.build.outputs.image }}" \
+            --wait
+
+  verify-dev:
+    name: Verify dev
+    needs: deploy-dev
+    uses: ./.github/workflows/verify.yml
+    with:
+      runner_label: union-dev
+      test_app_url: https://nav-dekoratoren-testapp.ansatt.dev.nav.no
+    secrets: inherit
+
+  verify-prod:
+    name: Verify prod
+    needs: deploy-prod
+    uses: ./.github/workflows/verify.yml
+    with:
+      runner_label: union-prod
+      test_app_url: https://nav-dekoratoren-testapp.ansatt.nav.no
+    secrets: inherit

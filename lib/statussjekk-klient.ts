@@ -19,7 +19,7 @@ async function sjekkCsrMedModuler(): Promise<IntegrasjonsHelse> {
       path,
       label,
       status: "feil",
-      detalj: "Fikk ikke kontakt med offentlig dev-ingress (/env)",
+      detalj: "Fikk ikke kontakt med Dekoratørens offentlige ingress (/env)",
     };
   }
 }
@@ -38,7 +38,8 @@ async function sjekkCsrUtenModuler(): Promise<IntegrasjonsHelse> {
       path,
       label,
       status: "feil",
-      detalj: "Fikk ikke kontakt med offentlig dev-ingress (client.js)",
+      detalj:
+        "Fikk ikke kontakt med Dekoratørens offentlige ingress (client.js)",
     };
   }
 }

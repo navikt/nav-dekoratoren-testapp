@@ -6,6 +6,7 @@ import {
   openChatbot,
 } from "@navikt/nav-dekoratoren-moduler";
 import { decoratorParams } from "../lib/decorator-params";
+import { getDecoratorEnvironment } from "../lib/decorator-config";
 import { IntegrationPage } from "./IntegrationPage";
 
 export function CsrOpenChatbotDekorator() {
@@ -21,7 +22,7 @@ export function CsrOpenChatbotDekorator() {
       initialStatus="initializing"
       observe={async () => {
         await injectDecoratorClientSide({
-          env: "dev",
+          env: getDecoratorEnvironment(),
           params: { ...decoratorParams, chatbot: true, chatbotVisible: false },
         });
         await ventPaDekoratoren();

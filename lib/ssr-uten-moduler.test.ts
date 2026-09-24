@@ -6,13 +6,27 @@ describe("SSR uten moduler configuration", () => {
     vi.resetModules();
   });
 
-  it("uses the service-discovery endpoint when running in Nais dev-gcp", async () => {
+  it("uses service discovery when running in Nais dev-gcp", async () => {
     vi.stubEnv("NAIS_CLUSTER_NAME", "dev-gcp");
     const { ssrUtenModulerUrl } = await import("./ssr-uten-moduler");
     expect(ssrUtenModulerUrl).toBe("http://nav-dekoratoren.personbruker/ssr");
   });
 
-  it("falls back to the public dev-ingress when not running in Nais (e.g. localhost)", async () => {
+  it("uses service discovery when running in Nais prod-gcp", async () => {
+    vi.stubEnv("DECORATOR_ENV", "prod");
+    vi.stubEnv("NAIS_CLUSTER_NAME", "prod-gcp");
+    const { ssrUtenModulerUrl } = await import("./ssr-uten-moduler");
+    expect(ssrUtenModulerUrl).toBe("http://nav-dekoratoren.personbruker/ssr");
+  });
+
+  it("uses the public prod-ingress outside Nais when configured for prod", async () => {
+    vi.stubEnv("DECORATOR_ENV", "prod");
+    vi.stubEnv("NAIS_CLUSTER_NAME", "");
+    const { ssrUtenModulerUrl } = await import("./ssr-uten-moduler");
+    expect(ssrUtenModulerUrl).toBe("https://www.nav.no/dekoratoren/ssr");
+  });
+
+  it("uses the public dev-ingress outside Nais when configured for dev", async () => {
     vi.stubEnv("NAIS_CLUSTER_NAME", "");
     const { ssrUtenModulerUrl } = await import("./ssr-uten-moduler");
     expect(ssrUtenModulerUrl).toBe("https://dekoratoren.ekstern.dev.nav.no/ssr");

@@ -5,6 +5,7 @@ import {
   buildDirectCsrEnvironmentUrl,
   csrUtenModulerClientUrl,
 } from "../lib/csr-uten-moduler";
+import { getDirectDecoratorOrigin } from "../lib/decorator-config";
 import { IntegrationPage } from "./IntegrationPage";
 
 export function CsrUtenModulerDekorator() {
@@ -35,7 +36,7 @@ export function CsrUtenModulerDekorator() {
     <>
       <link
         rel="stylesheet"
-        href="https://dekoratoren.ekstern.dev.nav.no/css"
+        href={`${getDirectDecoratorOrigin()}/css`}
       />
       <div id="decorator-env" data-src={buildDirectCsrEnvironmentUrl()} />
       <IntegrationPage

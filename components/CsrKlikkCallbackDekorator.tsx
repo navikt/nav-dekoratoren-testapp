@@ -7,6 +7,7 @@ import {
   type DecoratorFetchProps,
 } from "@navikt/nav-dekoratoren-moduler";
 import { decoratorParams } from "../lib/decorator-params";
+import { getDecoratorEnvironment } from "../lib/decorator-config";
 import { IntegrationPage } from "./IntegrationPage";
 
 const testBreadcrumb = {
@@ -34,7 +35,7 @@ export function CsrKlikkCallbackDekorator() {
       initialStatus="initializing"
       observe={async () => {
         await injectDecoratorClientSide({
-          env: "dev",
+          env: getDecoratorEnvironment(),
           params: {
             ...decoratorParams,
             breadcrumbs: [testBreadcrumb],

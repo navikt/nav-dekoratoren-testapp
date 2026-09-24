@@ -2,7 +2,10 @@ import Script from "next/script";
 import { fetchDecoratorReact } from "@navikt/nav-dekoratoren-moduler/ssr";
 import { IntegrationPage } from "../../components/IntegrationPage";
 import { decoratorParams } from "../../lib/decorator-params";
+import { decoratorEnvironment } from "../../lib/decorator-config";
 import { logTechnicalEvent } from "../../lib/technical-logger";
+
+export const dynamic = "force-dynamic";
 
 export default async function SsrModulesPage() {
   logTechnicalEvent(
@@ -12,7 +15,7 @@ export default async function SsrModulesPage() {
   );
   try {
     const Decorator = await fetchDecoratorReact({
-      env: "dev",
+      env: decoratorEnvironment,
       params: decoratorParams,
     });
     logTechnicalEvent(

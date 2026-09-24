@@ -1,5 +1,6 @@
 import { fetchDecoratorReact } from "@navikt/nav-dekoratoren-moduler/ssr";
 import { decoratorParams } from "./decorator-params";
+import { decoratorEnvironment } from "./decorator-config";
 import { fetchDirectSsrFragments } from "./ssr-uten-moduler";
 
 export type IntegrasjonsHelseStatus = "ok" | "feil";
@@ -23,7 +24,10 @@ async function sjekkSsrMedModuler(): Promise<IntegrasjonsHelse> {
   const path = "ssr-med-moduler";
   const label = "SSR med moduler";
   try {
-    await fetchDecoratorReact({ env: "dev", params: decoratorParams });
+    await fetchDecoratorReact({
+      env: decoratorEnvironment,
+      params: decoratorParams,
+    });
     return ok(path, label);
   } catch {
     return feil(
